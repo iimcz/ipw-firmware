@@ -1,14 +1,33 @@
+using System;
+using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class ProjectorTransformationFeature : ScriptableRendererFeature
 {
-    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+    [Serializable]
+    public class ProjectorTransformationSettings
     {
-        throw new System.NotImplementedException();
+        public bool IsEnabled = true;
+        public RenderPassEvent WhenToInsert = RenderPassEvent.AfterRendering;
+        public Material MaterialToBlit;
     }
+
+    public ProjectorTransformationSettings settings = new ProjectorTransformationSettings();
+
+    private ProjectorTransformationPass _pass;
 
     public override void Create()
     {
-        throw new System.NotImplementedException();
+        _pass = new ProjectorTransformationPass(
+          "Projector transformation",
+          settings.WhenToInsert,
+          settings.MaterialToBlit
+        );
+    }
+
+    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+    {
+        if (!settings.IsEnabled) return;
+        renderer.EnqueuePass(_pass);
     }
 }

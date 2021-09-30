@@ -1,6 +1,4 @@
-using emt_sdk.Generated.ScenePackage;
 using Naki3D.Common.Protocol;
-using UnityEngine;
 
 public class NameFilteredEventComponent : EventComponent
 {

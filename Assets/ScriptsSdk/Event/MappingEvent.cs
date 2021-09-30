@@ -5,4 +5,6 @@ public class MappingEvent : EventComponent
 {
     [SerializeField]
     public Mapping Mapping;
+
+    public string MappingName;
 }

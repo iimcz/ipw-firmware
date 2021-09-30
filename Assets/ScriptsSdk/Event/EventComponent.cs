@@ -23,6 +23,8 @@ public class EventComponent : MonoBehaviour
 
     protected virtual void OnEventReceived(object sender, SensorMessage e)
     {
+        Debug.Log(e);
+        Debug.Log(e.DataCase);
         _mainThreadActions.Enqueue(() => EventReceived.Invoke(e));
     }
 }

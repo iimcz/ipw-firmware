@@ -19,7 +19,7 @@ public class ConnectionUiComponent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        IPWInfo.text = $"IPW Ver. {_version}\nHostname: {ExhibitConnection.Hostname}\nTarget: {ExhibitConnection.TargetServer}";
+        IPWInfo.text = $"IPW Ver. {_version}\nHostname: {ExhibitConnection.Hostname}\nTarget: {ExhibitConnection.TargetServer}:{ExhibitConnection.Port}";
         ServerInfo.text = $"Server Ver. \nConnection: {ExhibitConnection.Connection?.IsConnected ?? false}\nProgress:";
     }
 }

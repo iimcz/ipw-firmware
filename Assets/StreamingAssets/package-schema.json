@@ -1,0 +1,316 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/contentPackage",
+    "definitions": {
+        "contentPackage": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "$schema": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                },
+                "package": {
+                    "$ref": "#/definitions/package"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/metadata"
+                },
+                "inputs": {
+                    "$ref": "#/definitions/inputs"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/parameters"
+                },
+                "sync": {
+                    "$ref": "#/definitions/sync"
+                }
+            },
+            "required": [
+                "$schema",
+                "version",
+                "package",
+                "metadata"
+            ]
+        },
+        "inputs": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/action"
+            }
+        },
+        "action": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "event",
+                        "gesture",
+                        "gestureDrag",
+                        "valueTrigger",
+                        "value"
+                    ]
+                },
+                "mapping": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/mappings/event"
+                        },
+                        {
+                            "$ref": "#/definitions/mappings/gesture"
+                        },
+                        {
+                            "$ref": "#/definitions/mappings/gestureDrag"
+                        },
+                        {
+                            "$ref": "#/definitions/mappings/valueTrigger"
+                        },
+                        {
+                            "$ref": "#/definitions/mappings/value"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "mapping"
+            ],
+            "additionalProperties": false
+        },
+        "mappings": {
+            "event": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "type": "string"
+                    },
+                    "eventName": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "source",
+                    "eventName"
+                ],
+                "additionalProperties": false
+            },
+            "gesture": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "type": "string"
+                    },
+                    "gestureName": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "source",
+                    "gestureName"
+                ],
+                "additionalProperties": false
+            },
+            "gestureDrag": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "type": "string"
+                    },
+                    "startGesture": {
+                        "type": "string"
+                    },
+                    "endGesture": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "source",
+                    "startGesture",
+                    "endGesture",
+                    "position"
+                ],
+                "additionalProperties": false
+            },
+            "value": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "source"
+                ],
+                "additionalProperties": false
+            },
+            "valueTrigger": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "type": "string"
+                    },
+                    "condition": {
+                        "type": "string",
+                        "enum": [
+                            "above",
+                            "below",
+                            "aboveOrEquals",
+                            "belowOrEquals",
+                            "equals"
+                        ]
+                    },
+                    "threshold": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "source",
+                    "condition",
+                    "threshold"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "exposition": {
+                    "type": "string"
+                },
+                "other": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "author",
+                "exposition"
+            ]
+        },
+        "package": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "data",
+                        "script"
+                    ]
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "checksum": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "checksum",
+                "type",
+                "url"
+            ]
+        },
+        "parameters": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "displayType": {
+                    "type": "string",
+                    "enum": [
+                        "video",
+                        "scene",
+                        "model",
+                        "multires",
+                        "gallery",
+                        "quiz"
+                    ]
+                },
+                "settings": {
+                    "type": "array",
+                    "items": {
+                        "item": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            },
+            "required": [
+                "settings"
+            ]
+        },
+        "sync": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "canvasDimensions": {
+                    "type": "object",
+                    "properties": {
+                        "width": {
+                            "type": "integer"
+                        },
+                        "height": {
+                            "type": "integer"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "selfIndex": {
+                    "type": "integer"
+                },
+                "elements": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "role": {
+                                "type": "string"
+                            },
+                            "hostname": {
+                                "type": "string"
+                            },
+                            "viewportTransform": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "hostname",
+                            "role",
+                            "viewportTransform"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "canvasDimensions",
+                "elements",
+                "selfIndex"
+            ]
+        }
+    }
+}
