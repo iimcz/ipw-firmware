@@ -18,10 +18,18 @@ public class DualCameraComponent : MonoBehaviour
 
     public IPWSetting Setting;
 
+    [OnValueChanged("CurveChanged"), LabelText("Brightness curve on"), BoxGroup("Debug")]
+    public bool CurveOn = true;
+
     private void OrientationChanged()
     {
         Setting.Orientation = Orientation;
         ApplySettings();
+    }
+
+    void CurveChanged()
+    {
+        ProjectorTransformationPass.EnableCurve = CurveOn;
     }
 
     void Awake()
