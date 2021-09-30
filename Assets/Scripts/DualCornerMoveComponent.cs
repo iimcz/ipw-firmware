@@ -5,11 +5,17 @@ public class DualCornerMoveComponent : MonoBehaviour
 {
     public int ActiveDisplay;
 
-    [Required, SceneObjectsOnly]
+    [Required, SceneObjectsOnly, BoxGroup("Corner move")]
     public CornerMoveComponent CornerMove1;
 
-    [Required, SceneObjectsOnly]
+    [Required, SceneObjectsOnly, BoxGroup("Corner move")]
     public CornerMoveComponent CornerMove2;
+
+    [Required, SceneObjectsOnly, BoxGroup("Color change")]
+    public ColorChangeComponent ColorChange1;
+
+    [Required, SceneObjectsOnly, BoxGroup("Color change")]
+    public ColorChangeComponent ColorChange2;
 
     void Update()
     {
@@ -22,11 +28,17 @@ public class DualCornerMoveComponent : MonoBehaviour
             {
                 CornerMove1.enabled = true;
                 CornerMove2.enabled = false;
+
+                ColorChange1.enabled = true;
+                ColorChange2.enabled = false;
             }
             else
             {
                 CornerMove1.enabled = false;
                 CornerMove2.enabled = true;
+
+                ColorChange1.enabled = false;
+                ColorChange2.enabled = true;
             }
         }
     }
