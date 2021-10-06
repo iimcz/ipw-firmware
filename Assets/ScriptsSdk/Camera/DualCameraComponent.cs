@@ -21,6 +21,9 @@ public class DualCameraComponent : MonoBehaviour
     [OnValueChanged("CurveChanged"), LabelText("Brightness curve on"), BoxGroup("Debug")]
     public bool CurveOn = true;
 
+    // TODO: Fix ortho sizing, lens shift is just physical worldspace shift scaled by orthosize
+    // TODO: Disable culling on ortho scenes, leaves black squares for some reason
+
     private void OrientationChanged()
     {
         Setting.Orientation = Orientation;

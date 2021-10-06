@@ -1,10 +1,18 @@
 Shader "Unlit/NewUnlitShader"
 {
+    Properties
+    {
+        _Exp("Exp", Float) = 0.3
+        _Cutoff("Cutoff", Range(0,1)) = 0.2
+        _LerpStart("Lerp start", Range(0,1)) = 0.0181
+        [Toggle] _BlankCutoff("Blank cutoff", Float) = 0
+    }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
         Cull Off
+        ZTest Always
 
         Pass
         {
@@ -28,6 +36,11 @@ Shader "Unlit/NewUnlitShader"
                 float4 vertex : SV_POSITION;
             };
             
+            float _Exp;
+            float _Cutoff;
+            float _LerpStart;
+            float _BlankCutoff;
+
             SamplerState trilinear_clamp_sampler;
 
             Texture2D tex;
@@ -74,6 +87,16 @@ Shader "Unlit/NewUnlitShader"
             fixed4 frag(v2f i) : SV_Target
             {
                 fixed2 uv = i.uv / i.uv2;
+                if (uv.x > _Cutoff)
+                {
+                    if (_BlankCutoff > 0.1) return fixed4(1, 0, 0, 0);
+                    _LerpStart = pow(_Cutoff, 1 / _Exp);
+
+                    float progLin = (uv.x - _Cutoff) * (1.0 / (1 - _Cutoff));
+                    float prog = lerp(_LerpStart, 1.0, progLin);
+                    uv.x = pow(prog, _Exp);
+                }
+
                 fixed4 col = tex.Sample(trilinear_clamp_sampler, uv);
 
                 float bc = 0;
