@@ -363,7 +363,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 858575043}
-  m_PlaneDistance: 10
+  m_PlaneDistance: 5
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -548,17 +548,20 @@ MonoBehaviour:
   CornerMove2: {fileID: 1773959807}
   ColorChange1: {fileID: 199075607}
   ColorChange2: {fileID: 1773959808}
---- !u!114 &454132773 stripped
+--- !u!114 &454132775
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4899629861708391908, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
-  m_PrefabInstance: {fileID: 4899629861478253080}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 454132771}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d44e54bf587964438bfac8559159c6d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7ee39fb9c44474e4f9ea8e0ac2447145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LensChangeSpeed: 0.001
+  ShiftMultiplier: 0.1
 --- !u!1 &536098126
 GameObject:
   m_ObjectHideFlags: 0
@@ -733,8 +736,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1012,8 +1015,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1096,7 +1099,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 140, y: 0}
   m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1313451767
@@ -1119,10 +1122,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Tab - Zm\u011Bna projektoru\n\nTransformace:\n\u0160ipky - Posun vybran\xE9ho
-    rohu\nAlt - Zm\u011Bna rohu\nShift - Zpomalen\xED pohybu\nQ - Prohozen\xED projektor\u016F\n\nBarvy:\n+
-    - Zv\xFD\u0161en\xED hodnoty\n- - Sn\xED\u017Een\xED hodnoty\nR - V\xFDchoz\xED
-    hodnota\nB - Jas\nC - Kontrast\nS - Saturace"
+  m_text: "Tab - Zm\u011Bna projektoru\nCtrl + S - Ulo\u017Een\xED nastaven\xED\nCtrl
+    + L - Znovuna\u010Dten\xED nasteven\xED\n\nTransformace:\n\u0160ipky - Posun
+    vybran\xE9ho rohu\nAlt - Zm\u011Bna rohu\nShift - Zpomalen\xED pohybu\nQ - Prohozen\xED
+    projektor\u016F\n\nBarvy:\n+ - Zv\xFD\u0161en\xED hodnoty\n- - Sn\xED\u017Een\xED
+    hodnoty\nR - V\xFDchoz\xED hodnota\nB - Jas\nC - Kontrast\nS - Saturace\n\nP\u0159ekryv:\nP
+    - Lens shift +\nM - Lens shift -"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1449,7 +1454,6 @@ GameObject:
   - component: {fileID: 1773959805}
   - component: {fileID: 1773959804}
   - component: {fileID: 1773959803}
-  - component: {fileID: 1773959802}
   - component: {fileID: 1773959807}
   - component: {fileID: 1773959808}
   m_Layer: 5
@@ -1459,19 +1463,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1773959802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1773959801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b17536570b5a7d6448289d9ccc6ebe9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Camera: {fileID: 454132773}
 --- !u!114 &1773959803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1523,7 +1514,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 1514284385}
-  m_PlaneDistance: 10
+  m_PlaneDistance: 5
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -1718,10 +1709,6 @@ PrefabInstance:
     - target: {fileID: 4899629861708391907, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4899629861708391908, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
-      propertyPath: CurveOn
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4899629861708391908, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
       propertyPath: serializationData.Prefab

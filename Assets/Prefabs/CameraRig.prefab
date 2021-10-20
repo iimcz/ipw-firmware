@@ -47,10 +47,10 @@ Camera:
   m_BackGroundColor: {r: 0.26321647, g: 0.32977614, b: 0.6132076, a: 0}
   m_projectionMatrixMode: 2
   m_GateFitMode: 2
-  m_FOVAxisMode: 0
+  m_FOVAxisMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0.5}
-  m_FocalLength: 50
+  m_FocalLength: 43.455845
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -59,7 +59,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 26.991467
+  field of view: 30.87417
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -177,6 +177,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TopCamera: {fileID: 7792321721032202555}
   BottomCamera: {fileID: 8485255880857642248}
+  Orientation: 0
+  CurveOn: 1
 --- !u!1 &4899629861798286042
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,10 +225,10 @@ Camera:
   m_BackGroundColor: {r: 0.26321647, g: 0.32977614, b: 0.6132076, a: 0}
   m_projectionMatrixMode: 2
   m_GateFitMode: 2
-  m_FOVAxisMode: 0
+  m_FOVAxisMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: -0.5}
-  m_FocalLength: 50
+  m_FocalLength: 43.455845
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -235,7 +237,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 26.991467
+  field of view: 30.87417
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

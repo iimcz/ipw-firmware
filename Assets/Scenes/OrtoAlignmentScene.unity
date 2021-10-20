@@ -212,7 +212,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 937320306}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.4, y: 0, z: 4.24}
+  m_LocalPosition: {x: 0, y: 0, z: 4.24}
   m_LocalScale: {x: 15, y: 15, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -228,6 +228,10 @@ PrefabInstance:
     - target: {fileID: 4899629860299532103, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
       propertyPath: orthographic
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4899629860299532103, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4899629860299532103, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
       propertyPath: orthographic size
@@ -247,7 +251,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4899629860299532152, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.5
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4899629861708391906, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
       propertyPath: m_Name
@@ -299,11 +303,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4899629861798286043, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.5
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 4899629861798286046, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
       propertyPath: orthographic
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4899629861798286046, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4899629861798286046, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
       propertyPath: m_CullingMask.m_Bits

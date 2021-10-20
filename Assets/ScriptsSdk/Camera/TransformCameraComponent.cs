@@ -57,6 +57,7 @@ public class TransformCameraComponent : MonoBehaviour
         ProjectorTransformationPass.FlipCurve[TargetDisplay] = TargetDisplay == 0;
 
         Camera.targetDisplay = Setting.DisplayId;
+        Camera.aspect = 1.05f;
     }
 
     private Vector3[] SettingsVertices => new[] { 
