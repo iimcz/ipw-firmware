@@ -11,6 +11,8 @@ public class ColorChangeComponent : MonoBehaviour
         Saturation
     }
 
+    // TODO: Testing moving shape during calibration
+
     [Required, SceneObjectsOnly]
     public TransformCameraComponent Camera;
 

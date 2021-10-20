@@ -2,10 +2,10 @@ Shader "Unlit/NewUnlitShader"
 {
     Properties
     {
-        _Exp("Exp", Float) = 0.3
-        _Cutoff("Cutoff", Range(0,1)) = 0.2
-        _LerpStart("Lerp start", Range(0,1)) = 0.0181
-        [Toggle] _BlankCutoff("Blank cutoff", Float) = 0
+        _Cutoff("Cutoff", Range(-1,51)) = 14
+
+        _Power("Power", Range(1,3)) = 2
+        _Power2("Power2", Range(1,3)) = 2
     }
     SubShader
     {
@@ -19,6 +19,8 @@ Shader "Unlit/NewUnlitShader"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 5.0
+
 
             #include "UnityCG.cginc"
 
@@ -36,10 +38,10 @@ Shader "Unlit/NewUnlitShader"
                 float4 vertex : SV_POSITION;
             };
             
-            float _Exp;
             float _Cutoff;
-            float _LerpStart;
-            float _BlankCutoff;
+
+            float _Power;
+            float _Power2;
 
             SamplerState trilinear_clamp_sampler;
 
@@ -87,29 +89,51 @@ Shader "Unlit/NewUnlitShader"
             fixed4 frag(v2f i) : SV_Target
             {
                 fixed2 uv = i.uv / i.uv2;
-                if (uv.x > _Cutoff)
-                {
-                    if (_BlankCutoff > 0.1) return fixed4(1, 0, 0, 0);
-                    _LerpStart = pow(_Cutoff, 1 / _Exp);
+                //if (flipCurve < 0.1)
+                //{
+                //    //if (transformFix(uv.x * 51.0) >= _Cutoff) {
+                //        uv = fixed2(transformFix(uv.x * 51.0) / 158, uv.y);
+                //    //}
+                //    //else {
+                //    //    uv = fixed2(transformFixLin(uv.x * 51.0) / 158, uv.y);
+                //    //}
+                //}
+                //else
+                //{
+                //    //if (transformFix(uv.x * 51.0) >= 158 - _Cutoff) {
+                //        uv = fixed2(1.0 - transformFix(51.0 - uv.x * 51.0) / 158, uv.y);
+                //    //}
+                //    //else {
+                //    //    uv = fixed2(1.0 - transformFixLin(51.0 - uv.x * 51.0) / 158, uv.y);
+                //    //}
+                //}
 
-                    float progLin = (uv.x - _Cutoff) * (1.0 / (1 - _Cutoff));
-                    float prog = lerp(_LerpStart, 1.0, progLin);
-                    uv.x = pow(prog, _Exp);
+                //uv.x = (uv.x - 1) + pow((uv.x + 1), _Power);
+                //fixed4 col = fixed4(uv.x, uv.y, 0.0f, 0.0f);
+                //return col;
+
+                if (flipCurve > 0.5) {
+                    uv.x = 3.0 * uv.x - pow(uv.x, _Power2);
+                    uv.x /= 2.0;
+                }
+                else {
+                    uv.x = uv.x + pow(uv.x, _Power);
+                    uv.x /= 2.0;
                 }
 
                 fixed4 col = tex.Sample(trilinear_clamp_sampler, uv);
 
-                float bc = 0;
-                // TODO: Vertical orientation
-                // TODO: Variable control points
-                if (enableCurve > 0.1) bc = brightnessCurve(uv);
+                //float bc = 0;
+                //// TODO: Vertical orientation
+                //// TODO: Variable control points
+                //if (enableCurve > 0.1) bc = brightnessCurve(uv);
 
-                float intComp = dot(col.rgb, W);
-                fixed3 intensity = fixed3(intComp, intComp, intComp);
-                col.rgb = lerp(intensity, col.rgb, saturation);
+                //float intComp = dot(col.rgb, W);
+                //fixed3 intensity = fixed3(intComp, intComp, intComp);
+                //col.rgb = lerp(intensity, col.rgb, saturation);
 
-                col.rgb = ((col.rgb - 0.5f) * max(contrast, 0)) + 0.5f;
-                col.rgb += brightness + bc;
+                //col.rgb = ((col.rgb - 0.5f) * max(contrast, 0)) + 0.5f;
+                //col.rgb += brightness + bc;
 
                 return col;
             }
