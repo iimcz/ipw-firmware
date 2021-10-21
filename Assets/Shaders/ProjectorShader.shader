@@ -37,6 +37,8 @@ Shader "Unlit/NewUnlitShader"
 
             float _Power;
             float _Power2;
+            float _Overlap;
+            float _Overlap2;
 
             SamplerState trilinear_clamp_sampler;
 
@@ -47,6 +49,7 @@ Shader "Unlit/NewUnlitShader"
 
             float enableCurve;
             float flipCurve;
+            float crossOver;
 
             static fixed3 W = fixed3(0.2125, 0.7154, 0.0721);
 
@@ -81,11 +84,36 @@ Shader "Unlit/NewUnlitShader"
                 return 0.0;
             }
 
+            float antiOverlap(fixed2 uv)
+            {
+                float x = clamp(uv.x, 0, 1);
+                if (flipCurve > 0.5)
+                {
+                    if (x > 1.0 - crossOver)
+                    {
+                        float progress = pow((1.0 - x) / crossOver, 3);
+                        return lerp(0.0, 1, progress);
+                    }
+                }
+                else
+                {
+                    if (x < crossOver)
+                    {
+                        float progress = pow(x / crossOver, 3);
+                        return lerp(0.0, 1, progress);
+                    }
+                }
+
+                return 1.0;
+            }
+
             fixed4 frag(v2f i) : SV_Target
             {
                 fixed2 uv = i.uv / i.uv2;
 
                 if (flipCurve > 0.5) {
+
+                    //return fixed4(0, 0, 0, 0);
                     uv.x = 3.0 * uv.x - pow(uv.x, _Power2);
                     uv.x /= 2.0;
                 }
@@ -106,7 +134,8 @@ Shader "Unlit/NewUnlitShader"
                 col.rgb = lerp(intensity, col.rgb, saturation);
 
                 col.rgb = ((col.rgb - 0.5f) * max(contrast, 0)) + 0.5f;
-                col.rgb += brightness + bc;
+                col.rgb += (brightness + bc);
+                if (enableCurve > 0.1) col.rgb *= antiOverlap(uv);
 
                 return col;
             }

@@ -8,7 +8,8 @@ public class ColorChangeComponent : MonoBehaviour
     {
         Brightness,
         Contrast,
-        Saturation
+        Saturation,
+        CrossOver
     }
 
     // TODO: Testing moving shape during calibration
@@ -27,6 +28,7 @@ public class ColorChangeComponent : MonoBehaviour
         { ColorChangeModeEnum.Brightness, 0f },
         { ColorChangeModeEnum.Contrast, 1f },
         { ColorChangeModeEnum.Saturation, 1f },
+        { ColorChangeModeEnum.CrossOver, 0.04f },
     };
 
     public float Speed = 0.01f;
@@ -55,6 +57,9 @@ public class ColorChangeComponent : MonoBehaviour
             case ColorChangeModeEnum.Saturation:
                 Camera.Setting.Color.Saturation = value;
                 break;
+            case ColorChangeModeEnum.CrossOver:
+                Camera.Setting.CrossOver = value;
+                break;
         }
     }
 
@@ -76,6 +81,10 @@ public class ColorChangeComponent : MonoBehaviour
                 Camera.Setting.Color.Saturation += delta;
                 Camera.Setting.Color.Saturation = Mathf.Clamp(Camera.Setting.Color.Saturation, -1f, 1f);
                 break;
+            case ColorChangeModeEnum.CrossOver:
+                Camera.Setting.CrossOver += delta;
+                Camera.Setting.CrossOver = Mathf.Clamp(Camera.Setting.CrossOver, 0f, 0.1f);
+                break;
         }
     }
 
@@ -84,6 +93,7 @@ public class ColorChangeComponent : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B)) ColorChangeMode = ColorChangeModeEnum.Brightness;
         if (Input.GetKeyDown(KeyCode.C)) ColorChangeMode = ColorChangeModeEnum.Contrast;
         if (Input.GetKeyDown(KeyCode.S)) ColorChangeMode = ColorChangeModeEnum.Saturation;
+        if (Input.GetKeyDown(KeyCode.O)) ColorChangeMode = ColorChangeModeEnum.CrossOver;
 
         if (Input.GetKeyDown(KeyCode.R))
         {

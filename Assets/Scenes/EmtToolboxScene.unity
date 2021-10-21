@@ -1125,9 +1125,9 @@ MonoBehaviour:
   m_text: "Tab - Zm\u011Bna projektoru\nCtrl + S - Ulo\u017Een\xED nastaven\xED\nCtrl
     + L - Znovuna\u010Dten\xED nasteven\xED\n\nTransformace:\n\u0160ipky - Posun
     vybran\xE9ho rohu\nAlt - Zm\u011Bna rohu\nShift - Zpomalen\xED pohybu\nQ - Prohozen\xED
-    projektor\u016F\n\nBarvy:\n+ - Zv\xFD\u0161en\xED hodnoty\n- - Sn\xED\u017Een\xED
-    hodnoty\nR - V\xFDchoz\xED hodnota\nB - Jas\nC - Kontrast\nS - Saturace\n\nP\u0159ekryv:\nP
-    - Lens shift +\nM - Lens shift -"
+    projektor\u016F\n\nProjektor:\n+ - Zv\xFD\u0161en\xED hodnoty\n- - Sn\xED\u017Een\xED
+    hodnoty\nR - V\xFDchoz\xED hodnota\nB - Jas\nC - Kontrast\nS - Saturace\nO -
+    P\u0159ekryv\n\nP\u0159ekryv:\nP - Lens shift +\nM - Lens shift -"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -55,6 +55,7 @@ public class TransformCameraComponent : MonoBehaviour
         ProjectorTransformationPass.Saturation[TargetDisplay] = Setting.Color.Saturation;
 
         ProjectorTransformationPass.FlipCurve[TargetDisplay] = TargetDisplay == 0;
+        ProjectorTransformationPass.CrossOver[TargetDisplay] = Setting.CrossOver;
 
         Camera.targetDisplay = Setting.DisplayId;
         Camera.aspect = 1.05f;

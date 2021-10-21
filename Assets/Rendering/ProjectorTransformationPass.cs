@@ -14,6 +14,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
     public static float[] Brightness = new float[MAX_DISPLAYS];
     public static float[] Contrast = new float[MAX_DISPLAYS];
     public static bool[] FlipCurve = new bool[MAX_DISPLAYS];
+    public static float[] CrossOver = new float[MAX_DISPLAYS];
     public static bool EnableCurve = true;
 
     public static Mesh CreateTransform(Vector3[] v)
@@ -48,6 +49,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
         Saturation[0] = 1f;
         Brightness[0] = 0f;
         Contrast[0] = 1f;
+        CrossOver[0] = 0.05f;
 
         for (int i = 1; i < MAX_DISPLAYS; i++)
         {
@@ -77,6 +79,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
         cmd.SetGlobalFloat(Shader.PropertyToID("saturation"), Saturation[displayNumber]);
         cmd.SetGlobalFloat(Shader.PropertyToID("flipCurve"), FlipCurve[displayNumber] ? 1.0f : 0.0f);
         cmd.SetGlobalFloat(Shader.PropertyToID("enableCurve"), EnableCurve ? 1.0f : 0.0f);
+        cmd.SetGlobalFloat(Shader.PropertyToID("crossOver"), CrossOver[displayNumber]);
         cmd.ClearRenderTarget(false, true, Color.black);
 
         var mesh = ScreenMeshes[displayNumber];
