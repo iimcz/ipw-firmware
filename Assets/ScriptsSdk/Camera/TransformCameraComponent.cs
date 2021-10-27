@@ -48,6 +48,9 @@ public class TransformCameraComponent : MonoBehaviour
 
     public void ApplySettings()
     {
+        Camera.targetDisplay = Setting.DisplayId;
+        //Camera.aspect = 1.05f;
+        
         ProjectorTransformationPass.ScreenMeshes[TargetDisplay] = ProjectorTransformationPass.CreateTransform(SettingsVertices);
 
         ProjectorTransformationPass.Brightness[TargetDisplay] = Setting.Color.Brightness;
@@ -56,9 +59,6 @@ public class TransformCameraComponent : MonoBehaviour
 
         ProjectorTransformationPass.FlipCurve[TargetDisplay] = TargetDisplay == 0;
         ProjectorTransformationPass.CrossOver[TargetDisplay] = Setting.CrossOver;
-
-        Camera.targetDisplay = Setting.DisplayId;
-        Camera.aspect = 1.05f;
     }
 
     private Vector3[] SettingsVertices => new[] { 
