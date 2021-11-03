@@ -64,7 +64,7 @@ Shader "Unlit/NewUnlitShader"
 
             float brightnessCurve(fixed2 uv)
             {
-                if (flipCurve > 0.1)
+                if (flipCurve < 0.1)
                 {
                     if (uv.x > 0.5)
                     {
@@ -87,7 +87,7 @@ Shader "Unlit/NewUnlitShader"
             float antiOverlap(fixed2 uv)
             {
                 float x = clamp(uv.x, 0, 1);
-                if (flipCurve > 0.5)
+                if (flipCurve < 0.5)
                 {
                     if (x > 1.0 - crossOver)
                     {
@@ -111,8 +111,7 @@ Shader "Unlit/NewUnlitShader"
             {
                 fixed2 uv = i.uv / i.uv2;
 
-                /*
-                if (flipCurve > 0.5) {
+                if (flipCurve < 0.5) {
                     uv.x = 3.0 * uv.x - pow(uv.x, _Power2);
                     uv.x /= 2.0;
                 }
@@ -120,7 +119,6 @@ Shader "Unlit/NewUnlitShader"
                     uv.x = uv.x + pow(uv.x, _Power);
                     uv.x /= 2.0;
                 }
-                */
 
                 fixed4 col = tex.Sample(trilinear_clamp_sampler, uv);
 

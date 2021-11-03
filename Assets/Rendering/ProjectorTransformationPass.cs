@@ -9,7 +9,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
     private RenderTargetHandle _tempTexture;
 
     public const int MAX_DISPLAYS = 8; // Unity limit
-    public static Mesh[] ScreenMeshes = new Mesh[MAX_DISPLAYS];
+    public static ProjectorTransformationData[] ScreenData = new ProjectorTransformationData[MAX_DISPLAYS];
     public static float[] Saturation = new float[MAX_DISPLAYS];
     public static float[] Brightness = new float[MAX_DISPLAYS];
     public static float[] Contrast = new float[MAX_DISPLAYS];
@@ -17,47 +17,13 @@ public class ProjectorTransformationPass : ScriptableRenderPass
     public static float[] CrossOver = new float[MAX_DISPLAYS];
     public static bool EnableCurve = true;
 
-    public static Mesh CreateTransform(Vector3[] v)
-    {
-        var mesh = new Mesh
-        {
-            vertices = v,
-            triangles = new int[] { 0, 1, 2, 0, 2, 3 }
-        };
-
-        var shiftedPositions = new Vector2[] { Vector2.zero, new Vector2(0, v[1].y - v[0].y), new Vector2(v[2].x - v[1].x, v[2].y - v[3].y), new Vector2(v[3].x - v[0].x, 0) };
-        mesh.uv = shiftedPositions;
-
-        var widthsHeights = new Vector2[4];
-        widthsHeights[0].x = widthsHeights[3].x = shiftedPositions[3].x;
-        widthsHeights[1].x = widthsHeights[2].x = shiftedPositions[2].x;
-        widthsHeights[0].y = widthsHeights[1].y = shiftedPositions[1].y;
-        widthsHeights[2].y = widthsHeights[3].y = shiftedPositions[2].y;
-        mesh.uv2 = widthsHeights;
-
-        mesh.UploadMeshData(false);
-        return mesh;
-    }
-
     public ProjectorTransformationPass(string profilerTag, RenderPassEvent renderPassEvent, Material materialToBlit)
     {
         this.renderPassEvent = renderPassEvent;
         _profilerTag = profilerTag;
         _materialToBlit = materialToBlit;
 
-        ScreenMeshes[0] = CreateTransform(new Vector3[] { new Vector3(-1, -1, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0) });
-        Saturation[0] = 1f;
-        Brightness[0] = 0f;
-        Contrast[0] = 1f;
-        CrossOver[0] = 0.05f;
-
-        for (int i = 1; i < MAX_DISPLAYS; i++)
-        {
-            ScreenMeshes[i] = Object.Instantiate(ScreenMeshes[0]);
-            Saturation[i] = Saturation[0];
-            Brightness[i] = Brightness[0];
-            Contrast[i] = Contrast[0];
-        }
+        for (int i = 0; i < MAX_DISPLAYS; i++) ScreenData[i] = new ProjectorTransformationData();
     }
 
     public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
@@ -82,11 +48,11 @@ public class ProjectorTransformationPass : ScriptableRenderPass
         cmd.SetGlobalFloat(Shader.PropertyToID("crossOver"), CrossOver[displayNumber]);
         cmd.ClearRenderTarget(false, true, Color.black);
 
-        var mesh = ScreenMeshes[displayNumber];
+        var mesh = ScreenData[displayNumber].ScreenMesh;
         if (mesh == null) // Editor doesn't always call the constructor
         {
-            mesh = CreateTransform(new Vector3[] { new Vector3(-1, -1, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0) });
-            ScreenMeshes[displayNumber] = mesh;
+            mesh = MeshUtils.CreateTransform(new Vector3[] { new Vector3(-1, -1, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0) });
+            ScreenData[displayNumber].ScreenMesh = mesh;
         }
 
         cmd.DrawMesh(mesh, Matrix4x4.identity, _materialToBlit, 0, 0);

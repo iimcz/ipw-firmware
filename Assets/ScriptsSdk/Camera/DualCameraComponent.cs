@@ -56,33 +56,10 @@ public class DualCameraComponent : MonoBehaviour
     [Button, BoxGroup("Settings")]
     public void LoadSettings()
     {
-        var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        var configFile = Path.Combine(userFolder, "ipw.json");
-        try
-        {
-            var json = File.ReadAllText(configFile);
-            Setting = JsonConvert.DeserializeObject<IPWSetting>(json);
+        Setting = ProjectorTransfomartionSettingsLoader.LoadSettings();
 
-            TopCamera.Setting = Setting.Displays[0];
-            BottomCamera.Setting = Setting.Displays[1];
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e);
-            Setting = new IPWSetting(); // Loading failed, assume defaults
-            Setting.Displays = new List<DisplaySetting>
-            {
-                new DisplaySetting(),
-                new DisplaySetting()
-            };
-
-            TopCamera.Setting = Setting.Displays[0]; // Duplicated since we can throw on missing info before
-            BottomCamera.Setting = Setting.Displays[1];
-
-            TopCamera.TargetDisplay = 0;
-            BottomCamera.TargetDisplay = 1;
-        }
-
+        TopCamera.Settings = Setting.Displays;
+        BottomCamera.Settings = Setting.Displays;
         Orientation = Setting.Orientation;
     }
 

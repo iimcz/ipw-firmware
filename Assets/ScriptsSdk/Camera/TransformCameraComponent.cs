@@ -2,6 +2,7 @@ using Assets.ScriptsSdk.Extensions;
 using emt_sdk.Settings;
 using Sirenix.OdinInspector;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -10,19 +11,43 @@ public class TransformCameraComponent : MonoBehaviour
 {
     [SceneObjectsOnly, Required]
     public Camera Camera;
+    
+    public List<DisplaySetting> Settings;
 
-    [SerializeField]
-    public DisplaySetting Setting;
+    public int SettingIndex
+    {
+        get => _settingIndex;
+        set
+        {
+            _settingIndex = value;
+            ApplySettings();
+        }
+    }
 
     public int TargetDisplay
     {
         get => Camera.targetDisplay;
         set
         {
+            _targetDisplay = value;
             Camera.targetDisplay = value;
             Setting.DisplayId = value;
+            
+            ApplySettings();
         }
     }
+
+    public DisplaySetting Setting => Settings[SettingIndex];
+
+    [SerializeField]
+    [OnValueChanged("ApplyEditorFields")]
+    [Range(0, 7)]
+    private int _settingIndex = 0;
+
+    [SerializeField]
+    [OnValueChanged("ApplyEditorFields")]
+    [Range(0, 7)]
+    private int _targetDisplay;
 
     public Rect GetCameraBoundries()
     {
@@ -46,12 +71,15 @@ public class TransformCameraComponent : MonoBehaviour
         ApplySettings();
     }
 
+    /// <summary>
+    /// Applies loaded settings into the transformation render pass
+    /// </summary>
     public void ApplySettings()
     {
+        _targetDisplay = Setting.DisplayId;
         Camera.targetDisplay = Setting.DisplayId;
-        //Camera.aspect = 1.05f;
         
-        ProjectorTransformationPass.ScreenMeshes[TargetDisplay] = ProjectorTransformationPass.CreateTransform(SettingsVertices);
+        ProjectorTransformationPass.ScreenData[TargetDisplay].ScreenMesh = MeshUtils.CreateTransform(SettingsVertices);
 
         ProjectorTransformationPass.Brightness[TargetDisplay] = Setting.Color.Brightness;
         ProjectorTransformationPass.Contrast[TargetDisplay] = Setting.Color.Contrast;
@@ -60,6 +88,17 @@ public class TransformCameraComponent : MonoBehaviour
         ProjectorTransformationPass.FlipCurve[TargetDisplay] = TargetDisplay == 0;
         ProjectorTransformationPass.CrossOver[TargetDisplay] = Setting.CrossOver;
     }
+
+    #if UNITY_EDITOR
+    private void ApplyEditorFields()
+    {
+        // No settings loaded anyways
+        if (!Application.isPlaying) return;
+        
+        //Setting.DisplayId = _targetDisplay;
+        ApplySettings();
+    }
+    #endif
 
     private Vector3[] SettingsVertices => new[] { 
         Setting.Skew.BottomLeft.ToUnityVector(),
