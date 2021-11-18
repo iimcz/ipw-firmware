@@ -141,6 +141,7 @@ GameObject:
   - component: {fileID: 457490759}
   - component: {fileID: 457490758}
   - component: {fileID: 457490760}
+  - component: {fileID: 457490765}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -354,6 +355,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CannotContinueText: {fileID: 1405165183}
+--- !u!136 &457490765
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 457490754}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &469151485
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,6 +419,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  EnableNavigationLines: 1
+  NavigationLineMaterial: {fileID: 2100000, guid: 575c2f1184521c30faeff13804079912, type: 2}
   LookList:
   - {fileID: 1405324237}
 --- !u!4 &469151487
@@ -869,6 +886,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  EnableNavigationLines: 1
+  NavigationLineMaterial: {fileID: 2100000, guid: 575c2f1184521c30faeff13804079912, type: 2}
   LookList:
   - {fileID: 494038398}
   - {fileID: 1050007480}
@@ -950,6 +969,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  EnableNavigationLines: 1
+  NavigationLineMaterial: {fileID: 2100000, guid: 575c2f1184521c30faeff13804079912, type: 2}
   LookList:
   - {fileID: 469151485}
 --- !u!4 &1243679964
@@ -1151,6 +1172,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  EnableNavigationLines: 1
+  NavigationLineMaterial: {fileID: 2100000, guid: 575c2f1184521c30faeff13804079912, type: 2}
   LookList:
   - {fileID: 2016859260}
 --- !u!4 &1405324239
@@ -1762,6 +1785,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  EnableNavigationLines: 1
+  NavigationLineMaterial: {fileID: 2100000, guid: 575c2f1184521c30faeff13804079912, type: 2}
   LookList:
   - {fileID: 1205698884}
   - {fileID: 1243679962}
@@ -1922,5 +1947,13 @@ PrefabInstance:
       propertyPath: BottomProfile
       value: 
       objectReference: {fileID: 11400000, guid: bcdf72a4dfd26a74d9d83ad8c12c52d4, type: 2}
+    - target: {fileID: 8485255880857642248, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
+      propertyPath: _settingIndex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8485255880857642248, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
+      propertyPath: _targetDisplay
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
