@@ -8,8 +8,6 @@ public class LocalInputComponent : MonoBehaviour
 {
     public ExhibitConnectionComponent ExhibitConnection;
 
-    private EventManager _manager = EventManager.Instance;
-
     private UnityEngine.Vector2 _prevMousePos;
     private float _prevScroll;
 
@@ -18,6 +16,8 @@ public class LocalInputComponent : MonoBehaviour
         _prevMousePos = new UnityEngine.Vector2(Input.mousePosition.x, Input.mousePosition.y);
         _prevScroll = Input.mouseScrollDelta.y;
     }
+
+    private string Hostname => ExhibitConnection == null ? string.Empty : ExhibitConnection.Hostname;
 
     // Update is called once per frame
     void Update()
@@ -32,11 +32,11 @@ public class LocalInputComponent : MonoBehaviour
                     Absolute = mousePos.ToNakiVector(),
                     Relative = (mousePos - _prevMousePos).ToNakiVector()
                 },
-                 SensorId = $"{ExhibitConnection.Hostname}_mouse",
+                 SensorId = $"{Hostname}_mouse",
                  Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
             };
 
-            _manager.BroadcastEvent(mouseEvent);
+            EventManager.Instance.BroadcastEvent(mouseEvent);
             _prevMousePos = mousePos;
         }
 
@@ -53,7 +53,7 @@ public class LocalInputComponent : MonoBehaviour
                 Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
             };
 
-            _manager.BroadcastEvent(scrollEvent);
+            EventManager.Instance.BroadcastEvent(scrollEvent);
             _prevScroll = scroll;
         }
 
@@ -72,11 +72,11 @@ public class LocalInputComponent : MonoBehaviour
                     Keycode = (int)keyCode,
                     Type = state.Value ? KeyActionType.KeyDown : KeyActionType.KeyUp
                 },
-                SensorId = $"{ExhibitConnection.Hostname}_keyboard",
+                SensorId = $"{Hostname}_keyboard",
                 Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
             };
 
-            _manager.BroadcastEvent(keyboardEvent);
+            EventManager.Instance.BroadcastEvent(keyboardEvent);
         }
     }
 }

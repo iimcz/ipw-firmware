@@ -33,9 +33,10 @@ public class NodeRotatorComponent : MonoBehaviour
         Vector3 direction = Target.LookPosition() - transform.position;
         Quaternion toRotation = Quaternion.LookRotation(direction);
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, RotationSpeed * Time.deltaTime);
-
-        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+        var rotation = transform.rotation;
+        rotation = Quaternion.Slerp(rotation, toRotation, RotationSpeed * Time.deltaTime);
+        rotation = Quaternion.Euler(rotation.eulerAngles.x, rotation.eulerAngles.y, 0);
+        transform.rotation = rotation;
     }
 
     public void TurnLeft()
@@ -62,7 +63,7 @@ public class NodeRotatorComponent : MonoBehaviour
 
     public void CurrentNodeChanged(NavigationNodeComponent node)
     {
-        var direction = node.transform.position - _navigator.CurrentNode.transform.position;
+        var direction = _navigator.transform.forward;
         var closest = node.GetClosestLookable(direction, transform.position);
         _index = node.IndexOfLookable(closest);
     }

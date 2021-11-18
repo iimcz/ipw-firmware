@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,11 +19,20 @@ public class NavigationNodeComponent : MonoBehaviour, ILookable
     public NavigationNodeTypeEnum NavigationNodeType = NavigationNodeTypeEnum.StopPoint;
     public List<TransitionInfo> NextNodes = new List<TransitionInfo>();
 
+    /// <summary>
+    /// Enables navigation lines between nodes
+    /// </summary>
+    public bool EnableNavigationLines = true;
+
+    public Material NavigationLineMaterial;
+
     // TODO: Unity can't have interfaces in editor fields...
     // https://www.patrykgalach.com/2020/01/27/assigning-interface-in-unity-inspector/
     // check this out later
     public List<Object> LookList = new List<Object>();
-    private List<ILookable> _lookList = new List<ILookable>();
+    private readonly List<ILookable> _lookList = new List<ILookable>();
+
+    private readonly List<LineRenderer> _lineRenderers = new List<LineRenderer>();
 
     private NodeNavigatorComponent _navigator;
 
@@ -44,6 +54,26 @@ public class NavigationNodeComponent : MonoBehaviour, ILookable
 
         _navigator = UnityEngine.GameObject.FindGameObjectWithTag("Player")
             .GetComponent<NodeNavigatorComponent>();
+
+        if (!EnableNavigationLines) return;
+        
+        foreach (var nextNode in NextNodes)
+        {
+            var lineObject = new GameObject($"Line to {nextNode.NextNode.gameObject.name}");
+            lineObject.transform.parent = transform;
+            var line = lineObject.AddComponent<LineRenderer>();
+            line.useWorldSpace = true;
+            line.startColor = line.endColor = new Color(1f, 1f, 1f, 0.25f);
+            line.positionCount = 2;
+            line.material = NavigationLineMaterial;
+            line.startWidth = line.endWidth = 0.1f;
+            line.SetPosition(0, transform.position);
+            line.SetPosition(1, nextNode.NextNode.transform.position);
+
+            _lineRenderers.Add(line);
+        }
+        
+        if (_navigator.CurrentNode != this) SetLineVisibility(false);
     }
 
     public ILookable GetLookable(int index)
@@ -60,9 +90,13 @@ public class NavigationNodeComponent : MonoBehaviour, ILookable
     {
         var closest = _lookList
             .OrderBy(l => Vector3.Angle((l.LookPosition() - position).normalized, forward))
-            .First(l => Vector3.Angle((l.LookPosition() - position).normalized, forward) != 0f);
+            .FirstOrDefault(l => Vector3.Angle((l.LookPosition() - position).normalized, forward) != 0f);
 
-        if (closest == null) return _lookList.First();
+        if (closest == null)
+        {
+            Debug.Log("Couldn't find closest lookable, defaulting to first");
+            return _lookList.First();
+        }
         else return closest;
     }
 
@@ -74,6 +108,10 @@ public class NavigationNodeComponent : MonoBehaviour, ILookable
     public void Activate()
     {
         OnActivate.Invoke();
+        
+        _navigator.CurrentNode.SetLineVisibility(false);
+        _navigator.CurrentNode.OnExit.Invoke();
+        
         _navigator.SetTarget(this);
     }
 
@@ -86,5 +124,13 @@ public class NavigationNodeComponent : MonoBehaviour, ILookable
     {
         // TODO: Variable player height?
         return transform.position + new Vector3(0, 1, 0);
+    }
+    
+    public void SetLineVisibility(bool visible)
+    {
+        foreach (var lineRenderer in _lineRenderers)
+        {
+            lineRenderer.enabled = visible;
+        }
     }
 }

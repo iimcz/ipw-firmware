@@ -9,6 +9,9 @@ public class NavigationNodeEditor : Editor
     SerializedProperty nodeType;
     SerializedProperty nextNodes;
     SerializedProperty lookList;
+    
+    SerializedProperty enableNavigationLines;
+    SerializedProperty navigationLineMaterial;
 
     SerializedProperty onActivate;
     SerializedProperty onEnter;
@@ -19,6 +22,9 @@ public class NavigationNodeEditor : Editor
         nodeType = serializedObject.FindProperty("NavigationNodeType");
         nextNodes = serializedObject.FindProperty("NextNodes");
         lookList = serializedObject.FindProperty("LookList");
+        
+        enableNavigationLines = serializedObject.FindProperty("EnableNavigationLines");
+        navigationLineMaterial = serializedObject.FindProperty("NavigationLineMaterial");
 
         onActivate = serializedObject.FindProperty("OnActivate");
         onEnter = serializedObject.FindProperty("OnEnter");
@@ -47,6 +53,7 @@ public class NavigationNodeEditor : Editor
             AddTransition(node, objComp);
 
             node.LookList.Add(objComp);
+            objComp.LookList.Add(node);
             Selection.activeGameObject = obj;
         }
 
@@ -60,6 +67,7 @@ public class NavigationNodeEditor : Editor
             AddTransition(objComp, node);
 
             node.LookList.Add(objComp);
+            objComp.LookList.Add(node);
             Selection.activeGameObject = obj;
         }
         EditorGUILayout.EndHorizontal();
@@ -81,6 +89,13 @@ public class NavigationNodeEditor : Editor
         EditorGUILayout.PropertyField(nodeType);
         EditorGUILayout.PropertyField(nextNodes, true);
         EditorGUILayout.PropertyField(lookList);
+        
+        EditorGUILayout.Space();
+        var oldWidth = EditorGUIUtility.labelWidth;
+        EditorGUIUtility.labelWidth = 140f;
+        EditorGUILayout.PropertyField(enableNavigationLines);
+        if (enableNavigationLines.boolValue) EditorGUILayout.PropertyField(navigationLineMaterial, true);
+        EditorGUIUtility.labelWidth = oldWidth;
 
         EditorGUILayout.Space();
         EditorGUILayout.PropertyField(onActivate);

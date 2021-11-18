@@ -2014,6 +2014,14 @@ PrefabInstance:
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 4899629861708391908, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
+    - target: {fileID: 8485255880857642248, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
+      propertyPath: _settingIndex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8485255880857642248, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
+      propertyPath: _targetDisplay
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
 --- !u!114 &4899629861478253081 stripped

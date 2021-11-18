@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,6 +13,12 @@ public class NodeNavigatorComponent : MonoBehaviour
 
     public UnityEvent<NavigationNodeComponent> OnTransitionStart;
     public UnityEvent<NavigationNodeComponent> OnTransitionEnd;
+
+    void Start()
+    {
+        // Snap to start point so the scene creator doesn't have to align
+        transform.position = CurrentNode.transform.position;
+    }
 
     public void SetTarget(NavigationNodeComponent target)
     {
@@ -29,14 +36,24 @@ public class NodeNavigatorComponent : MonoBehaviour
         if (NextNode == null) return;
 
         _time += Time.deltaTime;
-        var progress = _time / _transition.TravelTime;
+        float progress = 0;
+        
+        switch (_transition.MovementType)
+        {
+            case TransitionInfo.MovementTypeEnum.ConstantTime:
+                progress = _time / _transition.TravelTime;
+                break;
+            case TransitionInfo.MovementTypeEnum.AnimationCurve:
+                progress = _transition.Curve.Evaluate(_time);
+                break;
+        }
 
         var start = CurrentNode.LookPosition();
         var end = NextNode.LookPosition();
 
         transform.position = Vector3.Lerp(start, end, progress);
 
-        if (progress >= 1f)
+        if (progress >= 0.99f)
         {
             CurrentNode = NextNode;
             transform.position = end;
@@ -45,6 +62,8 @@ public class NodeNavigatorComponent : MonoBehaviour
             _transition = null;
             _time = 0f;
 
+            CurrentNode.OnEnter.Invoke();
+
             if (CurrentNode.NavigationNodeType == NavigationNodeComponent.NavigationNodeTypeEnum.PathPoint)
             {
                 SetTarget(CurrentNode.NextNodes.First().NextNode);
@@ -52,6 +71,7 @@ public class NodeNavigatorComponent : MonoBehaviour
             else
             {
                 OnTransitionEnd.Invoke(CurrentNode);
+                CurrentNode.SetLineVisibility(true);
             }
         }
     }
