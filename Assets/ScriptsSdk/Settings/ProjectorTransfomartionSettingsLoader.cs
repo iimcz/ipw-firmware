@@ -24,7 +24,10 @@ public static class ProjectorTransfomartionSettingsLoader
                 Displays = new List<DisplaySetting>
                 {
                     new DisplaySetting(),
-                    new DisplaySetting()
+                    new DisplaySetting
+                    {
+                        DisplayId = 1
+                    }
                 }
             }; // Loading failed, assume defaults
         }
