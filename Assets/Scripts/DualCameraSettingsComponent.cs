@@ -15,6 +15,9 @@ public class DualCameraSettingsComponent : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Q)) _camera.SwapDisplays();
+        if (Input.GetKeyDown(KeyCode.W)) _camera.SwapSettings();
+
         if (Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.LeftControl)) _camera.SaveSettings();
         if (Input.GetKeyDown(KeyCode.L) && Input.GetKey(KeyCode.LeftControl)) _camera.LoadSettings();
 

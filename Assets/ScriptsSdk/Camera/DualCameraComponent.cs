@@ -107,8 +107,16 @@ public class DualCameraComponent : MonoBehaviour
         File.WriteAllText(configFile, json);
     }
 
+    [Button, LabelText("Swap Settings"), BoxGroup("Rendering")]
+    public void SwapSettings()
+    {
+        var topIndex = TopCamera.SettingIndex;
+        TopCamera.SettingIndex = BottomCamera.SettingIndex;
+        BottomCamera.SettingIndex = topIndex;
+    }
+
     [Button, LabelText("Swap Displays"), BoxGroup("Rendering")]
-    public void Swap()
+    public void SwapDisplays()
     {
         var firstDisplay = TopCamera.TargetDisplay;
         var secondDisplay = BottomCamera.TargetDisplay;
