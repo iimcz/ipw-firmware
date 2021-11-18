@@ -298,6 +298,9 @@ MonoBehaviour:
   NextNode: {fileID: 0}
   OnTransitionStart:
     m_PersistentCalls:
+      m_Calls: []
+  OnTransitionEnd:
+    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 457490762}
         m_TargetAssemblyTypeName: NodeRotatorComponent, Assembly-CSharp
@@ -311,9 +314,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnTransitionEnd:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &457490762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,9 +326,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07c645c41ce670a4b9c5c3871a413786, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotationSpeed: 1
+  RotationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _index: 0
-  _right: 0
+  _shortWay: 0
 --- !u!114 &457490763
 MonoBehaviour:
   m_ObjectHideFlags: 0
