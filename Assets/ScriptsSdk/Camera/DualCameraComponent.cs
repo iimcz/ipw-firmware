@@ -5,7 +5,6 @@ using System.IO;
 using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using System.Collections.Generic;
 
 public class DualCameraComponent : MonoBehaviour
 {

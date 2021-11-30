@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 // https://answers.unity.com/questions/478617/not-interpolate-quaternion-on-shortest-path.html

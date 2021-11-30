@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(LineRenderer))]
 public class FlagComponent : MonoBehaviour
@@ -9,11 +8,27 @@ public class FlagComponent : MonoBehaviour
     public Transform Target;
     public string Text;
     public TextMeshPro TextMesh;
+
+    public UnityEvent OnActivate;
+    public UnityEvent OnSelect;
+
+    public FlagComponent NextFlag;
+    public FlagComponent PreviousFlag;
     
     private LineRenderer _renderer;
     private Vector3 _lastPos;
     private Quaternion _lastRot;
-    private float _lastHeight;
+
+    public void Activate()
+    {
+        OnActivate.Invoke();
+    }
+
+    public void Select()
+    {
+        OnSelect.Invoke();
+        // TODO: Somehow optionally highlight (probably text color)
+    }
     
     void Start()
     {

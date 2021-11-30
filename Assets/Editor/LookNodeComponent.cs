@@ -23,8 +23,6 @@ public class LookNodeEditor : Editor
     
     public override void OnInspectorGUI()
     {
-        var node = target as NavigationNodeComponent;
-
         serializedObject.Update();
         EditorGUILayout.PropertyField(parentNode);
 
@@ -34,12 +32,12 @@ public class LookNodeEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 
-    [DrawGizmo(GizmoType.InSelectionHierarchy | GizmoType.NotInSelectionHierarchy)]
-    public static void DrawHandles(LookNodeComponent t, GizmoType gizmoType)
+    [DrawGizmo(GizmoType.InSelectionHierarchy | GizmoType.NotInSelectionHierarchy | GizmoType.Pickable)]
+    public static void DrawGizmos(LookNodeComponent t, GizmoType gizmoType)
     {
-        Handles.color = Color.green;
-        Handles.SphereHandleCap(0, t.transform.position, Quaternion.identity, 0.5f, EventType.Repaint);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(t.transform.position, 0.5f);
 
-        if (t.ParentNode != null) Handles.DrawLine(t.transform.position, t.ParentNode.transform.position);
+        if (t.ParentNode != null) Gizmos.DrawLine(t.transform.position, t.ParentNode.transform.position);
     }
 }
