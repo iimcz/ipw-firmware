@@ -92,6 +92,12 @@ public class DualCameraComponent : MonoBehaviour
                 throw new NotImplementedException();
         }
 
+        if (TopCamera.Camera.orthographic)
+        {
+            TopCamera.gameObject.transform.position = new Vector3(TopCamera.Camera.orthographicSize - Setting.LensShift, 0, 0);
+            BottomCamera.gameObject.transform.position = new Vector3(-BottomCamera.Camera.orthographicSize + Setting.LensShift, 0, 0);
+        }
+
         TopCamera.ApplySettings();
         BottomCamera.ApplySettings();
     }

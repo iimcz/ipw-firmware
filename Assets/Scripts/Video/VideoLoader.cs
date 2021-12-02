@@ -1,16 +1,14 @@
 using UnityEngine;
+using UnityEngine.Video;
 
 public class VideoLoader : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private VideoPlayer _player;
 
-    // Update is called once per frame
-    void Update()
+    public void LoadVideo(string path)
     {
-        
+        _player.url = $"file://{path}";
+        _player.Play();
     }
 }
