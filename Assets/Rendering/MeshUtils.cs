@@ -4,6 +4,9 @@ public static class MeshUtils
 {
     public static Mesh CreateTransform(Vector3[] v)
     {
+        v[1].x = v[0].x;
+        v[3].x = v[2].x;
+        
         var mesh = new Mesh
         {
             vertices = v,

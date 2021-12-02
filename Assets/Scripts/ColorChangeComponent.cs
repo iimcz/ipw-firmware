@@ -28,12 +28,12 @@ public class ColorChangeComponent : MonoBehaviour
         { ColorChangeModeEnum.Brightness, 0f },
         { ColorChangeModeEnum.Contrast, 1f },
         { ColorChangeModeEnum.Saturation, 1f },
-        { ColorChangeModeEnum.CrossOver, 0.04f },
+        { ColorChangeModeEnum.CrossOver, 0.0f },
     };
 
     public float Speed = 0.01f;
     public float ShiftMultiplier = 0.25f;
-
+    
     void OnEnable()
     {
         ActiveMarker.gameObject.SetActive(true);
@@ -105,10 +105,12 @@ public class ColorChangeComponent : MonoBehaviour
 
         float speed = Time.deltaTime * Speed;
         float delta = 0f;
+        
         if (Input.GetKey(KeyCode.LeftShift)) speed *= 0.25f;
+        if (Input.GetKey(KeyCode.RightShift)) speed = 0.001f;
 
-        if (Input.GetKey(KeyCode.KeypadPlus)) delta = speed;
-        if (Input.GetKey(KeyCode.KeypadMinus)) delta = -speed;
+        if (InputExtensions.GetKeyModified(KeyCode.KeypadPlus)) delta = speed;
+        if (InputExtensions.GetKeyModified(KeyCode.KeypadMinus)) delta = -speed;
 
         if (delta == 0) return;
         AddActiveValue(delta);

@@ -60,11 +60,12 @@ public class CornerMoveComponent : MonoBehaviour
         Vector2 offset = Vector2.zero;
 
         if (Input.GetKey(KeyCode.LeftShift)) speed *= 0.25f;
+        if (Input.GetKey(KeyCode.RightShift)) speed = 0.001f;
 
-        if (Input.GetKey(KeyCode.UpArrow)) offset += new Vector2(0, speed);
-        if (Input.GetKey(KeyCode.DownArrow)) offset += new Vector2(0, -speed);
-        if (Input.GetKey(KeyCode.LeftArrow)) offset += new Vector2(-speed, 0);
-        if (Input.GetKey(KeyCode.RightArrow)) offset += new Vector2(speed, 0);
+        if (InputExtensions.GetKeyModified(KeyCode.UpArrow)) offset += new Vector2(0, speed);
+        if (InputExtensions.GetKeyModified(KeyCode.DownArrow)) offset += new Vector2(0, -speed);
+        if (InputExtensions.GetKeyModified(KeyCode.LeftArrow)) offset += new Vector2(-speed, 0);
+        if (InputExtensions.GetKeyModified(KeyCode.RightArrow)) offset += new Vector2(speed, 0);
 
         if (offset == Vector2.zero) return;
 

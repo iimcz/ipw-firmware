@@ -4,6 +4,9 @@ Shader "Unlit/NewUnlitShader"
     {
         _Power("Power", Range(1,3)) = 2
         _Power2("Power2", Range(1,3)) = 2
+        
+        _Cutoff1("Thing1", Range(0,1)) = 1
+        _Cutoff2("Thing", Range(0,1)) = 1
     }
     SubShader
     {
@@ -39,6 +42,9 @@ Shader "Unlit/NewUnlitShader"
             float _Power2;
             float _Overlap;
             float _Overlap2;
+            
+            float _Cutoff1;
+            float _Cutoff2;
 
             SamplerState trilinear_clamp_sampler;
 
@@ -84,23 +90,28 @@ Shader "Unlit/NewUnlitShader"
                 return 0.0;
             }
 
+            float easeInOutCubic(float x)
+            {
+                return x < 0.5 ? 4.0 * x * x * x : 1.0 - pow(-2.0 * x + 2.0, 3.0) / 2.0;
+            }
+
             float antiOverlap(fixed2 uv)
             {
                 float x = clamp(uv.x, 0, 1);
                 if (flipCurve < 0.5)
                 {
-                    if (x > 1.0 - crossOver)
+                    if (x > 1.0 - _Cutoff1)
                     {
-                        float progress = pow((1.0 - x) / crossOver, 3);
-                        return lerp(0.0, 1, progress);
+                        float prorgess = lerp(0.0, _Cutoff2, (1.0 - x) / _Cutoff1);
+                        return easeInOutCubic(prorgess);
                     }
                 }
                 else
                 {
-                    if (x < crossOver)
+                    if (x < _Cutoff1)
                     {
-                        float progress = pow(x / crossOver, 3);
-                        return lerp(0.0, 1, progress);
+                        float progress = lerp(0.0, _Cutoff2, x / _Cutoff1);
+                        return easeInOutCubic(progress);
                     }
                 }
 

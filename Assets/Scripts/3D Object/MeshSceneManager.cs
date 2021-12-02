@@ -1,5 +1,5 @@
 ﻿using emt_sdk.Events;
-using Siccity.GLTFUtility;
+//using Siccity.GLTFUtility;
 using Naki3D.Common.Protocol;
 using UnityEngine;
 
@@ -26,7 +26,7 @@ public class MeshSceneManager : MonoBehaviour
         // TODO: We need some protobuf class I can use here
         // TODO: Decide on GLTF vs GLB
         string gltfPath = "";
-        Importer.ImportGLBAsync(gltfPath, new ImportSettings(), (result, clips) => { });
+        //Importer.ImportGLBAsync(gltfPath, new ImportSettings(), (result, clips) => { });
     }
 
     private void EventReceived(object sender, SensorMessage e)
