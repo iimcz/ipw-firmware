@@ -20,4 +20,6 @@
 
     public abstract void Update();
     public abstract void Invalidate();
+    public abstract void Next();
+    public abstract void Previous();
 }

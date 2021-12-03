@@ -22,5 +22,16 @@ public class GalleryGridLayout : GalleryLayout
 
     public override void Invalidate()
     {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Next()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Previous()
+    {
+        throw new System.NotImplementedException();
     }
 }
