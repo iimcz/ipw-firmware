@@ -19,4 +19,8 @@ public class GalleryGridLayout : GalleryLayout
             ScrollDelay -= _scrollProgress;
         }
     }
+
+    public override void Invalidate()
+    {
+    }
 }

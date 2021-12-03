@@ -48,7 +48,7 @@ public class DualCameraComponent : MonoBehaviour
 
     private IEnumerator ApplyDelay()
     {
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForEndOfFrame();
         ApplySettings();
     }
 

@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using emt_sdk.Settings;
 using UnityEngine;
 
 public enum LayoutTypeEnum
@@ -22,16 +24,30 @@ public class GalleryPoolComponent : MonoBehaviour
     public DualCameraComponent Camera;
 
     public LayoutTypeEnum LayoutType;
+    public List<ImageInfo> ImagePool; // No need to keep creating new images, keep a pool
+    
     private GalleryLayout _layout;
-
-    private Queue<ImageInfo> _imagePool; // No need to keep creating new images, keep a pool
+    public List<Sprite> Sprites;
 
     void Start()
     {
-        _imagePool = new Queue<ImageInfo>();
-
-        AllocatePool();
+        ImagePool = new List<ImageInfo>();
+        
+        // TODO: Debug only
+        Sprites = GalleryLoader.LoadSpriteFolder("/home/ipw/Documents/gallery/");
+        
         CreateLayout();
+        AllocatePool();
+
+        StartCoroutine(DelayInvalidate());
+    }
+
+    private IEnumerator DelayInvalidate()
+    {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        
+        _layout.Invalidate();
     }
 
     void Update()
@@ -41,14 +57,12 @@ public class GalleryPoolComponent : MonoBehaviour
 
     private void AllocatePool()
     {
-        foreach (var image in _imagePool) Destroy(image.GameObject);
+        foreach (var image in ImagePool) Destroy(image.GameObject);
 
         var poolSize = _layout.PoolSize;
         for (int i = 0; i < poolSize; i++)
         {
             var image = Instantiate(ImagePrefab, transform);
-            image.SetActive(false);
-
             var imageInfo = new ImageInfo
             {
                 GameObject = image,
@@ -57,7 +71,8 @@ public class GalleryPoolComponent : MonoBehaviour
                 Position = Vector2Int.zero
             };
 
-            _imagePool.Enqueue(imageInfo);
+            imageInfo.Renderer.sprite = Sprites[i % Sprites.Count];
+            ImagePool.Add(imageInfo);
         }
     }
 
@@ -69,5 +84,11 @@ public class GalleryPoolComponent : MonoBehaviour
             LayoutTypeEnum.List => new GalleryListLayout(this),
             _ => throw new NotSupportedException(),
         };
+
+        if (_layout is GalleryListLayout ll)
+            ll.Orientation = 
+                Camera.Orientation == IPWSetting.IPWOrientation.Horizontal
+                ? GalleryListLayout.GalleryListOrientation.Horizontal
+                : GalleryListLayout.GalleryListOrientation.Vertical;
     }
 }

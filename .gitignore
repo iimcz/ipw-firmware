@@ -77,3 +77,10 @@ crashlytics-build.properties
 # Showcase 3D scene
 /[Aa]ssets/[Ss]cenes/ShowcaseAssets/*
 /[Aa]ssets/[Ss]cenes/ShowcaseAssets.meta
+
+# Video testing files
+*.webm
+
+# Gallery testing files
+/[Aa]ssets/[Ss]cenes/GalleryScene/Samples/*
+/[Aa]ssets/[Ss]cenes/GalleryScene/Samples.meta

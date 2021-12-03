@@ -19,10 +19,15 @@ public class SlideComponent : MonoBehaviour
         _progress = 0;
     }
 
-    void Start()
+    public void ResetPosition()
     {
         _start = transform.localPosition;
         _progress = Length;
+    }
+
+    void Start()
+    {
+        ResetPosition();
     }
 
     void Update()

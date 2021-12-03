@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public static class GalleryLoader
@@ -16,6 +18,13 @@ public static class GalleryLoader
     {
         var texture = LoadTexture(path);
         var rect = new Rect(0, 0, texture.width, texture.height);
-        return Sprite.Create(texture, rect, Vector2.zero);
+        var longerSide = Mathf.Max(texture.width, texture.height);
+        return Sprite.Create(texture, rect, new Vector2(0, 0.5f), longerSide);
+    }
+
+    public static List<Sprite> LoadSpriteFolder(string path)
+    {
+        if (!Directory.Exists(path)) throw new FileNotFoundException();
+        return Directory.EnumerateFiles(path).Select(LoadSprite).ToList();
     }
 }
