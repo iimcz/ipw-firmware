@@ -51,11 +51,15 @@ public class TransformCameraComponent : MonoBehaviour
 
     public Rect GetCameraBoundries()
     {
-        var topLeft = Camera.ViewportToWorldPoint(new Vector3(0, 0, Camera.nearClipPlane));
-        var bottomRight = Camera.ViewportToWorldPoint(new Vector3(1, 1, Camera.nearClipPlane));
-        var size = bottomRight - topLeft;
+        return GetCameraBoundries(Camera.nearClipPlane);
+    }
+    
+    public Rect GetCameraBoundries(float distance)
+    {
+        var bottomLeft = Camera.ViewportToWorldPoint(new Vector3(0, 0, distance));
+        var topRight = Camera.ViewportToWorldPoint(new Vector3(1, 1, distance));
 
-        return new Rect(topLeft.x, topLeft.y, size.x, size.y);
+        return new Rect(bottomLeft.x, bottomLeft.y, topRight.x - bottomLeft.x, topRight.y - bottomLeft.y);
     }
 
     public void SetTransform(Vector2[] vertices)

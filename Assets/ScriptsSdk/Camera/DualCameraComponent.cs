@@ -62,13 +62,33 @@ public class DualCameraComponent : MonoBehaviour
         Orientation = Setting.Orientation;
     }
 
-    public Rect GetBoundaries()
+    public Rect GetBoundaries(float? distance = null)
     {
-        var topBoundary = TopCamera.GetCameraBoundries();
-        var bottomBoundary = BottomCamera.GetCameraBoundries();
-        var size = new Vector2(bottomBoundary.xMax - topBoundary.xMax, topBoundary.yMax); // Up / down shift only
+        if (Setting.Orientation == IPWSetting.IPWOrientation.Single)
+            return distance.HasValue ? TopCamera.GetCameraBoundries(distance.Value) : TopCamera.GetCameraBoundries();
+        
+        // Right in horizontal
+        var topBoundary = distance.HasValue ? 
+            TopCamera.GetCameraBoundries(distance.Value) : 
+            TopCamera.GetCameraBoundries();
+        
+        // Left in horizontal
+        var bottomBoundary = distance.HasValue ? 
+            BottomCamera.GetCameraBoundries(distance.Value) : 
+            BottomCamera.GetCameraBoundries();
 
-        return new Rect(topBoundary.x, topBoundary.y, size.x, size.y);
+        Vector2 size;
+        switch (Setting.Orientation)
+        {
+            case IPWSetting.IPWOrientation.Vertical:
+                size = new Vector2(bottomBoundary.width, bottomBoundary.yMax - topBoundary.y);
+                return new Rect(topBoundary.x, topBoundary.y, size.x, size.y);
+            case IPWSetting.IPWOrientation.Horizontal:
+                size = new Vector2(topBoundary.xMax - bottomBoundary.x, bottomBoundary.height);
+                return new Rect(bottomBoundary.x, bottomBoundary.y, size.x, size.y);
+            default:
+                throw new NotSupportedException();
+        }
     }
 
     [Button, BoxGroup("Settings")]
@@ -115,9 +135,7 @@ public class DualCameraComponent : MonoBehaviour
     [Button, LabelText("Swap Settings"), BoxGroup("Rendering")]
     public void SwapSettings()
     {
-        var topIndex = TopCamera.SettingIndex;
-        TopCamera.SettingIndex = BottomCamera.SettingIndex;
-        BottomCamera.SettingIndex = topIndex;
+        (TopCamera.SettingIndex, BottomCamera.SettingIndex) = (BottomCamera.SettingIndex, TopCamera.SettingIndex);
     }
 
     [Button, LabelText("Swap Displays"), BoxGroup("Rendering")]
