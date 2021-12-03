@@ -130,6 +130,7 @@ public class DualCameraComponent : MonoBehaviour
         var json = JsonConvert.SerializeObject(Setting, Formatting.Indented);
 
         File.WriteAllText(configFile, json);
+        Debug.Log("Configuration saved");
     }
 
     [Button, LabelText("Swap Settings"), BoxGroup("Rendering")]
