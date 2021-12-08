@@ -1,14 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Assets.ScriptsSdk.Extensions;
+using emt_sdk.Scene;
 using emt_sdk.Settings;
 using UnityEngine;
-
-public enum LayoutTypeEnum
-{
-    Grid,
-    List
-}
 
 public class ImageInfo
 {
@@ -23,7 +21,7 @@ public class GalleryPoolComponent : MonoBehaviour
     public GameObject ImagePrefab;
     public DualCameraComponent Camera;
 
-    public LayoutTypeEnum LayoutType;
+    public Gallery.GalleryLayoutEnum LayoutType;
     public List<ImageInfo> ImagePool; // No need to keep creating new images, keep a pool
     
     private GalleryLayout _layout;
@@ -39,15 +37,51 @@ public class GalleryPoolComponent : MonoBehaviour
         CreateLayout();
         AllocatePool();
 
-        StartCoroutine(DelayInvalidate());
+        StartCoroutine(DelayApply());
     }
 
-    private IEnumerator DelayInvalidate()
+    public void Apply(Gallery scene, string basePath)
     {
+        if (ColorUtility.TryParseHtmlString(scene.BackgroundColor, out var backgroundColor) == false)
+            throw new ArgumentException("Background color is not a valid HTML hex color string", nameof(scene.BackgroundColor));
+        
+        Camera.TopCamera.Camera.backgroundColor = backgroundColor;
+        Camera.BottomCamera.Camera.backgroundColor = backgroundColor;
+
+        LayoutType = scene.LayoutType;
+        CreateLayout();
+        
+        switch (scene.Layout)
+        {
+            case Gallery.ListLayout list:
+                var listLayout = (GalleryListLayout) _layout;
+                listLayout.Padding = scene.Padding.ToUnityVector();
+                listLayout.Spacing = list.Spacing;
+                listLayout.VisibleListLength = list.VisibleImages;
+                listLayout.ScrollDelay = scene.ScrollDelay;
+
+                Sprites = list.Images.Select(i =>
+                {
+                    var fileName = Path.Combine(basePath, i.FileName);
+                    return GalleryLoader.LoadSprite(fileName);
+                }).ToList();
+                break;
+            case Gallery.GridLayout grid:
+                break;
+        }
+        
+        AllocatePool();
+        _layout.Invalidate();
+    }
+
+    private IEnumerator DelayApply()
+    {
+        // Wait two frames for the camera transformation to apply
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
         
-        _layout.Invalidate();
+        // TODO: Store a copy of the received data in some static manager and use it here
+        //Apply();
     }
 
     void Update()
@@ -80,8 +114,8 @@ public class GalleryPoolComponent : MonoBehaviour
     {
         _layout = LayoutType switch
         {
-            LayoutTypeEnum.Grid => new GalleryGridLayout(this),
-            LayoutTypeEnum.List => new GalleryListLayout(this),
+            Gallery.GalleryLayoutEnum.Grid => new GalleryGridLayout(this),
+            Gallery.GalleryLayoutEnum.List => new GalleryListLayout(this),
             _ => throw new NotSupportedException(),
         };
 

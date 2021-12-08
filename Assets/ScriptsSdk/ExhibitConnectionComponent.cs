@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using NLog.Targets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -86,6 +87,8 @@ public class ExhibitConnectionComponent : MonoBehaviour
         var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
         package.DownloadFile(".");
         EventManager.Instance.Start(package.Sync);
+
+        var fileName = package.FileName();
 
         switch (package.PackagePackage.Type)
         {

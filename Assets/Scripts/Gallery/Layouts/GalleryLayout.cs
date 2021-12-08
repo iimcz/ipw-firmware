@@ -1,12 +1,17 @@
-﻿public abstract class GalleryLayout
+﻿using UnityEngine;
+
+public abstract class GalleryLayout
 {
     protected GalleryPoolComponent _pool;
     protected float _scrollProgress;
 
-    public bool AutoScroll { get; set; }
+    public bool AutoScroll => ScrollDelay == 0f;
     public float ScrollDelay { get; set; }
 
-    public float Padding { get; set; } // Just a random unity measurement, needs to be redone (pixels?)
+    /// <summary>
+    /// Gets or sets the percentage of the screen used as padding on the border of the gallery
+    /// </summary>
+    public Vector2 Padding { get; set; }
 
     /// <summary>
     /// Recommended pool size to ensure working animations

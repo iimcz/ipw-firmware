@@ -5,16 +5,13 @@ using UnityEngine.Video;
 
 public class VideoDisplayComponent : MonoBehaviour
 {
-    [SerializeField]
-    private VideoPlayer _videoPlayer;
-
-    [SerializeField]
-    private DualCameraComponent _camera;
+    public VideoPlayer VideoPlayer;
+    public DualCameraComponent Camera;
     
     public void Resize(VideoScene.VideoAspectRatioEnum aspectRatio)
     {
-        var viewport = _camera.GetBoundaries(5);
-        var videoAspect = _videoPlayer.width / (float)_videoPlayer.height;
+        var viewport = Camera.GetBoundaries(5);
+        var videoAspect = VideoPlayer.width / (float)VideoPlayer.height;
         
         // 10m is the default unity plane size, why it's not 1 is beyond me...
         const float planeSize = 10f;
@@ -22,7 +19,7 @@ public class VideoDisplayComponent : MonoBehaviour
         // TODO: Vertical mode
         switch (aspectRatio)
         {
-            case VideoScene.VideoAspectRatioEnum.Fill:
+            case VideoScene.VideoAspectRatioEnum.Stretch:
                 transform.localScale = new Vector3(viewport.width / planeSize, 1, viewport.height / planeSize);
                 break;
             case VideoScene.VideoAspectRatioEnum.FitInside:

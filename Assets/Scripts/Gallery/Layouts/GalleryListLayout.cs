@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.CodeAnalysis.Scripting.Hosting;
 using UnityEngine;
 
 public class GalleryListLayout : GalleryLayout
@@ -14,11 +13,6 @@ public class GalleryListLayout : GalleryLayout
     /// Gets or sets the amount of visible images in the list
     /// </summary>
     public int VisibleListLength { get; set; } = 6;
-    
-    /// <summary>
-    /// Gets or sets the percentage of the screen used as padding on the border of the gallery
-    /// </summary>
-    public Vector2 Padding { get; set; }
     
     /// <summary>
     /// Gets or sets the percentage of the screen used as spacing between each image
@@ -38,7 +32,7 @@ public class GalleryListLayout : GalleryLayout
     /// </summary>
     private int _firstSprite = 0;
 
-    private List<float> _startPositions = new List<float>();
+    private readonly List<float> _startPositions = new List<float>();
     private float SizeWithoutPadding => 1f - (2f * Padding.x);
     private float SizeWithoutSpacing => SizeWithoutPadding - ((VisibleListLength - 1) * Spacing);
     private float ImageSize => SizeWithoutSpacing / VisibleListLength;
@@ -60,13 +54,9 @@ public class GalleryListLayout : GalleryLayout
 
     public override void Invalidate()
     {
-        Padding = new Vector2(0.05f, 0.05f);
-        Spacing = 0.025f;
-        ScrollDelay = 2f;
-        AutoScroll = true;
-        
         // Calculate image positions
         var pos = Padding.x;
+        _startPositions.Clear();
         for (int i = 0; i < VisibleListLength; i++)
         {
             _startPositions.Add(pos);

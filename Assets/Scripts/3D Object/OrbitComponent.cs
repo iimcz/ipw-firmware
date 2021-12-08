@@ -9,8 +9,13 @@ public class OrbitComponent : MonoBehaviour
     /// <summary>
     /// Rotation origin
     /// </summary>
-    public Transform Origin;
+    public Vector3 Origin;
 
+    /// <summary>
+    /// Look target
+    /// </summary>
+    public GameObject LookAt;
+    
     /// <summary>
     /// Length of a single revolution in seconds
     /// </summary>
@@ -19,17 +24,22 @@ public class OrbitComponent : MonoBehaviour
     private GameObject _pivot;
     private float _rotationProgress;
 
-    private void Start()
+    public void Invalidate()
     {
+        if (_pivot != null) Destroy(_pivot);
+        
         // Create a new object on the origin point and parent ourself to it
         _pivot = new GameObject($"{gameObject.name} - Pivot");
-        _pivot.transform.position = Origin.position;
-
+        _pivot.transform.position = Origin;
+        
         transform.parent = _pivot.transform;
     }
 
     private void Update()
     {
+        // Don|t orbit until we have been initialized
+        if (_pivot == null) return;
+        
         _rotationProgress += Time.deltaTime;
         if (_rotationProgress >= RotationPeriod) _rotationProgress -= RotationPeriod;
 
@@ -39,5 +49,7 @@ public class OrbitComponent : MonoBehaviour
         // TODO: Maybe use quaternions instead?
         var currentRotation = _pivot.transform.eulerAngles;
         _pivot.transform.eulerAngles = new Vector3(currentRotation.x, angle, currentRotation.y);
+        
+        transform.LookAt(LookAt.transform);
     }
 }
