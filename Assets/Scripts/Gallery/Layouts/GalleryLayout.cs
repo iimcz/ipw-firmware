@@ -1,17 +1,18 @@
-﻿using UnityEngine;
+﻿using Naki3D.Common.Protocol;
+using UnityEngine;
 
 public abstract class GalleryLayout
 {
     protected GalleryPoolComponent _pool;
     protected float _scrollProgress;
 
-    public bool AutoScroll => ScrollDelay == 0f;
+    public bool AutoScroll => ScrollDelay != 0f;
     public float ScrollDelay { get; set; }
 
     /// <summary>
     /// Gets or sets the percentage of the screen used as padding on the border of the gallery
     /// </summary>
-    public Vector2 Padding { get; set; }
+    public UnityEngine.Vector2 Padding { get; set; }
 
     /// <summary>
     /// Recommended pool size to ensure working animations
@@ -27,4 +28,6 @@ public abstract class GalleryLayout
     public abstract void Invalidate();
     public abstract void Next();
     public abstract void Previous();
+
+    public abstract void Gesture(GestureData gesture);
 }

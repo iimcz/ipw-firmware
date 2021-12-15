@@ -128,4 +128,20 @@ public class GalleryListLayout : GalleryLayout
         lastImage.Slider.SetTarget(new Vector3(boundaries.x + _startPositions[0] * boundaries.width, 0, 0));
         lastImage.Renderer.sprite = _pool.Sprites[_firstSprite];
     }
+
+    public override void Gesture(Naki3D.Common.Protocol.GestureData gesture)
+    {
+        // Ignore input in automatic scrolling mode
+        if (AutoScroll) return;
+
+        switch (gesture.Type)
+        {
+            case Naki3D.Common.Protocol.GestureType.GestureSwipeLeft:
+                Previous();
+                break;
+            case Naki3D.Common.Protocol.GestureType.GestureSwipeRight:
+                Next();
+                break;
+        };
+    }
 }

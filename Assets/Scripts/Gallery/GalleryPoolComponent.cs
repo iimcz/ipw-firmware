@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Assets.ScriptsSdk.Extensions;
 using emt_sdk.Scene;
 using emt_sdk.Settings;
+using Naki3D.Common.Protocol;
 using UnityEngine;
 
 public class ImageInfo
@@ -30,13 +29,6 @@ public class GalleryPoolComponent : MonoBehaviour
     void Start()
     {
         ImagePool = new List<ImageInfo>();
-        
-        // TODO: Debug only
-        Sprites = GalleryLoader.LoadSpriteFolder("/home/ipw/Documents/gallery/");
-        
-        CreateLayout();
-        AllocatePool();
-
         StartCoroutine(DelayApply());
     }
 
@@ -60,11 +52,15 @@ public class GalleryPoolComponent : MonoBehaviour
                 listLayout.VisibleListLength = list.VisibleImages;
                 listLayout.ScrollDelay = scene.ScrollDelay;
 
+                // TODO: Debug only
+                Sprites = GalleryLoader.LoadSpriteFolder("/home/ipw/Documents/gallery/");
+                /*
                 Sprites = list.Images.Select(i =>
                 {
                     var fileName = Path.Combine(basePath, i.FileName);
                     return GalleryLoader.LoadSprite(fileName);
                 }).ToList();
+                */
                 break;
             case Gallery.GridLayout grid:
                 break;
@@ -81,12 +77,29 @@ public class GalleryPoolComponent : MonoBehaviour
         yield return new WaitForEndOfFrame();
         
         // TODO: Store a copy of the received data in some static manager and use it here
-        //Apply();
+       Apply(new Gallery
+       {
+           BackgroundColor = "#000000",
+           LayoutType = Gallery.GalleryLayoutEnum.List,
+           Layout = new Gallery.ListLayout
+           {
+               Spacing = 0.1f,
+               VisibleImages = 2
+           },
+           Padding = new Naki3D.Common.Protocol.Vector2
+           {
+               X = 0.1f,
+               Y = 0.1f
+           },
+           ScrollDelay = 0f,
+           SlideAnimationLength = 0.3f
+       }, string.Empty);
     }
 
     void Update()
     {
-        _layout.Update();
+        // Wait until layout is properly created
+        if (_layout != null) _layout.Update();
     }
 
     private void AllocatePool()
@@ -124,5 +137,17 @@ public class GalleryPoolComponent : MonoBehaviour
                 Camera.Orientation == IPWSetting.IPWOrientation.Horizontal
                 ? GalleryListLayout.GalleryListOrientation.Horizontal
                 : GalleryListLayout.GalleryListOrientation.Vertical;
+    }
+
+    public void OnEvent(SensorMessage e)
+    {
+        if (e.DataCase == SensorMessage.DataOneofCase.Gesture) _layout.Gesture(e.Gesture);
+        else if (e.DataCase == SensorMessage.DataOneofCase.KeyboardUpdate)
+        {
+            if (e.KeyboardUpdate.Type == KeyActionType.KeyUp) return;
+
+            if (e.KeyboardUpdate.Keycode == (int)KeyCode.LeftArrow) _layout.Previous();
+            else if (e.KeyboardUpdate.Keycode == (int)KeyCode.RightArrow) _layout.Next();
+        }
     }
 }

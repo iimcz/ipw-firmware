@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Naki3D.Common.Protocol;
+using UnityEngine;
 
 public class GalleryGridLayout : GalleryLayout
 {
@@ -31,6 +32,11 @@ public class GalleryGridLayout : GalleryLayout
     }
 
     public override void Previous()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Gesture(GestureData gesture)
     {
         throw new System.NotImplementedException();
     }
