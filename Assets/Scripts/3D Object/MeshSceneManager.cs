@@ -21,6 +21,9 @@ public class MeshSceneManager : MonoBehaviour
     private void Start()
     {
         EventManager.Instance.OnEventReceived += EventReceived;
+        
+        // TODO: Remove only for debug
+        _cameraOrbit.Invalidate();
     }
 
     private void OnDestroy()
@@ -65,6 +68,8 @@ public class MeshSceneManager : MonoBehaviour
 
     private void EventReceived(object sender, SensorMessage e)
     {
+        if (_flagNavigator == null) return;
+        
         if (e.DataCase == SensorMessage.DataOneofCase.Gesture)
         {
             switch (e.Gesture.Type)

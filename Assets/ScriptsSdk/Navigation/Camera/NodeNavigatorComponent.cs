@@ -16,6 +16,11 @@ public class NodeNavigatorComponent : MonoBehaviour
     void Start()
     {
         // Snap to start point so the scene creator doesn't have to align
+        SetPosition(CurrentNode);
+    }
+
+    public void SetPosition(NavigationNodeComponent node)
+    {
         var collider = GetComponent<Collider>(); // Offset by player height
         if (collider == null)
             transform.position = CurrentNode.transform.position;

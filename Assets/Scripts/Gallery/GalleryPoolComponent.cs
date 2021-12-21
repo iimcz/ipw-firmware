@@ -13,6 +13,7 @@ public class ImageInfo
     public SpriteRenderer Renderer;
     public GameObject GameObject;
     public SlideComponent Slider;
+    public BoxCollider2D Collider;
 }
 
 public class GalleryPoolComponent : MonoBehaviour
@@ -23,8 +24,10 @@ public class GalleryPoolComponent : MonoBehaviour
     public Gallery.GalleryLayoutEnum LayoutType;
     public List<ImageInfo> ImagePool; // No need to keep creating new images, keep a pool
     
-    private GalleryLayout _layout;
+    public GalleryLayout Layout { get; private set; }
     public List<Sprite> Sprites;
+
+    public bool EnableInteraction = true;
 
     void Start()
     {
@@ -46,7 +49,7 @@ public class GalleryPoolComponent : MonoBehaviour
         switch (scene.Layout)
         {
             case Gallery.ListLayout list:
-                var listLayout = (GalleryListLayout) _layout;
+                var listLayout = (GalleryListLayout) Layout;
                 listLayout.Padding = scene.Padding.ToUnityVector();
                 listLayout.Spacing = list.Spacing;
                 listLayout.VisibleListLength = list.VisibleImages;
@@ -67,7 +70,7 @@ public class GalleryPoolComponent : MonoBehaviour
         }
         
         AllocatePool();
-        _layout.Invalidate();
+        Layout.Invalidate();
     }
 
     private IEnumerator DelayApply()
@@ -99,14 +102,14 @@ public class GalleryPoolComponent : MonoBehaviour
     void Update()
     {
         // Wait until layout is properly created
-        if (_layout != null) _layout.Update();
+        if (Layout != null) Layout.Update();
     }
 
     private void AllocatePool()
     {
         foreach (var image in ImagePool) Destroy(image.GameObject);
 
-        var poolSize = _layout.PoolSize;
+        var poolSize = Layout.PoolSize;
         for (int i = 0; i < poolSize; i++)
         {
             var image = Instantiate(ImagePrefab, transform);
@@ -115,24 +118,26 @@ public class GalleryPoolComponent : MonoBehaviour
                 GameObject = image,
                 Renderer = image.GetComponent<SpriteRenderer>(),
                 Slider = image.GetComponent<SlideComponent>(),
+                Collider = image.GetComponent<BoxCollider2D>(),
                 Position = Vector2Int.zero
             };
 
             imageInfo.Renderer.sprite = Sprites[i % Sprites.Count];
+            
             ImagePool.Add(imageInfo);
         }
     }
 
     public void CreateLayout()
     {
-        _layout = LayoutType switch
+        Layout = LayoutType switch
         {
             Gallery.GalleryLayoutEnum.Grid => new GalleryGridLayout(this),
             Gallery.GalleryLayoutEnum.List => new GalleryListLayout(this),
             _ => throw new NotSupportedException(),
         };
 
-        if (_layout is GalleryListLayout ll)
+        if (Layout is GalleryListLayout ll)
             ll.Orientation = 
                 Camera.Orientation == IPWSetting.IPWOrientation.Horizontal
                 ? GalleryListLayout.GalleryListOrientation.Horizontal
@@ -141,13 +146,16 @@ public class GalleryPoolComponent : MonoBehaviour
 
     public void OnEvent(SensorMessage e)
     {
-        if (e.DataCase == SensorMessage.DataOneofCase.Gesture) _layout.Gesture(e.Gesture);
+        if (!EnableInteraction) return;
+        
+        if (e.DataCase == SensorMessage.DataOneofCase.Gesture) Layout.Gesture(e.Gesture);
+        //else if (e.DataCase == SensorMessage.DataOneofCase.UltrasonicDistance && e.UltrasonicDistance.Distance <= 45f) Layout.Previous();
         else if (e.DataCase == SensorMessage.DataOneofCase.KeyboardUpdate)
         {
             if (e.KeyboardUpdate.Type == KeyActionType.KeyUp) return;
 
-            if (e.KeyboardUpdate.Keycode == (int)KeyCode.LeftArrow) _layout.Previous();
-            else if (e.KeyboardUpdate.Keycode == (int)KeyCode.RightArrow) _layout.Next();
+            if (e.KeyboardUpdate.Keycode == (int)KeyCode.LeftArrow) Layout.Previous();
+            else if (e.KeyboardUpdate.Keycode == (int)KeyCode.RightArrow) Layout.Next();
         }
     }
 }

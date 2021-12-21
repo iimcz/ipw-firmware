@@ -21,6 +21,11 @@ public class OrbitComponent : MonoBehaviour
     /// </summary>
     public float RotationPeriod = 5f;
 
+    /// <summary>
+    /// Whether the object orbits automatically
+    /// </summary>
+    public bool AutoOrbit = true;
+
     private GameObject _pivot;
     private float _rotationProgress;
 
@@ -35,12 +40,17 @@ public class OrbitComponent : MonoBehaviour
         transform.parent = _pivot.transform;
     }
 
+    public void Advance(float time)
+    {
+        _rotationProgress += time;
+    }
+
     private void Update()
     {
         // Don|t orbit until we have been initialized
         if (_pivot == null) return;
         
-        _rotationProgress += Time.deltaTime;
+        if (AutoOrbit) _rotationProgress += Time.deltaTime;
         if (_rotationProgress >= RotationPeriod) _rotationProgress -= RotationPeriod;
 
         var progress = _rotationProgress / RotationPeriod;
@@ -48,7 +58,7 @@ public class OrbitComponent : MonoBehaviour
 
         // TODO: Maybe use quaternions instead?
         var currentRotation = _pivot.transform.eulerAngles;
-        _pivot.transform.eulerAngles = new Vector3(currentRotation.x, angle, currentRotation.y);
+        _pivot.transform.eulerAngles = new Vector3(currentRotation.x, angle, currentRotation.z);
         
         transform.LookAt(LookAt.transform);
     }

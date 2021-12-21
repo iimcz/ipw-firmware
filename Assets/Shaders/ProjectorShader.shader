@@ -102,8 +102,9 @@ Shader "Unlit/NewUnlitShader"
                 {
                     if (x > 1.0 - _Cutoff1)
                     {
-                        float prorgess = lerp(0.0, _Cutoff2, (1.0 - x) / _Cutoff1);
-                        return easeInOutCubic(prorgess);
+                        float progress = lerp(0.0, _Cutoff2, (1.0 - x) / _Cutoff1);
+                        return easeInOutCubic(progress);
+                        //return x;
                     }
                 }
                 else
@@ -112,6 +113,7 @@ Shader "Unlit/NewUnlitShader"
                     {
                         float progress = lerp(0.0, _Cutoff2, x / _Cutoff1);
                         return easeInOutCubic(progress);
+                        //return 1.0 - x;
                     }
                 }
 

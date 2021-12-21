@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using emt_sdk.Scene;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -45,6 +46,8 @@ public class VideoLoader : MonoBehaviour
         // Wait two frames for the camera transformation to apply
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
+        
+        _display.Resize(VideoScene.VideoAspectRatioEnum.FitInside);
         
         // TODO: Store a copy of the received data in some static manager and use it here
         //Apply();

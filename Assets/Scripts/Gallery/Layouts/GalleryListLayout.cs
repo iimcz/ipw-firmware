@@ -137,10 +137,10 @@ public class GalleryListLayout : GalleryLayout
         switch (gesture.Type)
         {
             case Naki3D.Common.Protocol.GestureType.GestureSwipeLeft:
-                Previous();
+                Next();
                 break;
             case Naki3D.Common.Protocol.GestureType.GestureSwipeRight:
-                Next();
+                Previous();
                 break;
         };
     }

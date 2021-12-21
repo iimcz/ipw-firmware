@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using emt_sdk.Communication;
 using emt_sdk.Events;
 using emt_sdk.Extensions;
@@ -27,6 +29,20 @@ public class ExhibitConnectionComponent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(ApplyDelay());
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.Instance.Stop();
+    }
+
+    private IEnumerator ApplyDelay()
+    {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        
         Client = new TcpClient();
         _loader = new PackageLoader(Path.Combine(Application.streamingAssetsPath, "package-schema.json"));
 
@@ -45,7 +61,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
     private void Instance_OnEventReceived(object sender, SensorMessage e)
     {
-        System.Console.WriteLine(e);
+        Debug.Log(e);
     }
 
     public void Connect()
@@ -85,10 +101,10 @@ public class ExhibitConnectionComponent : MonoBehaviour
     void LoadPackage(LoadPackage pckg)
     {
         var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
-        package.DownloadFile(".");
+        package.DownloadFile();
         EventManager.Instance.Start(package.Sync);
 
-        var fileName = package.FileName();
+        var fileName = package.ArchiveFileName;
 
         switch (package.PackagePackage.Type)
         {
