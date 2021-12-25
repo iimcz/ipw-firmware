@@ -27,4 +27,4 @@ Soubory jako např. TextMeshPro jsou v repoziráři zahrnuty, jelikož by bez ni
  - [Návod na sestavení boxu](https://raw.githubusercontent.com/iimcz/ipw-firmware/master/Doc/IPW_navod_na_sestaveni.pdf)
  - [Dokumentace zdrojových kódů](https://raw.githubusercontent.com/iimcz/ipw-firmware/master/Doc/EMT_SDK_programatorska_dokumentace.pdf)
  - [Protokol o testování IPS](https://raw.githubusercontent.com/iimcz/ipw-firmware/master/Doc/PTF-DCGI-FVZ-03-2021.pdf)
- - [Modely pro 3D tisk]()
+ - [Modely pro 3D tisk](https://github.com/iimcz/ipw-firmware/tree/master/Doc/Models)
