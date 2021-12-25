@@ -1,7 +1,7 @@
 # Interaktivní projekční stěna (IPS) - Firmware
 
 IPS je projekční zařízení s prvky interakce využívající systému zadní projekce pro vytvo-
-ření obrazu o rozměrech 4x2m (viz obr. 1). Je určené především pro prezentaci
+ření obrazu o rozměrech 4x2m. Je určené především pro prezentaci
 3D obsahu (3D modely, 3D scény) v paměťových institucích jako jsou muzea nebo tam,
 kde je potřeba prezentovat 3D obsah interaktivní formou na velkoplošném obrazu. IPS
 využívá sadu senzorických prvků pro detekci přítomnosti diváků a jejich pohybu v okolí
