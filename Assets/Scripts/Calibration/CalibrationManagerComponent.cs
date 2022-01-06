@@ -66,7 +66,11 @@ public class CalibrationManagerComponent : SerializedMonoBehaviour
         yield return new WaitForSecondsRealtime(5f); // Give the user few seconds to react
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) isCalibrated = false;
 
-        if (isCalibrated) UpdateUi(CalibrationStateEnum.NetworkCheck);
+        if (isCalibrated)
+        {
+            Task.Run(VerifyNetwork);
+            UpdateUi(CalibrationStateEnum.NetworkCheck);
+        }
         else UpdateUi(CalibrationStateEnum.PhysicalAlignment);
     }
 
@@ -105,7 +109,7 @@ public class CalibrationManagerComponent : SerializedMonoBehaviour
             case CalibrationStateEnum.NetworkConfiguration:
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    //_camera.SaveSettings();
+                    _camera.SaveSettings();
 
                     _networkState = NetworkStateEnum.Waiting;
                     Task.Run(VerifyNetwork);
