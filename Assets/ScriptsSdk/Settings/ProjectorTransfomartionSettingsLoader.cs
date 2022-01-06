@@ -7,13 +7,24 @@ using UnityEngine;
 
 public static class ProjectorTransfomartionSettingsLoader
 {
+    public static string SettingsPath
+    {
+        get
+        {
+            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var configFile = Path.Combine(userFolder, "ipw.json");
+            
+            return configFile;
+        }
+    }
+
+    public static bool SettingsExists => File.Exists(SettingsPath);
+    
     public static IPWSetting LoadSettings()
     {
-        var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        var configFile = Path.Combine(userFolder, "ipw.json");
         try
         {
-            var json = File.ReadAllText(configFile);
+            var json = File.ReadAllText(SettingsPath);
             return JsonConvert.DeserializeObject<IPWSetting>(json);
         }
         catch (Exception e)

@@ -40,8 +40,6 @@ Shader "Unlit/NewUnlitShader"
 
             float _Power;
             float _Power2;
-            float _Overlap;
-            float _Overlap2;
             
             float _Cutoff1;
             float _Cutoff2;
@@ -104,7 +102,6 @@ Shader "Unlit/NewUnlitShader"
                     {
                         float progress = lerp(0.0, _Cutoff2, (1.0 - x) / _Cutoff1);
                         return easeInOutCubic(progress);
-                        //return x;
                     }
                 }
                 else
@@ -113,7 +110,6 @@ Shader "Unlit/NewUnlitShader"
                     {
                         float progress = lerp(0.0, _Cutoff2, x / _Cutoff1);
                         return easeInOutCubic(progress);
-                        //return 1.0 - x;
                     }
                 }
 

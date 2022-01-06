@@ -64,7 +64,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
         Debug.Log(e);
     }
 
-    public void Connect()
+    public void Connect(string hostname, int port)
     {
         if (DebugLoadTest)
         {
@@ -72,7 +72,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
             return;
         }
 
-        Client.Connect(TargetServer, Port);
+        Client.Connect(hostname, port);
         Connection = new ExhibitConnection(Client);
         Connection.LoadPackageHandler += LoadPackage;
 

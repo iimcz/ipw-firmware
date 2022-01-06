@@ -11,14 +11,15 @@ public class CornerMoveComponent : MonoBehaviour
     [Required, SceneObjectsOnly]
     public RectTransform Crosshair;
 
-    public int ActiveVertex = 0;
+    public int ActiveVertex;
 
     public float Speed = 0.5f;
     public float ShiftMultiplier = 0.25f;
+    public float RShiftStep = 0.001f;
 
-    private Vector2[] _vertices = new Vector2[4];
+    private readonly Vector2[] _vertices = new Vector2[4];
 
-    void Start()
+    private void Start()
     {
         _vertices[0] = Camera.Setting.Skew.BottomLeft.ToUnityVector();
         _vertices[1] = Camera.Setting.Skew.TopLeft.ToUnityVector();
@@ -28,39 +29,45 @@ public class CornerMoveComponent : MonoBehaviour
         Camera.SetTransform(_vertices);
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         Crosshair.gameObject.SetActive(true);
+        UpdateCrosshair();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         Crosshair.gameObject.SetActive(false);
     }
 
-    void Update()
+    private void UpdateCrosshair()
+    {
+        var rootRect = ((RectTransform)Crosshair.root).rect;
+        Crosshair.anchoredPosition = ActiveVertex switch
+        {
+            0 => new Vector2(0, -rootRect.height),
+            1 => new Vector2(0, 0),
+            2 => new Vector2(rootRect.width, 0),
+            3 => new Vector2(rootRect.width, -rootRect.height),
+            _ => throw new NotImplementedException(),
+        };
+    }
+
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
             ActiveVertex++;
             ActiveVertex %= 4;
-
-            var rootRect = ((RectTransform)Crosshair.root).rect;
-            Crosshair.anchoredPosition = ActiveVertex switch
-            {
-                0 => new Vector2(0, -rootRect.height),
-                1 => new Vector2(0, 0),
-                2 => new Vector2(rootRect.width, 0),
-                3 => new Vector2(rootRect.width, -rootRect.height),
-                _ => throw new NotImplementedException(),
-            };
+            
+            UpdateCrosshair();
         }
 
-        float speed = Time.deltaTime * Speed;
-        Vector2 offset = Vector2.zero;
+        var speed = Time.deltaTime * Speed;
+        var offset = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.LeftShift)) speed *= 0.25f;
-        if (Input.GetKey(KeyCode.RightShift)) speed = 0.001f;
+        if (Input.GetKey(KeyCode.LeftShift)) speed *= ShiftMultiplier;
+        if (Input.GetKey(KeyCode.RightShift)) speed = RShiftStep;
 
         if (InputExtensions.GetKeyModified(KeyCode.UpArrow)) offset += new Vector2(0, speed);
         if (InputExtensions.GetKeyModified(KeyCode.DownArrow)) offset += new Vector2(0, -speed);
@@ -71,10 +78,10 @@ public class CornerMoveComponent : MonoBehaviour
 
         _vertices[ActiveVertex] += offset;
 
-        for (int i = 0; i < _vertices.Length; i++)
+        for (var i = 0; i < _vertices.Length; i++)
         {
-            float x = Mathf.Clamp(_vertices[i].x, -1f, 1f);
-            float y = Mathf.Clamp(_vertices[i].y, -1f, 1f);
+            var x = Mathf.Clamp(_vertices[i].x, -1f, 1f);
+            var y = Mathf.Clamp(_vertices[i].y, -1f, 1f);
 
             _vertices[i] = new Vector2(x, y);
         }

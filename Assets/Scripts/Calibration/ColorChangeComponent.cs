@@ -17,9 +17,6 @@ public class ColorChangeComponent : MonoBehaviour
     [Required, SceneObjectsOnly]
     public TransformCameraComponent Camera;
 
-    [Required, SceneObjectsOnly]
-    public RectTransform ActiveMarker;
-
     [LabelText("Active mode")]
     public ColorChangeModeEnum ColorChangeMode;
 
@@ -33,16 +30,7 @@ public class ColorChangeComponent : MonoBehaviour
 
     public float Speed = 0.01f;
     public float ShiftMultiplier = 0.25f;
-    
-    void OnEnable()
-    {
-        ActiveMarker.gameObject.SetActive(true);
-    }
-
-    void OnDisable()
-    {
-        ActiveMarker.gameObject.SetActive(false);
-    }
+    public float RShiftStep = 0.001f;
 
     void SetActiveValue(float value)
     {
@@ -93,7 +81,7 @@ public class ColorChangeComponent : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B)) ColorChangeMode = ColorChangeModeEnum.Brightness;
         if (Input.GetKeyDown(KeyCode.C)) ColorChangeMode = ColorChangeModeEnum.Contrast;
         if (Input.GetKeyDown(KeyCode.S)) ColorChangeMode = ColorChangeModeEnum.Saturation;
-        if (Input.GetKeyDown(KeyCode.O)) ColorChangeMode = ColorChangeModeEnum.CrossOver;
+        //if (Input.GetKeyDown(KeyCode.O)) ColorChangeMode = ColorChangeModeEnum.CrossOver;
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -106,8 +94,8 @@ public class ColorChangeComponent : MonoBehaviour
         float speed = Time.deltaTime * Speed;
         float delta = 0f;
         
-        if (Input.GetKey(KeyCode.LeftShift)) speed *= 0.25f;
-        if (Input.GetKey(KeyCode.RightShift)) speed = 0.001f;
+        if (Input.GetKey(KeyCode.LeftShift)) speed *= ShiftMultiplier;
+        if (Input.GetKey(KeyCode.RightShift)) speed = RShiftStep;
 
         if (InputExtensions.GetKeyModified(KeyCode.KeypadPlus)) delta = speed;
         if (InputExtensions.GetKeyModified(KeyCode.KeypadMinus)) delta = -speed;

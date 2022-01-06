@@ -4,6 +4,8 @@ public static class MeshUtils
 {
     public static Mesh CreateTransform(Vector3[] v)
     {
+        // There should be no need for SW vertical alignment
+        // as long as the projectors are physically aligned correctly
         v[1].x = v[0].x;
         v[3].x = v[2].x;
         
