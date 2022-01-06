@@ -19,7 +19,8 @@ public class ColorModeComponent : MonoBehaviour
         var c = _lastColorMode == ColorChangeComponent.ColorChangeModeEnum.Contrast;
         var s = _lastColorMode == ColorChangeComponent.ColorChangeModeEnum.Saturation;
             
-        _modeText.text = $"{(b ? "<color=yellow>" : string.Empty)}B \t Jas<color=white>\n" +
+        _modeText.text = $"Stisknutím níže uvedených kláves změníte momentálně upravovanou hodnotu\n" +
+                         $"{(b ? "<color=yellow>" : string.Empty)}B \t Jas<color=white>\n" +
                          $"{(c ? "<color=yellow>" : string.Empty)}C \t Kontrast<color=white>\n" +
                          $"{(s ? "<color=yellow>" : string.Empty)}S \t Saturace";
     }
