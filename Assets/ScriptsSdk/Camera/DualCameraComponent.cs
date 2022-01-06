@@ -129,6 +129,13 @@ public class DualCameraComponent : MonoBehaviour
         var configFile = Path.Combine(userFolder, "ipw.json");
         var json = JsonConvert.SerializeObject(Setting, Formatting.Indented);
 
+        if (File.Exists(configFile))
+        {
+            var fileNameFriendlyDate = DateTime.Now.ToString("s").Replace(":", "");
+            var backupPath = Path.Combine(userFolder, $"ipw_{fileNameFriendlyDate}.json");
+            File.Move(configFile, backupPath);
+        }
+
         File.WriteAllText(configFile, json);
         Debug.Log("Configuration saved");
     }
