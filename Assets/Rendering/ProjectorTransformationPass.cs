@@ -6,6 +6,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
 {
     private string _profilerTag;
     private Material _materialToBlit;
+    private Material _materialPhysicalAlignment;
     private RenderTargetHandle _tempTexture;
 
     public const int MAX_DISPLAYS = 8; // Unity limit
@@ -17,11 +18,14 @@ public class ProjectorTransformationPass : ScriptableRenderPass
     public static float[] CrossOver = new float[MAX_DISPLAYS];
     public static bool EnableCurve = true;
 
-    public ProjectorTransformationPass(string profilerTag, RenderPassEvent renderPassEvent, Material materialToBlit)
+    public static bool PhysicalAlignment = false;
+
+    public ProjectorTransformationPass(string profilerTag, RenderPassEvent renderPassEvent, Material materialToBlit, Material materialPhysicalAlignment)
     {
         this.renderPassEvent = renderPassEvent;
         _profilerTag = profilerTag;
         _materialToBlit = materialToBlit;
+        _materialPhysicalAlignment = materialPhysicalAlignment;
 
         for (int i = 0; i < MAX_DISPLAYS; i++) ScreenData[i] = new ProjectorTransformationData();
     }
@@ -37,26 +41,35 @@ public class ProjectorTransformationPass : ScriptableRenderPass
         CommandBuffer cmd = CommandBufferPool.Get(_profilerTag);
         var displayNumber = renderingData.cameraData.camera.targetDisplay;
 
-        cmd.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
-        cmd.Blit(renderingData.cameraData.targetTexture, _tempTexture.Identifier());
-        cmd.SetGlobalTexture(Shader.PropertyToID("tex"), _tempTexture.Identifier());
-        cmd.SetGlobalFloat(Shader.PropertyToID("contrast"), Contrast[displayNumber]);
-        cmd.SetGlobalFloat(Shader.PropertyToID("brightness"), Brightness[displayNumber]);
-        cmd.SetGlobalFloat(Shader.PropertyToID("saturation"), Saturation[displayNumber]);
-        cmd.SetGlobalFloat(Shader.PropertyToID("flipCurve"), FlipCurve[displayNumber] ? 1.0f : 0.0f);
-        cmd.SetGlobalFloat(Shader.PropertyToID("enableCurve"), EnableCurve ? 1.0f : 0.0f);
-        cmd.SetGlobalFloat(Shader.PropertyToID("crossOver"), CrossOver[0]);
-        cmd.ClearRenderTarget(false, true, Color.black);
-
-        var mesh = ScreenData[displayNumber].ScreenMesh;
-        if (mesh == null) // Editor doesn't always call the constructor
+        if (PhysicalAlignment)
         {
-            mesh = MeshUtils.CreateTransform(new Vector3[] { new Vector3(-1, -1, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0) });
-            ScreenData[displayNumber].ScreenMesh = mesh;
+            cmd.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, _materialPhysicalAlignment);
+            cmd.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);
         }
+        else
+        {
+            cmd.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            cmd.Blit(renderingData.cameraData.targetTexture, _tempTexture.Identifier());
+            cmd.SetGlobalTexture(Shader.PropertyToID("tex"), _tempTexture.Identifier());
+            cmd.SetGlobalFloat(Shader.PropertyToID("contrast"), Contrast[displayNumber]);
+            cmd.SetGlobalFloat(Shader.PropertyToID("brightness"), Brightness[displayNumber]);
+            cmd.SetGlobalFloat(Shader.PropertyToID("saturation"), Saturation[displayNumber]);
+            cmd.SetGlobalFloat(Shader.PropertyToID("flipCurve"), FlipCurve[displayNumber] ? 1.0f : 0.0f);
+            cmd.SetGlobalFloat(Shader.PropertyToID("enableCurve"), EnableCurve ? 1.0f : 0.0f);
+            cmd.SetGlobalFloat(Shader.PropertyToID("crossOver"), CrossOver[0]);
+            cmd.ClearRenderTarget(false, true, Color.black);
 
-        cmd.DrawMesh(mesh, Matrix4x4.identity, _materialToBlit, 0, 0);
-        cmd.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);
+            var mesh = ScreenData[displayNumber].ScreenMesh;
+            if (mesh == null) // Editor doesn't always call the constructor
+            {
+                mesh = MeshUtils.CreateTransform(new Vector3[] { new Vector3(-1, -1, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0) });
+                ScreenData[displayNumber].ScreenMesh = mesh;
+            }
+
+            cmd.DrawMesh(mesh, Matrix4x4.identity, _materialToBlit, 0, 0);
+            cmd.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);
+        }
 
         context.ExecuteCommandBuffer(cmd);
         CommandBufferPool.Release(cmd);

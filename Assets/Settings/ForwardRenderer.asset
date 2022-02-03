@@ -60,3 +60,4 @@ MonoBehaviour:
     IsEnabled: 1
     WhenToInsert: 550
     MaterialToBlit: {fileID: 2100000, guid: b7c5515ccbd5aa84b864da5e30f66a43, type: 2}
+    MaterialPhysical: {fileID: 2100000, guid: 3ea9ec9c11b63fc45b1c3789fba01a6d, type: 2}

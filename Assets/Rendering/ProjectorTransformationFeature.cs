@@ -10,6 +10,7 @@ public class ProjectorTransformationFeature : ScriptableRendererFeature
         public bool IsEnabled = true;
         public RenderPassEvent WhenToInsert = RenderPassEvent.AfterRendering;
         public Material MaterialToBlit;
+        public Material MaterialPhysical;
     }
 
     public ProjectorTransformationSettings settings = new ProjectorTransformationSettings();
@@ -21,7 +22,8 @@ public class ProjectorTransformationFeature : ScriptableRendererFeature
         _pass = new ProjectorTransformationPass(
           "Projector transformation",
           settings.WhenToInsert,
-          settings.MaterialToBlit
+          settings.MaterialToBlit,
+          settings.MaterialPhysical
         );
     }
 
