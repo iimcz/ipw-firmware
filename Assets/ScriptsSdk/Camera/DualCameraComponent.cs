@@ -40,6 +40,7 @@ public class DualCameraComponent : MonoBehaviour
         {
             if (Display.displays[i].active) continue;
             Display.displays[i].Activate();
+            Display.displays[i].SetRenderingResolution(2048, 2048);
         }
 
         LoadSettings();
