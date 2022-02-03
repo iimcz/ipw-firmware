@@ -91,7 +91,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HorLines: 3
-    - _LineSize: 0.033
+    - _LineSize: 0.01
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005

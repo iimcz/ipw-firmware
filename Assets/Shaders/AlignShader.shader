@@ -51,7 +51,6 @@ Shader "Unlit/AlignShader"
             {
                 _HorLines += 1;
                 _VertLines += 1;
-                _LineSize = 1 - _LineSize;
 
                 float xPos = fmod(i.uv.x, (1.0 / _HorLines));
                 float xWidth = (1.0 / _HorLines) * _LineSize;
@@ -59,8 +58,8 @@ Shader "Unlit/AlignShader"
                 float yPos = fmod(i.uv.y, (1.0 / _VertLines));
                 float yWidth = (1.0 / _VertLines) * _LineSize;
 
-                fixed4 col = xPos > xWidth ? fixed4(0, 1, 0, 1) : fixed4(0, 0, 0, 0);
-                col += yPos > yWidth ? fixed4(0, 1, 1, 1) : fixed4(0, 0, 0, 0);
+                fixed4 col = xPos < xWidth || xPos > ((1.0 / _HorLines) - xWidth) ? fixed4(0, 1, 0, 1) : fixed4(0, 0, 0, 0);
+                col += yPos < yWidth ? fixed4(0, 1, 1, 1) : fixed4(0, 0, 0, 0);
 
                 return col;
             }
