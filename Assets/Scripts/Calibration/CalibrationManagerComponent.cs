@@ -1,7 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using emt_sdk.Generated.ScenePackage;
+using emt_sdk.ScenePackage;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -66,18 +70,35 @@ public class CalibrationManagerComponent : SerializedMonoBehaviour
         yield return new WaitForSecondsRealtime(5f); // Give the user few seconds to react
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) isCalibrated = false;
 
+        // TODO: Validate with schema
+        var loader = new PackageLoader(null);
+        var startupPackage = loader.EnumeratePackages()
+            .FirstOrDefault(p => Path.GetDirectoryName(p.ArchivePath) == _connection.Settings.StartupPackage);
+
         if (isCalibrated)
         {
-            Task.Run(VerifyNetwork);
-            UpdateUi(CalibrationStateEnum.NetworkCheck);
+            if (startupPackage != null)
+            {
+                _connection.SwitchScene(startupPackage);
+            }
+            else if (string.IsNullOrWhiteSpace(_connection.Settings.Communication.ContentHostname))
+            {
+                UpdateUi(CalibrationStateEnum.NetworkConfiguration);
+            }
+            else
+            {
+                Task.Run(VerifyNetwork);
+                UpdateUi(CalibrationStateEnum.NetworkCheck);
+            }
         }
         else UpdateUi(CalibrationStateEnum.PhysicalAlignment);
     }
 
     private async Task VerifyNetwork()
     {
-        await Task.Delay(2500);
-        _networkState = NetworkStateEnum.Invalid;
+        _connection.Connect(_connection.Settings.Communication.ContentHostname, _connection.Settings.Communication.ContentPort);
+        if (!_connection.Connection.Verified) _networkState = NetworkStateEnum.Invalid;
+        else _networkState = NetworkStateEnum.Valid;
     }
 
     private void Start()
@@ -104,13 +125,15 @@ public class CalibrationManagerComponent : SerializedMonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
                 break;
             case CalibrationStateEnum.LensShift:
-                if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    UpdateUi(_calibrationState + 1);
+                    _camera.SaveSettings(); // Save before entering network config
+                }
                 break;
             case CalibrationStateEnum.NetworkConfiguration:
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    _camera.SaveSettings();
-
                     _networkState = NetworkStateEnum.Waiting;
                     Task.Run(VerifyNetwork);
                     
@@ -125,6 +148,7 @@ public class CalibrationManagerComponent : SerializedMonoBehaviour
                         UpdateUi(_calibrationState - 1);
                         break;
                     case NetworkStateEnum.Valid:
+                        _connection.Settings.Save(); // Save network info
                         UpdateUi(_calibrationState + 1);
                         break;
                 }

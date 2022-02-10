@@ -2,27 +2,26 @@ using System;
 using System.Collections;
 using emt_sdk.Communication;
 using emt_sdk.Events;
-using emt_sdk.Extensions;
 using emt_sdk.ScenePackage;
 using Naki3D.Common.Protocol;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using NLog.Targets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using emt_sdk.Generated.ScenePackage;
+using emt_sdk.Settings;
 
 public class ExhibitConnectionComponent : MonoBehaviour
 {
     public TcpClient Client;
     public ExhibitConnection Connection;
+    public EmtSetting Settings;
+
+    public static PackageDescriptor ActivePackage;
 
     public string Hostname;
-    public string TargetServer = "127.0.0.1";
-    public int Port = 3917;
-
-    public bool DebugLoadTest;
 
     private PackageLoader _loader;
 
@@ -30,11 +29,18 @@ public class ExhibitConnectionComponent : MonoBehaviour
     void Start()
     {
         StartCoroutine(ApplyDelay());
+        Settings = EmtSetting.FromConfig() ?? new EmtSetting
+        {
+            Type = Naki3D.Common.Protocol.DeviceType.Ipw,
+            Communication = new CommunicationSettings(),
+            PerformanceCap = PerformanceCap.Fast
+        };
     }
 
     private void OnDestroy()
     {
         EventManager.Instance.Stop();
+        Client.Close();
     }
 
     private IEnumerator ApplyDelay()
@@ -44,14 +50,16 @@ public class ExhibitConnectionComponent : MonoBehaviour
         yield return new WaitForEndOfFrame();
         
         Client = new TcpClient();
-        _loader = new PackageLoader(Path.Combine(Application.streamingAssetsPath, "package-schema.json"));
+
+        // TODO: Validate with schema
+        _loader = new PackageLoader(null);
 
         if (string.IsNullOrWhiteSpace(Hostname)) Hostname = Dns.GetHostName();
 
         Task.Run(() => {
-            var sync = new emt_sdk.Generated.ScenePackage.Sync
+            var sync = new Sync
             {
-                Elements = new System.Collections.Generic.List<emt_sdk.Generated.ScenePackage.Element>()
+                Elements = new System.Collections.Generic.List<Element>()
             };
             EventManager.Instance.Start(sync);
         });
@@ -66,15 +74,12 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
     public void Connect(string hostname, int port)
     {
-        if (DebugLoadTest)
-        {
-            SceneManager.LoadScene("Testing3DScene");
-            return;
-        }
-
         Client.Connect(hostname, port);
-        Connection = new ExhibitConnection(Client);
-        Connection.LoadPackageHandler += LoadPackage;
+        Connection = new ExhibitConnection(Client)
+        {
+            LoadPackageHandler = LoadPackage,
+            ClearPackageHandler = pckg => { }
+        };
 
         Connection.Connect();
         if (!Connection.Verified)
@@ -91,8 +96,8 @@ public class ExhibitConnectionComponent : MonoBehaviour
     {
         var descriptor = new DeviceDescriptor
         {
-            PerformanceCap = PerformanceCap.Fast,
-            Type = Naki3D.Common.Protocol.DeviceType.Ipw
+            PerformanceCap = Settings.PerformanceCap,
+            Type = Settings.Type
         };
         descriptor.LocalSensors.Add(SensorType.Gesture);
         Connection.SendDescriptor(descriptor);
@@ -100,20 +105,35 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
     void LoadPackage(LoadPackage pckg)
     {
-        var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
-        package.DownloadFile();
-        EventManager.Instance.Start(package.Sync);
-
-        var fileName = package.ArchiveFileName;
-
-        switch (package.PackagePackage.Type)
+        try
         {
-            case emt_sdk.Generated.ScenePackage.PackageType.Data:
-                Debug.Log($"Downloaded data package '{package.PackagePackage.Type}'");
-                break;
-            case emt_sdk.Generated.ScenePackage.PackageType.Script:
-                Debug.Log($"Downloaded script package '{package.PackagePackage.Type}'");
-                break;
+            print("b");
+            var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
+            print("a");
+            package.DownloadFile();
+            print("c");
+            Task.Run(() => EventManager.Instance.Start(package.Sync));
+
+            SwitchScene(package);
         }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        
+    }
+
+    public void SwitchScene(PackageDescriptor package)
+    {
+        ActivePackage = package;
+
+        switch (ActivePackage.Parameters.DisplayType)
+        {
+            case "video":
+                SceneManager.LoadScene("VideoScene");
+                break;
+            default:
+                throw new NotImplementedException();
+        };
     }
 }

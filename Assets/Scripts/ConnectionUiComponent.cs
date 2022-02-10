@@ -1,4 +1,4 @@
-using System;
+using emt_sdk.Communication;
 using TMPro;
 using UnityEngine;
 
@@ -9,10 +9,33 @@ public class ConnectionUiComponent : MonoBehaviour
     
     void Update()
     {
-        IPWInfo.text = $"Hostname \t {ExhibitConnection.Hostname}\n" +
-                       $"Target \t {ExhibitConnection.TargetServer}:{ExhibitConnection.Port}\n" +
-                       $"Server Ver \t {ExhibitConnection.Connection}\n" +
-                       $"Connection: {ExhibitConnection.Connection?.IsConnected ?? false}\n" +
-                       $"Progress: {ExhibitConnection.Connection?.ConnectionState}";
+        IPWInfo.text = $"Hostname: \t {ExhibitConnection.Hostname}\n" +
+                       $"Server: \t {ExhibitConnection.Settings.Communication.ContentHostname}:{ExhibitConnection.Settings.Communication.ContentPort}\n" +
+                       $"Verze serveru: \t {ExhibitConnection.Connection.ServerVersion}\n" +
+                       $"Stav: {TranslateConnectionState(ExhibitConnection.Connection?.ConnectionState)}";
+    }
+
+    private string TranslateConnectionState(ConnectionStateEnum? state)
+    {
+        switch (state)
+        {
+            case ConnectionStateEnum.Disconnected:
+                return "Není pøipojení";
+            case ConnectionStateEnum.Connected:
+                return "Pøipojeno";
+            case ConnectionStateEnum.VersionCheck:
+                return "Kontrola verze";
+            case ConnectionStateEnum.VerifyRequest:
+            case ConnectionStateEnum.VerifyWait:
+                return "Ovìøování";
+            case ConnectionStateEnum.Verified:
+                return "Ovìøeno pøipojení";
+            case ConnectionStateEnum.DescriptorSent:
+                return "Odeslán deskriptor zaøízení";
+            case ConnectionStateEnum.PackageInfoReceived:
+                return "Balíèek pøijat, stahování...";
+            default:
+                return string.Empty;
+        }
     }
 }

@@ -1009,9 +1009,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hostname: 
-  TargetServer: 127.0.0.1
-  Port: 3917
-  DebugLoadTest: 1
 --- !u!114 &199075601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1165,7 +1162,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -500.55502}
+  m_AnchoredPosition: {x: 10, y: -500.55505}
   m_SizeDelta: {x: 600, y: 205.81}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &233220741
@@ -2196,7 +2193,7 @@ MonoBehaviour:
   ShowWarning: 0
   _hostname: {fileID: 1818675372}
   _warning: {fileID: 1470141382}
-  _camera: {fileID: 454132774}
+  _connection: {fileID: 199075600}
 --- !u!20 &858575043 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 4899629861798286046, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
@@ -3924,7 +3921,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  AlwaysCalibrate: 1
+  AlwaysCalibrate: 0
   _connection: {fileID: 199075600}
   _network: {fileID: 847099904}
   _camera: {fileID: 454132774}
@@ -4746,7 +4743,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Kontrola stavu s\xEDt\u011B..."
+  m_text: "Kontrola stavu s\xEDt\u011B...\nZa\u0159\xEDzen\xED by se m\u011Blo objevit
+    v EMT Toolboxu"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

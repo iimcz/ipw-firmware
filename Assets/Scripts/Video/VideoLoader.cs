@@ -49,6 +49,6 @@ public class VideoLoader : MonoBehaviour
         _display.Resize(VideoScene.VideoAspectRatioEnum.FitInside);
         
         // TODO: Store a copy of the received data in some static manager and use it here
-        //Apply();
+        //Apply(ExhibitConnectionComponent.ActivePackage.Parameters.Settings);
     }
 }

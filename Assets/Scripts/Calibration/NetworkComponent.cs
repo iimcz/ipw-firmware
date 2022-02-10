@@ -15,13 +15,13 @@ public class NetworkComponent : MonoBehaviour
     private GameObject _warning;
 
     [SerializeField]
-    private DualCameraComponent _camera;
+    private ExhibitConnectionComponent _connection;
     
-    private CommunicationSettings _communication = new CommunicationSettings();
+    private CommunicationSettings _communication;
 
     private void Start()
     {
-        //_communication = _camera.Setting.Communication;
+        _communication = _connection.Settings.Communication;
     }
     
     private void Update()
