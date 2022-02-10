@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using emt_sdk.Scene;
 using UnityEngine;
 using UnityEngine.Video;
@@ -47,8 +48,20 @@ public class VideoLoader : MonoBehaviour
         yield return new WaitForEndOfFrame();
         
         _display.Resize(VideoScene.VideoAspectRatioEnum.FitInside);
-        
-        // TODO: Store a copy of the received data in some static manager and use it here
-        //Apply(ExhibitConnectionComponent.ActivePackage.Parameters.Settings);
+
+        var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
+        Apply(new VideoScene
+        {
+            Loop = settings.Loop.Value,
+            AspectRatio = (VideoScene.VideoAspectRatioEnum) Enum.Parse(typeof(VideoScene.VideoAspectRatioEnum), settings.AspectRatio.Value.ToString()),
+            AutoStart = settings.AutoStart.Value,
+            BackgroundColor = settings.BackgroundColor,
+            FileName = settings.FileName,
+            VideoEvents = settings.VideoEvents.Select(ve => new VideoScene.VideoEvent
+            {
+                Timestamp = (float) ve.Timestamp.Value,
+                EventName = ve.EventName
+            }).ToArray()
+        }, ExhibitConnectionComponent.ActivePackage.DataRoot);
     }
 }

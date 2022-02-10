@@ -24,6 +24,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
     public string Hostname;
 
     private PackageLoader _loader;
+    private bool _changeScene;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +36,21 @@ public class ExhibitConnectionComponent : MonoBehaviour
             Communication = new CommunicationSettings(),
             PerformanceCap = PerformanceCap.Fast
         };
+    }
+    
+    void Update()
+    {
+        if (!_changeScene) return;
+        _changeScene = false;
+        
+        switch (ActivePackage.Parameters.DisplayType)
+        {
+            case "video":
+                SceneManager.LoadScene("VideoScene");
+                break;
+            default:
+                throw new NotImplementedException();
+        }
     }
 
     private void OnDestroy()
@@ -105,35 +121,19 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
     void LoadPackage(LoadPackage pckg)
     {
-        try
-        {
-            print("b");
-            var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
-            print("a");
-            package.DownloadFile();
-            print("c");
-            Task.Run(() => EventManager.Instance.Start(package.Sync));
+        var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
+        package.DownloadFile();
+        Task.Run(() => EventManager.Instance.Start(package.Sync));
 
-            SwitchScene(package);
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
+        Settings.StartupPackage = package.Package.Checksum;
+        Settings.Save();
         
+        SwitchScene(package);
     }
 
     public void SwitchScene(PackageDescriptor package)
     {
         ActivePackage = package;
-
-        switch (ActivePackage.Parameters.DisplayType)
-        {
-            case "video":
-                SceneManager.LoadScene("VideoScene");
-                break;
-            default:
-                throw new NotImplementedException();
-        };
+        _changeScene = true;
     }
 }

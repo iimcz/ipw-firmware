@@ -72,8 +72,8 @@ public class CalibrationManagerComponent : SerializedMonoBehaviour
 
         // TODO: Validate with schema
         var loader = new PackageLoader(null);
-        var startupPackage = loader.EnumeratePackages()
-            .FirstOrDefault(p => Path.GetDirectoryName(p.ArchivePath) == _connection.Settings.StartupPackage);
+        var startupPackage = loader.EnumeratePackages(false)
+            .FirstOrDefault(p => Path.GetFileName(p.PackageDirectory) == _connection.Settings.StartupPackage);
 
         if (isCalibrated)
         {
