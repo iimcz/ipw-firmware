@@ -2,11 +2,23 @@ using System;
 using emt_sdk.Scene;
 using UnityEngine;
 using UnityEngine.Video;
+using Vector3 = UnityEngine.Vector3;
 
 public class VideoDisplayComponent : MonoBehaviour
 {
     public VideoPlayer VideoPlayer;
     public DualCameraComponent Camera;
+
+    public void SetVolume(double volume)
+    {
+        // Only works for direct, single track audio
+        VideoPlayer.SetDirectAudioVolume(0, (float)volume);
+    }
+
+    public void Play()
+    {
+        if (!VideoPlayer.isPlaying) VideoPlayer.Play();
+    }
     
     public void Resize(VideoScene.VideoAspectRatioEnum aspectRatio)
     {

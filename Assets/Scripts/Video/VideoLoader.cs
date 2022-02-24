@@ -2,9 +2,13 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using emt_sdk.Events;
+using emt_sdk.Generated.ScenePackage;
 using emt_sdk.Scene;
+using Naki3D.Common.Protocol;
 using UnityEngine;
 using UnityEngine.Video;
+using Action = emt_sdk.Generated.ScenePackage.Action;
 
 public class VideoLoader : MonoBehaviour
 {
@@ -49,6 +53,40 @@ public class VideoLoader : MonoBehaviour
         
         _display.Resize(VideoScene.VideoAspectRatioEnum.FitInside);
 
+        // Debug mode
+        if (ExhibitConnectionComponent.ActivePackage == null)
+        {
+            _player.Stop();
+            EventManager.Instance.Actions.Add(new Action
+            {
+                Effect = "play",
+                Type = TypeEnum.ValueTrigger,
+                Mapping = new Mapping
+                {
+                    Source = "atom_1_pir_1",
+                    Condition = Condition.Equals,
+                    ThresholdType = ThresholdType.Integer,
+                    Threshold = ((int)PirMovementEvent.MovementStarted).ToString()
+                }
+            });
+            
+            EventManager.Instance.Actions.Add(new Action
+            {
+                Effect = "setVolume",
+                Type = TypeEnum.Value,
+                Mapping = new Mapping
+                {
+                    Source = "raspi-1-ultrasonic-1",
+                    InMin = 0,
+                    InMax = 60,
+                    OutMin = 1,
+                    OutMax = 0,
+                }
+            });
+            
+            yield break;
+        }
+        
         var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
         Apply(new VideoScene
         {

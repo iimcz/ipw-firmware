@@ -5,26 +5,24 @@ using System.Collections.Concurrent;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EventComponent : MonoBehaviour
+public class EventComponent : MainThreadExecutorComponent
 {
     public UnityEvent<SensorMessage> EventReceived;
-
-    private readonly ConcurrentQueue<Action> _mainThreadActions = new ConcurrentQueue<Action>();
 
     void Start()
     {
         EventManager.Instance.OnEventReceived += OnEventReceived;
     }
-
-    void Update()
+    
+    void OnDestroy()
     {
-        while (_mainThreadActions.TryDequeue(out var action)) action();
+        EventManager.Instance.OnEventReceived -= OnEventReceived;
     }
 
     protected virtual void OnEventReceived(object sender, SensorMessage e)
     {
         Debug.Log(e);
         Debug.Log(e.DataCase);
-        _mainThreadActions.Enqueue(() => EventReceived.Invoke(e));
+        ExecuteOnMainThread(() => EventReceived.Invoke(e));
     }
 }

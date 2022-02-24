@@ -134,6 +134,10 @@ public class ExhibitConnectionComponent : MonoBehaviour
     public void SwitchScene(PackageDescriptor package)
     {
         ActivePackage = package;
+        
+        EventManager.Instance.Actions.Clear();
+        EventManager.Instance.Actions.AddRange(package.Inputs);
+        
         _changeScene = true;
     }
 }

@@ -227,6 +227,12 @@ GameObject:
   - component: {fileID: 680857480}
   - component: {fileID: 680857479}
   - component: {fileID: 680857478}
+  - component: {fileID: 680857486}
+  - component: {fileID: 680857485}
+  - component: {fileID: 680857484}
+  - component: {fileID: 680857483}
+  - component: {fileID: 680857482}
+  - component: {fileID: 680857481}
   m_Layer: 0
   m_Name: VideoPlayer
   m_TagString: Untagged
@@ -297,6 +303,210 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &680857481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680857477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: setVolume
+  HasValue: 1
+  ValueEffectCalled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 685421692}
+        m_TargetAssemblyTypeName: VideoDisplayComponent, Assembly-CSharp
+        m_MethodName: SetVolume
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &680857482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680857477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: setTime
+  HasValue: 1
+  ValueEffectCalled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 680857479}
+        m_TargetAssemblyTypeName: UnityEngine.Video.VideoPlayer, UnityEngine
+        m_MethodName: set_time
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &680857483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680857477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: pause
+  HasValue: 0
+  ValueEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 680857479}
+        m_TargetAssemblyTypeName: UnityEngine.Video.VideoPlayer, UnityEngine
+        m_MethodName: Pause
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &680857484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680857477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: play
+  HasValue: 0
+  ValueEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 685421692}
+        m_TargetAssemblyTypeName: VideoDisplayComponent, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &680857485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680857477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: restart
+  HasValue: 0
+  ValueEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 680857479}
+        m_TargetAssemblyTypeName: UnityEngine.Video.VideoPlayer, UnityEngine
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 685421692}
+        m_TargetAssemblyTypeName: VideoDisplayComponent, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &680857486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680857477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: stop
+  HasValue: 0
+  ValueEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 680857479}
+        m_TargetAssemblyTypeName: UnityEngine.Video.VideoPlayer, UnityEngine
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &685421687
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,57 +785,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1610776761}
-  - component: {fileID: 1610776760}
-  - component: {fileID: 1610776759}
   - component: {fileID: 1610776762}
   m_Layer: 0
-  m_Name: Pir
+  m_Name: Exhibit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1610776759
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1610776758}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f6872758941a6342b6277c010d533e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EventReceived:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1610776760}
-        m_TargetAssemblyTypeName: PirVideoActivationComponent, Assembly-CSharp
-        m_MethodName: OnPir
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  DataType: 26
---- !u!114 &1610776760
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1610776758}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84e4467fa700ec0789a3a214ce9978aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _video: {fileID: 685421692}
 --- !u!4 &1610776761
 Transform:
   m_ObjectHideFlags: 0
@@ -653,6 +820,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hostname: 
-  TargetServer: 127.0.0.1
-  Port: 3917
-  DebugLoadTest: 0
