@@ -56,7 +56,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.Instance.Stop();
-        Client.Close();
+        Client?.Close();
     }
 
     private IEnumerator ApplyDelay()

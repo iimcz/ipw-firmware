@@ -23,7 +23,7 @@ public class VideoLoader : MonoBehaviour
         StartCoroutine(DelayApply());
     }
 
-    public void Apply(VideoScene scene, string basePath)
+    public IEnumerator Apply(VideoScene scene, string basePath)
     {
         if (ColorUtility.TryParseHtmlString(scene.BackgroundColor, out var backgroundColor) == false)
             throw new ArgumentException("Background color is not a valid HTML hex color string",
@@ -33,14 +33,15 @@ public class VideoLoader : MonoBehaviour
         _display.Camera.BottomCamera.Camera.backgroundColor = backgroundColor;
         
         var fileName = Path.Combine(basePath, scene.FileName);
+        _player.clip = null;
         _player.url = $"file://{fileName}";
         _player.isLooping = scene.Loop;
         
         // Make sure we get the correct info for resizing
         _player.Prepare();
+        yield return new WaitUntil(() => _player.isPrepared);
         
         if (scene.AutoStart) _player.Play();
-        else _player.Stop();
         
         _display.Resize(scene.AspectRatio);
     }
@@ -50,12 +51,12 @@ public class VideoLoader : MonoBehaviour
         // Wait two frames for the camera transformation to apply
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
-        
-        _display.Resize(VideoScene.VideoAspectRatioEnum.FitInside);
 
         // Debug mode
         if (ExhibitConnectionComponent.ActivePackage == null)
         {
+            _display.Resize(VideoScene.VideoAspectRatioEnum.FitInside);
+            
             _player.Stop();
             EventManager.Instance.Actions.Add(new Action
             {
@@ -88,7 +89,7 @@ public class VideoLoader : MonoBehaviour
         }
         
         var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
-        Apply(new VideoScene
+        yield return Apply(new VideoScene
         {
             Loop = settings.Loop.Value,
             AspectRatio = (VideoScene.VideoAspectRatioEnum) Enum.Parse(typeof(VideoScene.VideoAspectRatioEnum), settings.AspectRatio.Value.ToString()),

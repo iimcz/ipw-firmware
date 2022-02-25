@@ -119,6 +119,8 @@ public class DualCameraComponent : MonoBehaviour
             BottomCamera.gameObject.transform.position = new Vector3(-BottomCamera.Camera.orthographicSize + Setting.LensShift, 0, 0);
         }
 
+        Cursor.visible = false;
+
         TopCamera.ApplySettings();
         BottomCamera.ApplySettings();
     }
