@@ -82,8 +82,8 @@ public class DualCameraComponent : MonoBehaviour
         switch (Setting.Orientation)
         {
             case IPWSetting.IPWOrientation.Vertical:
-                size = new Vector2(bottomBoundary.width, bottomBoundary.yMax - topBoundary.y);
-                return new Rect(topBoundary.x, topBoundary.y, size.x, size.y);
+                size = new Vector2(bottomBoundary.width, topBoundary.yMax - bottomBoundary.yMin);
+                return new Rect(topBoundary.x, bottomBoundary.yMin, size.x, size.y);
             case IPWSetting.IPWOrientation.Horizontal:
                 size = new Vector2(topBoundary.xMax - bottomBoundary.x, bottomBoundary.height);
                 return new Rect(bottomBoundary.x, bottomBoundary.y, size.x, size.y);
@@ -100,6 +100,9 @@ public class DualCameraComponent : MonoBehaviour
             case IPWSetting.IPWOrientation.Vertical:
                 TopCamera.Camera.lensShift = new Vector2(0, Setting.LensShift);
                 BottomCamera.Camera.lensShift = new Vector2(0, -Setting.LensShift);
+                
+                TopCamera.Camera.gateFit = Camera.GateFitMode.Vertical;
+                BottomCamera.Camera.gateFit = Camera.GateFitMode.Vertical;
                 break;
             case IPWSetting.IPWOrientation.Horizontal:
                 TopCamera.Camera.lensShift = new Vector2(Setting.LensShift, 0);
@@ -120,6 +123,8 @@ public class DualCameraComponent : MonoBehaviour
         }
 
         Cursor.visible = false;
+
+        ProjectorTransformationPass.Vertical = Setting.Orientation == IPWSetting.IPWOrientation.Vertical;
 
         TopCamera.ApplySettings();
         BottomCamera.ApplySettings();

@@ -55,6 +55,8 @@ Shader "Unlit/NewUnlitShader"
             float flipCurve;
             float crossOver;
 
+            float vertical;
+
             static fixed3 W = fixed3(0.2125, 0.7154, 0.0721);
 
             v2f vert (appdata v)
@@ -119,7 +121,7 @@ Shader "Unlit/NewUnlitShader"
             fixed4 frag(v2f i) : SV_Target
             {
                 fixed2 uv = i.uv / i.uv2;
-
+                
                 if (flipCurve < 0.5) {
                     uv.x = 3.0 * uv.x - pow(uv.x, _Power2);
                     uv.x /= 2.0;

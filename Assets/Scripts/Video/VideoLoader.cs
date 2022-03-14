@@ -57,7 +57,8 @@ public class VideoLoader : MonoBehaviour
         {
             _display.Resize(VideoScene.VideoAspectRatioEnum.FitInside);
             
-            _player.Stop();
+            _player.Play();
+            //_player.Stop();
             EventManager.Instance.Actions.Add(new Action
             {
                 Effect = "play",

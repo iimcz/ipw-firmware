@@ -17,6 +17,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
     public static bool[] FlipCurve = new bool[MAX_DISPLAYS];
     public static float[] CrossOver = new float[MAX_DISPLAYS];
     public static bool EnableCurve = true;
+    public static bool Vertical = true;
 
     public static bool PhysicalAlignment = false;
 
@@ -58,6 +59,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
             cmd.SetGlobalFloat(Shader.PropertyToID("flipCurve"), FlipCurve[displayNumber] ? 1.0f : 0.0f);
             cmd.SetGlobalFloat(Shader.PropertyToID("enableCurve"), EnableCurve ? 1.0f : 0.0f);
             cmd.SetGlobalFloat(Shader.PropertyToID("crossOver"), CrossOver[0]);
+            cmd.SetGlobalFloat(Shader.PropertyToID("vertical"), Vertical ? 1.0f : 0.0f);
             cmd.ClearRenderTarget(false, true, Color.black);
 
             var mesh = ScreenData[displayNumber].ScreenMesh;
