@@ -6,16 +6,15 @@ using emt_sdk.ScenePackage;
 using Naki3D.Common.Protocol;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using emt_sdk.Generated.ScenePackage;
 using emt_sdk.Settings;
+using NLog.Config;
 
 public class ExhibitConnectionComponent : MonoBehaviour
 {
-    public TcpClient Client;
     public ExhibitConnection Connection;
     public EmtSetting Settings;
 
@@ -29,6 +28,9 @@ public class ExhibitConnectionComponent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        var nlogConfig = Path.Combine(Application.streamingAssetsPath, "NLog.config");
+        NLog.LogManager.Configuration = new XmlLoggingConfiguration(nlogConfig);
+        
         StartCoroutine(ApplyDelay());
         Settings = EmtSetting.FromConfig() ?? new EmtSetting
         {
@@ -56,7 +58,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.Instance.Stop();
-        Client?.Close();
+        Connection?.Dispose();
     }
 
     private IEnumerator ApplyDelay()
@@ -64,14 +66,12 @@ public class ExhibitConnectionComponent : MonoBehaviour
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
-        
-        Client = new TcpClient();
 
         // TODO: Validate with schema
         _loader = new PackageLoader(null);
 
         if (string.IsNullOrWhiteSpace(Hostname)) Hostname = Dns.GetHostName();
-
+        
         Task.Run(() => {
             var sync = new Sync
             {
@@ -88,27 +88,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
         Debug.Log(e);
     }
 
-    public void Connect(string hostname, int port)
-    {
-        Client.Connect(hostname, port);
-        Connection = new ExhibitConnection(Client)
-        {
-            LoadPackageHandler = LoadPackage,
-            ClearPackageHandler = pckg => { }
-        };
-
-        Connection.Connect();
-        if (!Connection.Verified)
-        {
-            Debug.LogError("Failed to verify with server");
-            return;
-        }
-
-        SendDescriptor();
-        Debug.Log("Awaiting package");
-    }
-
-    void SendDescriptor()
+    public void Connect()
     {
         var descriptor = new DeviceDescriptor
         {
@@ -116,7 +96,13 @@ public class ExhibitConnectionComponent : MonoBehaviour
             Type = Settings.Type
         };
         descriptor.LocalSensors.Add(SensorType.Gesture);
-        Connection.SendDescriptor(descriptor);
+        Connection = new ExhibitConnection(Settings.Communication, descriptor)
+        {
+            LoadPackageHandler = LoadPackage,
+            ClearPackageHandler = pckg => { }
+        };
+
+        Connection.Connect();
     }
 
     void LoadPackage(LoadPackage pckg)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using emt_sdk.Communication;
 using emt_sdk.Generated.ScenePackage;
 using emt_sdk.ScenePackage;
 using Sirenix.OdinInspector;
@@ -96,9 +97,14 @@ public class CalibrationManagerComponent : SerializedMonoBehaviour
 
     private async Task VerifyNetwork()
     {
-        _connection.Connect(_connection.Settings.Communication.ContentHostname, _connection.Settings.Communication.ContentPort);
-        if (!_connection.Connection.Verified) _networkState = NetworkStateEnum.Invalid;
-        else _networkState = NetworkStateEnum.Valid;
+        _connection.Connect();
+        while (_connection.Connection.ConnectionState == ConnectionStateEnum.VerifyWait)
+        {
+            _networkState = NetworkStateEnum.Invalid;
+            await Task.Delay(500);
+        }
+        
+        _networkState = NetworkStateEnum.Valid;
     }
 
     private void Start()
