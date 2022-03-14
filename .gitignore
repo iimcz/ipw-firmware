@@ -84,3 +84,6 @@ crashlytics-build.properties
 # Gallery testing files
 /[Aa]ssets/[Ss]cenes/GalleryScene/Samples/*
 /[Aa]ssets/[Ss]cenes/GalleryScene/Samples.meta
+
+# Distribution files
+/[Dd]istribution
