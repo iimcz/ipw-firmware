@@ -131,12 +131,19 @@ Shader "Unlit/NewUnlitShader"
                     uv.x /= 2.0;
                 }
 
-                fixed4 col = tex.Sample(trilinear_clamp_sampler, uv);
-
                 float bc = 0;
-                // TODO: Vertical orientation
-                // TODO: Variable control points
                 if (enableCurve > 0.1) bc = brightnessCurve(uv);
+                float antiOv = antiOverlap(uv);
+
+                if (vertical > 0.1)
+                {
+                    fixed2 uv_b = uv;
+
+                    uv.x = 1 - uv_b.y;
+                    uv.y = uv_b.x;
+                }
+
+                fixed4 col = tex.Sample(trilinear_clamp_sampler, uv);
 
                 float intComp = dot(col.rgb, W);
                 fixed3 intensity = fixed3(intComp, intComp, intComp);
@@ -144,7 +151,7 @@ Shader "Unlit/NewUnlitShader"
 
                 col.rgb = ((col.rgb - 0.5f) * max(contrast, 0)) + 0.5f;
                 col.rgb += (brightness + bc);
-                if (enableCurve > 0.1) col.rgb *= antiOverlap(uv);
+                if (enableCurve > 0.1) col.rgb *= antiOv;
 
                 return col;
             }
