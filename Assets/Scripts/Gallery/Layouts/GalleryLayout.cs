@@ -1,5 +1,4 @@
 ﻿using Naki3D.Common.Protocol;
-using UnityEngine;
 
 public abstract class GalleryLayout
 {

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Naki3D.Common.Protocol;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;

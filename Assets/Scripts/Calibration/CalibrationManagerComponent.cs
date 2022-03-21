@@ -5,14 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using emt_sdk.Communication;
-using emt_sdk.Generated.ScenePackage;
 using emt_sdk.ScenePackage;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
-using UnityEngine.Rendering;
 
-public class CalibrationManagerComponent : SerializedMonoBehaviour
+public class CalibrationManagerComponent : MonoBehaviour
 {
     public enum CalibrationStateEnum
     {
@@ -43,14 +39,12 @@ public class CalibrationManagerComponent : SerializedMonoBehaviour
     [SerializeField] private NetworkComponent _network;
     [SerializeField] private DualCameraComponent _camera;
 
-    [OdinSerialize]
-    public Dictionary<CalibrationStateEnum, GameObject> UiStates { get; set; } =
-        new SerializedDictionary<CalibrationStateEnum, GameObject>();
+    public List<GameObject> UiStates;
 
     private void UpdateUi(CalibrationStateEnum state)
     {
-        UiStates[_calibrationState].SetActive(false);
-        UiStates[state].SetActive(true);
+        UiStates[(int)_calibrationState].SetActive(false);
+        UiStates[(int)state].SetActive(true);
         
         _calibrationState = state;
     }

@@ -120,8 +120,10 @@ Shader "Unlit/NewUnlitShader"
 
             fixed4 frag(v2f i) : SV_Target
             {
+                // Perspective correct UV mapping
                 fixed2 uv = i.uv / i.uv2;
                 
+                // Stretch sides of texture due to projector angle
                 if (flipCurve < 0.5) {
                     uv.x = 3.0 * uv.x - pow(uv.x, _Power2);
                     uv.x /= 2.0;
@@ -131,10 +133,14 @@ Shader "Unlit/NewUnlitShader"
                     uv.x /= 2.0;
                 }
 
+                // Compensate for uneven projector brightness on edges
                 float bc = 0;
                 if (enableCurve > 0.1) bc = brightnessCurve(uv);
+
+                // Reduce overlap strength in the middle of display
                 float antiOv = antiOverlap(uv);
 
+                // Flip image in vertical layout
                 if (vertical > 0.1)
                 {
                     fixed2 uv_b = uv;

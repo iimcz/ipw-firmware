@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using emt_sdk.Settings;
 using TMPro;
 using UnityEngine;

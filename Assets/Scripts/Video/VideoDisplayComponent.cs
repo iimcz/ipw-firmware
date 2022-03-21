@@ -25,9 +25,12 @@ public class VideoDisplayComponent : MonoBehaviour
     {
         var viewport = Camera.GetBoundaries(5);
         var videoAspect = VideoPlayer.width / (float)VideoPlayer.height;
-        
+
         // 10m is the default unity plane size, why it's not 1 is beyond me...
         const float planeSize = 10f;
+
+        var widthFit = new Vector3(viewport.width / planeSize, 1, (viewport.width / videoAspect) / planeSize);
+        var heightFit = new Vector3((viewport.height * videoAspect) / planeSize, 1, viewport.height / planeSize);
 
         if (Camera.Orientation == IPWSetting.IPWOrientation.Horizontal)
         {
@@ -37,17 +40,11 @@ public class VideoDisplayComponent : MonoBehaviour
                     transform.localScale = new Vector3(viewport.width / planeSize, 1, viewport.height / planeSize);
                     break;
                 case VideoScene.VideoAspectRatioEnum.FitInside:
-                    if (videoAspect > 2) // Wider 
-                    {
-                        transform.localScale = new Vector3(viewport.width / planeSize, 1, (viewport.width / videoAspect) / planeSize);
-                    }
-                    else // Taller
-                    {
-                        transform.localScale = new Vector3((viewport.height * videoAspect) / planeSize, 1, viewport.height / planeSize);
-                    }
+                    transform.localScale = videoAspect > 2 ? widthFit : heightFit;
                     break;
                 case VideoScene.VideoAspectRatioEnum.FitOutside:
-                    throw new NotImplementedException();
+                    transform.localScale = videoAspect > 2 ? heightFit : widthFit;
+                    break;
                 default:
                     throw new NotSupportedException();
             }
@@ -60,17 +57,11 @@ public class VideoDisplayComponent : MonoBehaviour
                     transform.localScale = new Vector3(viewport.width / planeSize, 1, viewport.height / planeSize);
                     break;
                 case VideoScene.VideoAspectRatioEnum.FitInside:
-                    if (videoAspect < 2) // Wider 
-                    {
-                        transform.localScale = new Vector3(viewport.width / planeSize, 1, (viewport.width / videoAspect) / planeSize);
-                    }
-                    else // Taller
-                    {
-                        transform.localScale = new Vector3((viewport.height * videoAspect) / planeSize, 1, viewport.height / planeSize);
-                    }
+                    transform.localScale = videoAspect < 2 ? widthFit : heightFit;
                     break;
                 case VideoScene.VideoAspectRatioEnum.FitOutside:
-                    throw new NotImplementedException();
+                    transform.localScale = videoAspect < 2 ? heightFit : widthFit;
+                    break;
                 default:
                     throw new NotSupportedException();
             }

@@ -1,4 +1,3 @@
-
 using UnityEditor;
 
 [CustomEditor(typeof(ActionEvent))]
