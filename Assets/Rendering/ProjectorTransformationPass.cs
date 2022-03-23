@@ -12,7 +12,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
     public const int MAX_DISPLAYS = 8; // Unity limit
     public static ProjectorTransformationData[] ScreenData = new ProjectorTransformationData[MAX_DISPLAYS];
     public static float[] Saturation = new float[MAX_DISPLAYS];
-    public static float[] Brightness = new float[MAX_DISPLAYS];
+    public static Color[] Brightness = new Color[MAX_DISPLAYS];
     public static float[] Contrast = new float[MAX_DISPLAYS];
     public static bool[] FlipCurve = new bool[MAX_DISPLAYS];
     public static float[] CrossOver = new float[MAX_DISPLAYS];
@@ -54,7 +54,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
             cmd.Blit(renderingData.cameraData.targetTexture, _tempTexture.Identifier());
             cmd.SetGlobalTexture(Shader.PropertyToID("tex"), _tempTexture.Identifier());
             cmd.SetGlobalFloat(Shader.PropertyToID("contrast"), Contrast[displayNumber]);
-            cmd.SetGlobalFloat(Shader.PropertyToID("brightness"), Brightness[displayNumber]);
+            cmd.SetGlobalColor(Shader.PropertyToID("brightness"), Brightness[displayNumber]);
             cmd.SetGlobalFloat(Shader.PropertyToID("saturation"), Saturation[displayNumber]);
             cmd.SetGlobalFloat(Shader.PropertyToID("flipCurve"), FlipCurve[displayNumber] ? 1.0f : 0.0f);
             cmd.SetGlobalFloat(Shader.PropertyToID("enableCurve"), EnableCurve ? 1.0f : 0.0f);

@@ -6,6 +6,7 @@ using emt_sdk.ScenePackage;
 using Naki3D.Common.Protocol;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,7 +16,7 @@ using NLog.Config;
 
 public class ExhibitConnectionComponent : MonoBehaviour
 {
-    public ExhibitConnection Connection;
+    public static ExhibitConnection Connection;
     public EmtSetting Settings;
 
     public static PackageDescriptor ActivePackage;
@@ -96,11 +97,21 @@ public class ExhibitConnectionComponent : MonoBehaviour
             Type = Settings.Type
         };
         descriptor.LocalSensors.Add(SensorType.Gesture);
-        Connection = new ExhibitConnection(Settings.Communication, descriptor)
+
+        try
         {
-            LoadPackageHandler = LoadPackage,
-            ClearPackageHandler = pckg => { }
-        };
+            Connection = new ExhibitConnection(Settings.Communication, descriptor)
+            {
+                LoadPackageHandler = LoadPackage,
+                ClearPackageHandler = pckg => { }
+            };
+        }
+        catch (SocketException e)
+        {
+            // DNS resolve fail, abort
+            return;
+        }
+        
 
         Connection.Connect();
     }

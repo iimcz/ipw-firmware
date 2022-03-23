@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ public class CalibrationManagerComponent : MonoBehaviour
         OverlapCorrection,
         ColorCorrection,
         LensShift,
+        Audio,
         NetworkConfiguration,
         NetworkCheck,
         Initialized
@@ -27,7 +29,8 @@ public class CalibrationManagerComponent : MonoBehaviour
     {
         Waiting,
         Valid,
-        Invalid
+        Invalid,
+        VerificationDenied
     }
 
     public bool AlwaysCalibrate;
@@ -38,6 +41,7 @@ public class CalibrationManagerComponent : MonoBehaviour
     [SerializeField] private ExhibitConnectionComponent _connection;
     [SerializeField] private NetworkComponent _network;
     [SerializeField] private DualCameraComponent _camera;
+    [SerializeField] private AudioTestComponent _audioTest;
 
     public List<GameObject> UiStates;
 
@@ -92,10 +96,25 @@ public class CalibrationManagerComponent : MonoBehaviour
     private async Task VerifyNetwork()
     {
         _connection.Connect();
-        while (_connection.Connection.ConnectionState == ConnectionStateEnum.VerifyWait)
+        _networkState = NetworkStateEnum.Waiting;
+        
+        // Server probably refused connection or cannot connect at all
+        if (ExhibitConnectionComponent.Connection == null ||
+            ExhibitConnectionComponent.Connection.ConnectionState == ConnectionStateEnum.Disconnected)
         {
             _networkState = NetworkStateEnum.Invalid;
+            return;
+        }
+
+        while (ExhibitConnectionComponent.Connection.ConnectionState <= ConnectionStateEnum.VerifyWait)
+        {
             await Task.Delay(500);
+        }
+
+        if (ExhibitConnectionComponent.Connection.ConnectionState == ConnectionStateEnum.VerificationDenied)
+        {
+            _networkState = NetworkStateEnum.VerificationDenied;
+            return;
         }
         
         _networkState = NetworkStateEnum.Valid;
@@ -128,12 +147,22 @@ public class CalibrationManagerComponent : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
                     UpdateUi(_calibrationState + 1);
-                    _camera.SaveSettings(); // Save before entering network config
+                    StartCoroutine(_audioTest.StartTest());
+                    
+                    _camera.SaveSettings(); // Save after changing all display related settings
                 }
+                break;
+            case CalibrationStateEnum.Audio:
+                if (_audioTest.Finished) UpdateUi(_calibrationState + 1);
                 break;
             case CalibrationStateEnum.NetworkConfiguration:
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
+                    if (string.IsNullOrWhiteSpace(_connection.Settings.Communication.ContentHostname)) return;
+                    
+                    _network.ShowWarning = false;
+                    _network.ShowVerification = false;
+                    
                     _networkState = NetworkStateEnum.Waiting;
                     Task.Run(VerifyNetwork);
                     
@@ -145,6 +174,10 @@ public class CalibrationManagerComponent : MonoBehaviour
                 {
                     case NetworkStateEnum.Invalid:
                         _network.ShowWarning = true;
+                        UpdateUi(_calibrationState - 1);
+                        break;
+                    case NetworkStateEnum.VerificationDenied:
+                        _network.ShowVerification = true;
                         UpdateUi(_calibrationState - 1);
                         break;
                     case NetworkStateEnum.Valid:

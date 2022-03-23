@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using emt_sdk.Settings;
 using UnityEngine;
 
 public class ColorChangeComponent : MonoBehaviour
@@ -7,6 +8,9 @@ public class ColorChangeComponent : MonoBehaviour
     public enum ColorChangeModeEnum
     {
         Brightness,
+        BrightnessRed,
+        BrightnessGreen,
+        BrightnessBlue,
         Contrast,
         Saturation,
         CrossOver
@@ -23,6 +27,9 @@ public class ColorChangeComponent : MonoBehaviour
     public readonly Dictionary<ColorChangeModeEnum, float> DefaultValues = new Dictionary<ColorChangeModeEnum, float>
     {
         { ColorChangeModeEnum.Brightness, 0f },
+        { ColorChangeModeEnum.BrightnessRed, 0f },
+        { ColorChangeModeEnum.BrightnessGreen, 0f },
+        { ColorChangeModeEnum.BrightnessBlue, 0f },
         { ColorChangeModeEnum.Contrast, 1f },
         { ColorChangeModeEnum.Saturation, 1f },
         { ColorChangeModeEnum.CrossOver, 0.0f },
@@ -37,7 +44,21 @@ public class ColorChangeComponent : MonoBehaviour
         switch (ColorChangeMode)
         {
             case ColorChangeModeEnum.Brightness:
-                Camera.Setting.Color.Brightness = value;
+                Camera.Setting.Color.Brightness = new ColorSetting.Color
+                {
+                    R = value,
+                    G = value,
+                    B = value
+                };
+                break;
+            case ColorChangeModeEnum.BrightnessRed:
+                Camera.Setting.Color.Brightness.R = value;
+                break;
+            case ColorChangeModeEnum.BrightnessGreen:
+                Camera.Setting.Color.Brightness.G = value;
+                break;
+            case ColorChangeModeEnum.BrightnessBlue:
+                Camera.Setting.Color.Brightness.B = value;
                 break;
             case ColorChangeModeEnum.Contrast:
                 Camera.Setting.Color.Contrast = value;
@@ -58,8 +79,25 @@ public class ColorChangeComponent : MonoBehaviour
         switch (ColorChangeMode)
         {
             case ColorChangeModeEnum.Brightness:
-                Camera.Setting.Color.Brightness += delta;
-                Camera.Setting.Color.Brightness = Mathf.Clamp(Camera.Setting.Color.Brightness, -1f, 1f);
+                Camera.Setting.Color.Brightness.R += delta;
+                Camera.Setting.Color.Brightness.G += delta;
+                Camera.Setting.Color.Brightness.B += delta;
+                
+                Camera.Setting.Color.Brightness.R = Mathf.Clamp(Camera.Setting.Color.Brightness.R, -1f, 1f);
+                Camera.Setting.Color.Brightness.G = Mathf.Clamp(Camera.Setting.Color.Brightness.G, -1f, 1f);
+                Camera.Setting.Color.Brightness.B = Mathf.Clamp(Camera.Setting.Color.Brightness.B, -1f, 1f);
+                break;
+            case ColorChangeModeEnum.BrightnessRed:
+                Camera.Setting.Color.Brightness.R += delta;
+                Camera.Setting.Color.Brightness.R = Mathf.Clamp(Camera.Setting.Color.Brightness.R, -1f, 1f);
+                break;
+            case ColorChangeModeEnum.BrightnessGreen:
+                Camera.Setting.Color.Brightness.G += delta;
+                Camera.Setting.Color.Brightness.G = Mathf.Clamp(Camera.Setting.Color.Brightness.G, -1f, 1f);
+                break;
+            case ColorChangeModeEnum.BrightnessBlue:
+                Camera.Setting.Color.Brightness.B += delta;
+                Camera.Setting.Color.Brightness.B = Mathf.Clamp(Camera.Setting.Color.Brightness.B, -1f, 1f);
                 break;
             case ColorChangeModeEnum.Contrast:
                 Camera.Setting.Color.Contrast += delta;
@@ -78,18 +116,20 @@ public class ColorChangeComponent : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B)) ColorChangeMode = ColorChangeModeEnum.Brightness;
-        if (Input.GetKeyDown(KeyCode.C)) ColorChangeMode = ColorChangeModeEnum.Contrast;
-        if (Input.GetKeyDown(KeyCode.S)) ColorChangeMode = ColorChangeModeEnum.Saturation;
-        //if (Input.GetKeyDown(KeyCode.O)) ColorChangeMode = ColorChangeModeEnum.CrossOver;
-
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.R))
         {
             var value = DefaultValues[ColorChangeMode];
             SetActiveValue(value);
             Camera.ApplySettings();
             return;
         }
+        
+        if (!Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.R)) ColorChangeMode = ColorChangeModeEnum.BrightnessRed;
+        if (Input.GetKeyDown(KeyCode.G)) ColorChangeMode = ColorChangeModeEnum.BrightnessGreen;
+        if (Input.GetKeyDown(KeyCode.B)) ColorChangeMode = ColorChangeModeEnum.BrightnessBlue;
+        if (Input.GetKeyDown(KeyCode.J)) ColorChangeMode = ColorChangeModeEnum.Brightness;
+        if (Input.GetKeyDown(KeyCode.C)) ColorChangeMode = ColorChangeModeEnum.Contrast;
+        if (Input.GetKeyDown(KeyCode.S)) ColorChangeMode = ColorChangeModeEnum.Saturation;
 
         float speed = Time.deltaTime * Speed;
         float delta = 0f;

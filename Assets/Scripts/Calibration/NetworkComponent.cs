@@ -5,12 +5,16 @@ using UnityEngine;
 public class NetworkComponent : MonoBehaviour
 {
     public bool ShowWarning = false;
+    public bool ShowVerification = false;
 
     [SerializeField]
     private TMP_InputField _hostname;
 
     [SerializeField]
     private GameObject _warning;
+    
+    [SerializeField]
+    private GameObject _verification;
 
     [SerializeField]
     private ExhibitConnectionComponent _connection;
@@ -25,6 +29,8 @@ public class NetworkComponent : MonoBehaviour
     private void Update()
     {
         _warning.SetActive(ShowWarning);
+        _verification.SetActive(ShowVerification);
+        
         _communication.ContentHostname = _hostname.text;
         
         _hostname.Select();

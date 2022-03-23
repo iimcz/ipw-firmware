@@ -48,7 +48,7 @@ Shader "Unlit/NewUnlitShader"
 
             Texture2D tex;
             float contrast;
-            float brightness;
+            float4 brightness;
             float saturation;
 
             float enableCurve;
@@ -156,7 +156,9 @@ Shader "Unlit/NewUnlitShader"
                 col.rgb = lerp(intensity, col.rgb, saturation);
 
                 col.rgb = ((col.rgb - 0.5f) * max(contrast, 0)) + 0.5f;
-                col.rgb += (brightness + bc);
+                col.rgb += bc;
+                col += brightness;
+                
                 if (enableCurve > 0.1) col.rgb *= antiOv;
 
                 return col;

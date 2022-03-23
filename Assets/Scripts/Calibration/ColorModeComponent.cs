@@ -12,12 +12,19 @@ public class ColorModeComponent : MonoBehaviour
 
     private void UpdateText()
     {
-        var b = _lastColorMode == ColorChangeComponent.ColorChangeModeEnum.Brightness;
+        var j = _lastColorMode == ColorChangeComponent.ColorChangeModeEnum.Brightness;
+        var r = _lastColorMode == ColorChangeComponent.ColorChangeModeEnum.BrightnessRed;
+        var g = _lastColorMode == ColorChangeComponent.ColorChangeModeEnum.BrightnessGreen;
+        var b = _lastColorMode == ColorChangeComponent.ColorChangeModeEnum.BrightnessBlue;
+        
         var c = _lastColorMode == ColorChangeComponent.ColorChangeModeEnum.Contrast;
         var s = _lastColorMode == ColorChangeComponent.ColorChangeModeEnum.Saturation;
             
         _modeText.text = $"Stisknutím níže uvedených kláves změníte momentálně upravovanou hodnotu\n" +
-                         $"{(b ? "<color=yellow>" : string.Empty)}B \t Jas<color=white>\n" +
+                         $"{(j ? "<color=yellow>" : string.Empty)}J \t Jas (Vše)<color=white>\n" +
+                         $"{(r ? "<color=yellow>" : string.Empty)}R \t Jas (R)<color=white>\n" +
+                         $"{(g ? "<color=yellow>" : string.Empty)}G \t Jas (G)<color=white>\n" +
+                         $"{(b ? "<color=yellow>" : string.Empty)}B \t Jas (B)<color=white>\n" +
                          $"{(c ? "<color=yellow>" : string.Empty)}C \t Kontrast<color=white>\n" +
                          $"{(s ? "<color=yellow>" : string.Empty)}S \t Saturace";
     }

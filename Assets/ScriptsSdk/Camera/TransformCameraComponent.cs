@@ -86,7 +86,7 @@ public class TransformCameraComponent : MonoBehaviour
         
         ProjectorTransformationPass.ScreenData[TargetDisplay].ScreenMesh = MeshUtils.CreateTransform(SettingsVertices);
 
-        ProjectorTransformationPass.Brightness[TargetDisplay] = Setting.Color.Brightness;
+        ProjectorTransformationPass.Brightness[TargetDisplay] = Setting.Color.Brightness.ToUnityColor();
         ProjectorTransformationPass.Contrast[TargetDisplay] = Setting.Color.Contrast;
         ProjectorTransformationPass.Saturation[TargetDisplay] = Setting.Color.Saturation;
 

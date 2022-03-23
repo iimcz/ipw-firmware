@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using emt_sdk.Communication;
 using TMPro;
 using UnityEngine;
@@ -7,12 +10,15 @@ public class ConnectionUiComponent : MonoBehaviour
     public ExhibitConnectionComponent ExhibitConnection;
     public TextMeshProUGUI IPWInfo;
     
+    public string LocalIps = string.Join("\n", GetAllLocalIPv4());
+    
     void Update()
     {
         IPWInfo.text = $"Hostname: \t {ExhibitConnection.Hostname}\n" +
                        $"Server: \t {ExhibitConnection.Settings.Communication.ContentHostname}:{ExhibitConnection.Settings.Communication.ContentPort}\n" +
-                       $"Verze serveru: \t {ExhibitConnection.Connection.ServerVersion}\n" +
-                       $"Stav: {TranslateConnectionState(ExhibitConnection.Connection?.ConnectionState)}";
+                       $"Verze serveru: \t {ExhibitConnectionComponent.Connection?.ServerVersion}\n" +
+                       $"Stav: {TranslateConnectionState(ExhibitConnectionComponent.Connection?.ConnectionState)}\n" +
+                       $"IP:\n{LocalIps}";
     }
 
     private string TranslateConnectionState(ConnectionStateEnum? state)
@@ -20,22 +26,41 @@ public class ConnectionUiComponent : MonoBehaviour
         switch (state)
         {
             case ConnectionStateEnum.Disconnected:
-                return "NenÌ p¯ipojenÌ";
+                return "Nen√≠ p≈ôipojen√≠";
             case ConnectionStateEnum.Connected:
-                return "P¯ipojeno";
+                return "P≈ôipojeno";
             case ConnectionStateEnum.VersionCheck:
                 return "Kontrola verze";
             case ConnectionStateEnum.VerifyRequest:
             case ConnectionStateEnum.VerifyWait:
-                return "OvÏ¯ov·nÌ";
+                return "Ovƒõ≈ôov√°n√≠";
             case ConnectionStateEnum.Verified:
-                return "OvÏ¯eno p¯ipojenÌ";
+                return "Ovƒõ≈ôeno p≈ôipojen√≠";
             case ConnectionStateEnum.DescriptorSent:
-                return "Odesl·n deskriptor za¯ÌzenÌ";
+                return "Odesl√°n deskriptor za≈ô√≠zen√≠";
             case ConnectionStateEnum.PackageInfoReceived:
-                return "BalÌËek p¯ijat, stahov·nÌ...";
+                return "Bal√≠ƒçek p≈ôijat, stahov√°n√≠...";
             default:
                 return string.Empty;
         }
+    }
+    
+    private static string[] GetAllLocalIPv4()
+    {
+        List<string> ipAddrList = new List<string>();
+        foreach (NetworkInterface item in NetworkInterface.GetAllNetworkInterfaces())
+        {
+            if (item.OperationalStatus == OperationalStatus.Up && item.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+            {
+                foreach (UnicastIPAddressInformation ip in item.GetIPProperties().UnicastAddresses)
+                {
+                    if (ip.Address.AddressFamily == AddressFamily.InterNetwork || ip.Address.AddressFamily == AddressFamily.InterNetworkV6)
+                    {
+                        ipAddrList.Add($"{ip.Address}\n\t{item.GetPhysicalAddress()}");
+                    }
+                }
+            }
+        }
+        return ipAddrList.ToArray();
     }
 }
