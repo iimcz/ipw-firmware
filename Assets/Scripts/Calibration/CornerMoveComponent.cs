@@ -12,6 +12,7 @@ public class CornerMoveComponent : MonoBehaviour
     public RectTransform Crosshair;
 
     public int ActiveVertex;
+    public bool AlignCorners;
 
     public float Speed = 0.5f;
     public float ShiftMultiplier = 0.25f;
@@ -45,10 +46,14 @@ public class CornerMoveComponent : MonoBehaviour
         var rootRect = ((RectTransform)Crosshair.root).rect;
         Crosshair.anchoredPosition = ActiveVertex switch
         {
-            0 => new Vector2(0, -rootRect.height),
-            1 => new Vector2(0, 0),
-            2 => new Vector2(rootRect.width, 0),
-            3 => new Vector2(rootRect.width, -rootRect.height),
+            //0 => new Vector2(0, -rootRect.height),
+            //1 => new Vector2(0, 0),
+            //2 => new Vector2(rootRect.width, 0),
+            //3 => new Vector2(rootRect.width, -rootRect.height),
+            0 => new Vector2(rootRect.width, -rootRect.height),
+            1 => new Vector2(0, -rootRect.height),
+            2 => new Vector2(0, 0),
+            3 => new Vector2(rootRect.width, 0),
             _ => throw new NotImplementedException(),
         };
     }
@@ -69,10 +74,15 @@ public class CornerMoveComponent : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift)) speed *= ShiftMultiplier;
         if (Input.GetKey(KeyCode.RightShift)) speed = RShiftStep;
 
-        if (InputExtensions.GetKeyModified(KeyCode.UpArrow)) offset += new Vector2(0, speed);
-        if (InputExtensions.GetKeyModified(KeyCode.DownArrow)) offset += new Vector2(0, -speed);
-        if (InputExtensions.GetKeyModified(KeyCode.LeftArrow)) offset += new Vector2(-speed, 0);
-        if (InputExtensions.GetKeyModified(KeyCode.RightArrow)) offset += new Vector2(speed, 0);
+        //if (InputExtensions.GetKeyModified(KeyCode.UpArrow)) offset += new Vector2(0, speed);
+        //if (InputExtensions.GetKeyModified(KeyCode.DownArrow)) offset += new Vector2(0, -speed);
+        //if (InputExtensions.GetKeyModified(KeyCode.LeftArrow)) offset += new Vector2(-speed, 0);
+        //if (InputExtensions.GetKeyModified(KeyCode.RightArrow)) offset += new Vector2(speed, 0);
+        
+        if (InputExtensions.GetKeyModified(KeyCode.UpArrow)) offset += new Vector2(speed, 0);
+        if (InputExtensions.GetKeyModified(KeyCode.DownArrow)) offset += new Vector2(-speed, 0);
+        if (InputExtensions.GetKeyModified(KeyCode.LeftArrow)) offset += new Vector2(0, speed);
+        if (InputExtensions.GetKeyModified(KeyCode.RightArrow)) offset += new Vector2(0, -speed);
 
         if (offset == Vector2.zero) return;
 

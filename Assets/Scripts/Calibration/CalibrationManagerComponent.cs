@@ -34,7 +34,7 @@ public class CalibrationManagerComponent : MonoBehaviour
     }
 
     public bool AlwaysCalibrate;
-    
+
     private CalibrationStateEnum _calibrationState = CalibrationStateEnum.Uninitialized;
     private NetworkStateEnum _networkState = NetworkStateEnum.Waiting;
     

@@ -11,6 +11,8 @@ public class TransformCameraComponent : MonoBehaviour
 {
     [SceneObjectsOnly, Required]
     public Camera Camera;
+
+    public bool AlignCorners;
     
     public List<DisplaySetting> Settings;
 
@@ -84,7 +86,7 @@ public class TransformCameraComponent : MonoBehaviour
         Camera.targetDisplay = Setting.DisplayId;
         Camera.aspect = 1;
         
-        ProjectorTransformationPass.ScreenData[TargetDisplay].ScreenMesh = MeshUtils.CreateTransform(SettingsVertices);
+        ProjectorTransformationPass.ScreenData[TargetDisplay].ScreenMesh = MeshUtils.CreateTransform(SettingsVertices, AlignCorners);
 
         ProjectorTransformationPass.Brightness[TargetDisplay] = Setting.Color.Brightness.ToUnityColor();
         ProjectorTransformationPass.Contrast[TargetDisplay] = Setting.Color.Contrast;

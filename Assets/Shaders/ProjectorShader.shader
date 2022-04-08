@@ -5,8 +5,10 @@ Shader "Unlit/NewUnlitShader"
         _Power("Power", Range(1,3)) = 2
         _Power2("Power2", Range(1,3)) = 2
         
-        _Cutoff1("Thing1", Range(0,1)) = 1
-        _Cutoff2("Thing", Range(0,1)) = 1
+        _Cutoff1("Cutoff", Range(0,1)) = 1
+        _Cutoff2("Cutoff 2", Range(0,1)) = 1
+        
+        _Gamma("Gamma", Range(0, 3)) = 2.2
     }
     SubShader
     {
@@ -44,6 +46,8 @@ Shader "Unlit/NewUnlitShader"
             float _Cutoff1;
             float _Cutoff2;
 
+            float _Gamma;
+
             SamplerState trilinear_clamp_sampler;
 
             Texture2D tex;
@@ -66,6 +70,11 @@ Shader "Unlit/NewUnlitShader"
                 o.uv = v.uv;
                 o.uv2 = v.uv2;
                 return o;
+            }
+
+            float map(float val, float min1, float max1, float min2, float max2)
+            {
+                return min2 + (val - min1) * (max2 - min2) / (max1 - min1);
             }
 
             float brightnessCurve(fixed2 uv)
@@ -95,6 +104,22 @@ Shader "Unlit/NewUnlitShader"
                 return x < 0.5 ? 4.0 * x * x * x : 1.0 - pow(-2.0 * x + 2.0, 3.0) / 2.0;
             }
 
+            float blendFunction(float x)
+            {
+                const float inv_gamma = 1.0 / _Gamma;
+                const float p = 2.0; // constant, but specified separately
+                const float under_half = 0.5 * pow(2 * x, p);
+                const float over_half = 1 - 0.5 * pow(2 * (1 - x), p);
+                if (x < 0.5)
+                    return pow(under_half, inv_gamma);
+                return pow(over_half, inv_gamma);
+            }
+
+            float gammaFunction(float x)
+            {
+                return 0.0;
+            }
+
             float antiOverlap(fixed2 uv)
             {
                 float x = clamp(uv.x, 0, 1);
@@ -102,16 +127,20 @@ Shader "Unlit/NewUnlitShader"
                 {
                     if (x > 1.0 - _Cutoff1)
                     {
-                        float progress = lerp(0.0, _Cutoff2, (1.0 - x) / _Cutoff1);
-                        return easeInOutCubic(progress);
+                        //float progress = lerp(0.0, _Cutoff2, (1.0 - x) / _Cutoff1);
+                        //return easeInOutCubic(progress);
+                        float progress = map(x, 1.0 - _Cutoff1, 1.0, 1.0, 0.0);
+                        return blendFunction(clamp(progress, 0, 1));
                     }
                 }
                 else
                 {
                     if (x < _Cutoff1)
                     {
-                        float progress = lerp(0.0, _Cutoff2, x / _Cutoff1);
-                        return easeInOutCubic(progress);
+                        //float progress = lerp(0.0, _Cutoff2, x / _Cutoff1);
+                        //return easeInOutCubic(progress);
+                        float progress = map(x, 0.0, _Cutoff1, 0.0, 1.0);
+                        return blendFunction(clamp(progress, 0, 1));
                     }
                 }
 
@@ -157,8 +186,7 @@ Shader "Unlit/NewUnlitShader"
 
                 col.rgb = ((col.rgb - 0.5f) * max(contrast, 0)) + 0.5f;
                 col.rgb += bc;
-                col += brightness;
-                
+                col *= brightness;
                 if (enableCurve > 0.1) col.rgb *= antiOv;
 
                 return col;

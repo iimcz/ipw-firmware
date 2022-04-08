@@ -26,10 +26,10 @@ public class ColorChangeComponent : MonoBehaviour
 
     public readonly Dictionary<ColorChangeModeEnum, float> DefaultValues = new Dictionary<ColorChangeModeEnum, float>
     {
-        { ColorChangeModeEnum.Brightness, 0f },
-        { ColorChangeModeEnum.BrightnessRed, 0f },
-        { ColorChangeModeEnum.BrightnessGreen, 0f },
-        { ColorChangeModeEnum.BrightnessBlue, 0f },
+        { ColorChangeModeEnum.Brightness, 1f },
+        { ColorChangeModeEnum.BrightnessRed, 1f },
+        { ColorChangeModeEnum.BrightnessGreen, 1f },
+        { ColorChangeModeEnum.BrightnessBlue, 1f },
         { ColorChangeModeEnum.Contrast, 1f },
         { ColorChangeModeEnum.Saturation, 1f },
         { ColorChangeModeEnum.CrossOver, 0.0f },
