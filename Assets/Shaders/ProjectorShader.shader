@@ -1,4 +1,4 @@
-Shader "Unlit/NewUnlitShader"
+Shader "Unlit/ProjectorShader"
 {
     Properties
     {
@@ -7,6 +7,12 @@ Shader "Unlit/NewUnlitShader"
         
         _Cutoff1("Cutoff", Range(0,1)) = 1
         _Cutoff2("Cutoff 2", Range(0,1)) = 1
+
+        _DistMinTop("Minimal Distance (top projector, meters)", Range(0, 4)) = 1.7
+        _DistMaxTop("Maximum Distance (top projector, meters)", Range(0, 4)) = 2.2
+        
+        _DistMinBot("Minimal Distance (bottom projector, meters)", Range(0, 4)) = 1.7
+        _DistMaxBot("Maximum Distance (bottom projector, meters)", Range(0, 4)) = 2.2
         
         _Gamma("Gamma", Range(0, 3)) = 2.2
     }
@@ -46,6 +52,12 @@ Shader "Unlit/NewUnlitShader"
             float _Cutoff1;
             float _Cutoff2;
 
+            float _DistMinTop;
+            float _DistMaxTop;
+        
+            float _DistMinBot;
+            float _DistMaxBot;
+
             float _Gamma;
 
             SamplerState trilinear_clamp_sampler;
@@ -55,7 +67,11 @@ Shader "Unlit/NewUnlitShader"
             float4 brightness;
             float saturation;
 
-            float enableCurve;
+            float enableGeometricCorrection;
+            float enableGammaCorrection;
+            float enableBrightnessCorrection;
+            float enableBlending;
+
             float flipCurve;
             float crossOver;
 
@@ -106,18 +122,18 @@ Shader "Unlit/NewUnlitShader"
 
             float blendFunction(float x)
             {
-                const float inv_gamma = 1.0 / _Gamma;
                 const float p = 2.0; // constant, but specified separately
                 const float under_half = 0.5 * pow(2 * x, p);
                 const float over_half = 1 - 0.5 * pow(2 * (1 - x), p);
                 if (x < 0.5)
-                    return pow(under_half, inv_gamma);
-                return pow(over_half, inv_gamma);
+                    return under_half;
+                return over_half;
             }
 
-            float gammaFunction(float x)
+            float gammaCorrection(float x)
             {
-                return 0.0;
+                const float inv_gamma = 1.0 / _Gamma;
+                return pow(x, inv_gamma);
             }
 
             float antiOverlap(fixed2 uv)
@@ -153,21 +169,24 @@ Shader "Unlit/NewUnlitShader"
                 fixed2 uv = i.uv / i.uv2;
                 
                 // Stretch sides of texture due to projector angle
-                if (flipCurve < 0.5) {
-                    uv.x = 3.0 * uv.x - pow(uv.x, _Power2);
-                    uv.x /= 2.0;
-                }
-                else {
-                    uv.x = uv.x + pow(uv.x, _Power);
-                    uv.x /= 2.0;
+                if (enableGeometricCorrection) {
+                    if (flipCurve < 0.5) {
+                        uv.x = 3.0 * uv.x - pow(uv.x, _Power2);
+                        uv.x /= 2.0;
+                    }
+                    else {
+                        uv.x = uv.x + pow(uv.x, _Power);
+                        uv.x /= 2.0;
+                    }
                 }
 
                 // Compensate for uneven projector brightness on edges
                 float bc = 0;
-                if (enableCurve > 0.1) bc = brightnessCurve(uv);
+                if (enableBrightnessCorrection > 0.1) bc = 1.0 + brightnessCurve(uv) * 10;
 
-                // Reduce overlap strength in the middle of display
-                float antiOv = antiOverlap(uv);
+                // Reduce overlap strength in the middle of display to blend the two projections together
+                float antiOv = 1.0;
+                if (enableBlending > 0.1) antiOv = antiOverlap(uv);
 
                 // Flip image in vertical layout
                 if (vertical > 0.1)
@@ -185,9 +204,9 @@ Shader "Unlit/NewUnlitShader"
                 col.rgb = lerp(intensity, col.rgb, saturation);
 
                 col.rgb = ((col.rgb - 0.5f) * max(contrast, 0)) + 0.5f;
-                col.rgb += bc;
-                col *= brightness;
-                if (enableCurve > 0.1) col.rgb *= antiOv;
+                col.rgb *= bc;
+                col.rgb *= brightness;
+                col.rgb *= antiOv;
 
                 return col;
             }
