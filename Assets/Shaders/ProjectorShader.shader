@@ -111,8 +111,8 @@ Shader "Unlit/NewUnlitShader"
                 const float under_half = 0.5 * pow(2 * x, p);
                 const float over_half = 1 - 0.5 * pow(2 * (1 - x), p);
                 if (x < 0.5)
-                    return pow(under_half, inv_gamma);
-                return pow(over_half, inv_gamma);
+                    return pow(under_half, _Gamma);
+                return pow(over_half, _Gamma);
             }
 
             float gammaFunction(float x)

@@ -1107,6 +1107,7 @@ MonoBehaviour:
   Camera: {fileID: 4899629861478253082}
   Crosshair: {fileID: 113210295}
   ActiveVertex: 0
+  AlignCorners: 0
   Speed: 0.5
   ShiftMultiplier: 0.25
   RShiftStep: 0.001
@@ -1294,7 +1295,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &247705680
 Transform:
   m_ObjectHideFlags: 0
@@ -1552,7 +1553,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &536098127
 Transform:
   m_ObjectHideFlags: 0
@@ -3843,7 +3844,7 @@ Transform:
   m_GameObject: {fileID: 1482005628}
   m_LocalRotation: {x: 0.5, y: 0.5, z: -0.5, w: -0.5}
   m_LocalPosition: {x: 0.0000000041293453, y: 0.000000021913582, z: 20}
-  m_LocalScale: {x: 1.5, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 1, z: 2}
   m_Children:
   - {fileID: 247705680}
   - {fileID: 536098127}
@@ -4486,6 +4487,7 @@ MonoBehaviour:
   Camera: {fileID: 4899629861478253081}
   Crosshair: {fileID: 2090906289}
   ActiveVertex: 0
+  AlignCorners: 0
   Speed: 0.5
   ShiftMultiplier: 0.25
   RShiftStep: 0.001
