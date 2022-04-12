@@ -1,4 +1,6 @@
 using UnityEngine;
+using emt_sdk.Settings;
+using TMPro;
 
 public class LensShiftComponent : MonoBehaviour
 {
@@ -7,7 +9,23 @@ public class LensShiftComponent : MonoBehaviour
     public float RShiftStep = 0.001f;
 
     [SerializeField] private DualCameraComponent _camera;
+    [SerializeField] private TextMeshProUGUI _modeText;
     
+    void OnEnable()
+    {
+        // HACK: expect two cameras with same resolution
+        switch (_camera.Orientation)
+        {
+            case IPWSetting.IPWOrientation.Single:
+                break;
+            case IPWSetting.IPWOrientation.Vertical:
+            case IPWSetting.IPWOrientation.Horizontal:
+                RShiftStep = 1.0f / _camera.TopCamera.Camera.pixelWidth;
+                Speed = 5.0f / _camera.TopCamera.Camera.pixelWidth;
+                break;
+        }
+    }
+
     void Update()
     {
         var delta = 0f;
@@ -20,5 +38,10 @@ public class LensShiftComponent : MonoBehaviour
         if (delta == 0f) return;
         _camera.Setting.LensShift += delta;
         _camera.ApplySettings();
+
+        _modeText.text = $"Kalibrace prostoru (5 / 6)\n\n" +
+                         $"Aktuální posun: {_camera.Setting.LensShift * _camera.TopCamera.Camera.pixelWidth} pixelů\n\n" +
+                         $"+ \t Zvýšení vzdálenosti\n" +
+                         $"- \t Snížení vzdálenosti";
     }
 }

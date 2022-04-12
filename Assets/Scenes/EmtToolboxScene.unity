@@ -3134,6 +3134,7 @@ MonoBehaviour:
   ShiftMultiplier: 0.1
   RShiftStep: 0.001
   _camera: {fileID: 454132774}
+  _modeText: {fileID: 1517728200}
 --- !u!1 &1313451765
 GameObject:
   m_ObjectHideFlags: 0

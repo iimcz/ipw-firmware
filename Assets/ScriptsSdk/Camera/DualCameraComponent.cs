@@ -31,7 +31,7 @@ public class DualCameraComponent : MonoBehaviour
 
     void CurveChanged()
     {
-        ProjectorTransformationPass.EnableCurve = CurveOn;
+        //ProjectorTransformationPass.EnableCurve = CurveOn;
     }
 
     void Awake()
@@ -125,6 +125,7 @@ public class DualCameraComponent : MonoBehaviour
         Cursor.visible = false;
 
         ProjectorTransformationPass.Vertical = Setting.Orientation == IPWSetting.IPWOrientation.Vertical;
+        // TODO: Crossover
 
         TopCamera.ApplySettings();
         BottomCamera.ApplySettings();

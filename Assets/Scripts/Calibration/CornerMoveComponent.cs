@@ -44,18 +44,30 @@ public class CornerMoveComponent : MonoBehaviour
     private void UpdateCrosshair()
     {
         var rootRect = ((RectTransform)Crosshair.root).rect;
-        Crosshair.anchoredPosition = ActiveVertex switch
+
+        // TODO: maybe use loaded settings instead of set renderpass params
+        if (ProjectorTransformationPass.Vertical)
         {
-            //0 => new Vector2(0, -rootRect.height),
-            //1 => new Vector2(0, 0),
-            //2 => new Vector2(rootRect.width, 0),
-            //3 => new Vector2(rootRect.width, -rootRect.height),
-            0 => new Vector2(rootRect.width, -rootRect.height),
-            1 => new Vector2(0, -rootRect.height),
-            2 => new Vector2(0, 0),
-            3 => new Vector2(rootRect.width, 0),
-            _ => throw new NotImplementedException(),
-        };
+            Crosshair.anchoredPosition = ActiveVertex switch
+            {
+                0 => new Vector2(rootRect.width, -rootRect.height),
+                1 => new Vector2(0, -rootRect.height),
+                2 => new Vector2(0, 0),
+                3 => new Vector2(rootRect.width, 0),
+                _ => throw new NotImplementedException(),
+            };
+        }
+        else
+        {
+            Crosshair.anchoredPosition = ActiveVertex switch
+            {
+                0 => new Vector2(0, -rootRect.height),
+                1 => new Vector2(0, 0),
+                2 => new Vector2(rootRect.width, 0),
+                3 => new Vector2(rootRect.width, -rootRect.height),
+                _ => throw new NotImplementedException(),
+            };
+        }
     }
 
     private void Update()
@@ -74,15 +86,22 @@ public class CornerMoveComponent : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift)) speed *= ShiftMultiplier;
         if (Input.GetKey(KeyCode.RightShift)) speed = RShiftStep;
 
-        //if (InputExtensions.GetKeyModified(KeyCode.UpArrow)) offset += new Vector2(0, speed);
-        //if (InputExtensions.GetKeyModified(KeyCode.DownArrow)) offset += new Vector2(0, -speed);
-        //if (InputExtensions.GetKeyModified(KeyCode.LeftArrow)) offset += new Vector2(-speed, 0);
-        //if (InputExtensions.GetKeyModified(KeyCode.RightArrow)) offset += new Vector2(speed, 0);
+        // TODO: maybe use loaded settings instead of set renderpass params
+        if (ProjectorTransformationPass.Vertical)
+        {
+            if (InputExtensions.GetKeyModified(KeyCode.UpArrow)) offset += new Vector2(speed, 0);
+            if (InputExtensions.GetKeyModified(KeyCode.DownArrow)) offset += new Vector2(-speed, 0);
+            if (InputExtensions.GetKeyModified(KeyCode.LeftArrow)) offset += new Vector2(0, speed);
+            if (InputExtensions.GetKeyModified(KeyCode.RightArrow)) offset += new Vector2(0, -speed);
+        }
+        else
+        {
+            if (InputExtensions.GetKeyModified(KeyCode.UpArrow)) offset += new Vector2(0, speed);
+            if (InputExtensions.GetKeyModified(KeyCode.DownArrow)) offset += new Vector2(0, -speed);
+            if (InputExtensions.GetKeyModified(KeyCode.LeftArrow)) offset += new Vector2(-speed, 0);
+            if (InputExtensions.GetKeyModified(KeyCode.RightArrow)) offset += new Vector2(speed, 0);   
+        }
         
-        if (InputExtensions.GetKeyModified(KeyCode.UpArrow)) offset += new Vector2(speed, 0);
-        if (InputExtensions.GetKeyModified(KeyCode.DownArrow)) offset += new Vector2(-speed, 0);
-        if (InputExtensions.GetKeyModified(KeyCode.LeftArrow)) offset += new Vector2(0, speed);
-        if (InputExtensions.GetKeyModified(KeyCode.RightArrow)) offset += new Vector2(0, -speed);
 
         if (offset == Vector2.zero) return;
 

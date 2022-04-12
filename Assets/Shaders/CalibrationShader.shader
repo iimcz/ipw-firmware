@@ -1,4 +1,4 @@
-Shader "Unlit/ProjectorShader"
+Shader "Unlit/CalibrationShader"
 {
     Properties
     {
@@ -68,6 +68,13 @@ Shader "Unlit/ProjectorShader"
             float4 brightness;
             float saturation;
 
+            float enableColorRamp;
+            float enableGeometricCorrection;
+            float enableGammaCorrection;
+            float enableBrightnessCorrection;
+            float enableContrastSaturation;
+            float enableBlending;
+
             float flipCurve;
             float crossOver;
 
@@ -88,36 +95,54 @@ Shader "Unlit/ProjectorShader"
                 fixed2 uv = i.uv / i.uv2;
                 
                 // Stretch sides of texture due to projector angle
-                if (flipCurve < 0.5) {
-                    uv.x = 3.0 * uv.x - pow(uv.x, _Power2);
-                    uv.x /= 2.0;
-                }
-                else {
-                    uv.x = uv.x + pow(uv.x, _Power);
-                    uv.x /= 2.0;
+                if (enableGeometricCorrection) {
+                    if (flipCurve < 0.5) {
+                        uv.x = 3.0 * uv.x - pow(uv.x, _Power2);
+                        uv.x /= 2.0;
+                    }
+                    else {
+                        uv.x = uv.x + pow(uv.x, _Power);
+                        uv.x /= 2.0;
+                    }
                 }
 
                 // Compensate for uneven projector brightness on edges
-                float bc = 1.0 + brightnessCurve(uv, flipCurve) * 10;
-                bc = gammaCorrection(bc, _Gamma);
+                float bc = 0;
+                if (enableBrightnessCorrection > 0.1) bc = 1.0 + brightnessCurve(uv, flipCurve) * 10;
 
                 // Reduce overlap strength in the middle of display to blend the two projections together
-                float antiOv = antiOverlap(uv, _Cutoff1, flipCurve);
-                antiOv = gammaCorrection(antiOv, _Gamma);
+                float antiOv = 1.0;
+                if (enableBlending > 0.1) antiOv = antiOverlap(uv, _Cutoff1, flipCurve);
+
+                if (enableGammaCorrection > 0.1)
+                {
+                    bc = gammaCorrection(bc, _Gamma);
+                    antiOv = gammaCorrection(antiOv, _Gamma);
+                }
 
                 // Flip image in vertical layout
+                float rampValue = uv.y;
                 if (vertical > 0.1)
                 {
                     fixed2 uv_b = uv;
 
                     uv.x = 1 - uv_b.y;
                     uv.y = uv_b.x;
+
+                    rampValue = uv.x;
                 }
 
                 fixed4 col = tex.Sample(trilinear_clamp_sampler, uv);
+                if (enableColorRamp > 0.1)
+                {
+                    col = colorRamp(rampValue);
+                }
 
-                col.rgb = applySaturation(col.rgb, saturation);
-                col.rgb = applyContrast(col.rgb, contrast);
+                if (enableContrastSaturation > 0.1)
+                {
+                    col.rgb = applySaturation(col.rgb, saturation);
+                    col.rgb = applyContrast(col.rgb, contrast);
+                }
                 col.rgb *= bc;
                 col.rgb *= brightness;
                 col.rgb *= antiOv;

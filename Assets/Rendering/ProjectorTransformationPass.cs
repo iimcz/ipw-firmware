@@ -7,6 +7,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
     private string _profilerTag;
     private Material _materialToBlit;
     private Material _materialPhysicalAlignment;
+    private Material _materialSoftwareCalibration;
     private RenderTargetHandle _tempTexture;
 
     public const int MAX_DISPLAYS = 8; // Unity limit
@@ -16,17 +17,26 @@ public class ProjectorTransformationPass : ScriptableRenderPass
     public static float[] Contrast = new float[MAX_DISPLAYS];
     public static bool[] FlipCurve = new bool[MAX_DISPLAYS];
     public static float[] CrossOver = new float[MAX_DISPLAYS];
-    public static bool EnableCurve = true;
     public static bool Vertical = true;
 
     public static bool PhysicalAlignment = false;
 
-    public ProjectorTransformationPass(string profilerTag, RenderPassEvent renderPassEvent, Material materialToBlit, Material materialPhysicalAlignment)
+    // SW calibration settings
+    public static bool SoftwareCalibration = false;
+    public static bool EnableColorRamp = false;
+    public static bool EnableGeometricCorrection = true;
+    public static bool EnableGammaCorrection = true;
+    public static bool EnableBrightnessCorrection = true;
+    public static bool EnableContrastSaturation = true;
+    public static bool EnableBlending = true;
+
+    public ProjectorTransformationPass(string profilerTag, RenderPassEvent renderPassEvent, Material materialToBlit, Material materialPhysicalAlignment, Material materialSoftwareCalibration)
     {
         this.renderPassEvent = renderPassEvent;
         _profilerTag = profilerTag;
         _materialToBlit = materialToBlit;
         _materialPhysicalAlignment = materialPhysicalAlignment;
+        _materialSoftwareCalibration = materialSoftwareCalibration;
 
         for (int i = 0; i < MAX_DISPLAYS; i++) ScreenData[i] = new ProjectorTransformationData();
     }
@@ -57,7 +67,6 @@ public class ProjectorTransformationPass : ScriptableRenderPass
             cmd.SetGlobalColor(Shader.PropertyToID("brightness"), Brightness[displayNumber]);
             cmd.SetGlobalFloat(Shader.PropertyToID("saturation"), Saturation[displayNumber]);
             cmd.SetGlobalFloat(Shader.PropertyToID("flipCurve"), FlipCurve[displayNumber] ? 1.0f : 0.0f);
-            cmd.SetGlobalFloat(Shader.PropertyToID("enableCurve"), EnableCurve ? 1.0f : 0.0f);
             cmd.SetGlobalFloat(Shader.PropertyToID("crossOver"), CrossOver[0]);
             cmd.SetGlobalFloat(Shader.PropertyToID("vertical"), Vertical ? 1.0f : 0.0f);
             cmd.ClearRenderTarget(false, true, Color.black);
@@ -69,7 +78,21 @@ public class ProjectorTransformationPass : ScriptableRenderPass
                 ScreenData[displayNumber].ScreenMesh = mesh;
             }
 
-            cmd.DrawMesh(mesh, Matrix4x4.identity, _materialToBlit, 0, 0);
+            if (SoftwareCalibration)
+            {
+                cmd.SetGlobalFloat(Shader.PropertyToID("enableColorRamp"), EnableColorRamp ? 1.0f : 0.0f);
+                cmd.SetGlobalFloat(Shader.PropertyToID("enableGeometricCorrection"), EnableGeometricCorrection ? 1.0f : 0.0f);
+                cmd.SetGlobalFloat(Shader.PropertyToID("enableGammaCorrection"), EnableGammaCorrection ? 1.0f : 0.0f);
+                cmd.SetGlobalFloat(Shader.PropertyToID("enableBrightnessCorrection"), EnableBrightnessCorrection ? 1.0f : 0.0f);
+                cmd.SetGlobalFloat(Shader.PropertyToID("enableContrastSaturation"), EnableContrastSaturation ? 1.0f : 0.0f);
+                cmd.SetGlobalFloat(Shader.PropertyToID("enableBlending"), EnableBlending ? 1.0f : 0.0f);
+
+                cmd.DrawMesh(mesh, Matrix4x4.identity, _materialSoftwareCalibration, 0, 0);
+            }
+            else
+            {
+                cmd.DrawMesh(mesh, Matrix4x4.identity, _materialToBlit, 0, 0);
+            }
             cmd.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);
         }
 

@@ -58,14 +58,8 @@ public class CalibrationManagerComponent : MonoBehaviour
         // Give the rendering pipeline a while to get itself sorted
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
-
-        if (AlwaysCalibrate)
-        {
-            UpdateUi(CalibrationStateEnum.PhysicalAlignment);
-            yield break;
-        }
         
-        var isCalibrated = ProjectorTransfomartionSettingsLoader.SettingsExists;
+        var isCalibrated = ProjectorTransfomartionSettingsLoader.SettingsExists && !AlwaysCalibrate;
         yield return new WaitForSecondsRealtime(5f); // Give the user few seconds to react
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) isCalibrated = false;
 
@@ -76,6 +70,7 @@ public class CalibrationManagerComponent : MonoBehaviour
 
         if (isCalibrated)
         {
+            ProjectorTransformationPass.SoftwareCalibration = false;
             if (startupPackage != null)
             {
                 _connection.SwitchScene(startupPackage);
@@ -90,7 +85,11 @@ public class CalibrationManagerComponent : MonoBehaviour
                 UpdateUi(CalibrationStateEnum.NetworkCheck);
             }
         }
-        else UpdateUi(CalibrationStateEnum.PhysicalAlignment);
+        else
+        {
+            ProjectorTransformationPass.SoftwareCalibration = true;
+            UpdateUi(CalibrationStateEnum.PhysicalAlignment);
+        }
     }
 
     private async Task VerifyNetwork()
@@ -187,6 +186,7 @@ public class CalibrationManagerComponent : MonoBehaviour
                 }
                 break;
             case CalibrationStateEnum.Initialized:
+                ProjectorTransformationPass.SoftwareCalibration = false;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
