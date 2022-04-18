@@ -127,6 +127,8 @@ public class CalibrationManagerComponent : MonoBehaviour
 
     private void Update()
     {
+        // HACK: this should have a better place/pattern of setting
+        ProjectorTransformationPass.EnableBlending = true;
         switch (_calibrationState)
         {
             case CalibrationStateEnum.Uninitialized:
@@ -135,6 +137,7 @@ public class CalibrationManagerComponent : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
                 break;
             case CalibrationStateEnum.CornerAlignment:
+                ProjectorTransformationPass.EnableBlending = false;
                 if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
                 break;
             // OverlapCorrection moved to LensShift and tied together

@@ -25,7 +25,7 @@ public class ProjectorTransformationPass : ScriptableRenderPass
     public static bool SoftwareCalibration = false;
     public static bool EnableColorRamp = false;
     public static bool EnableGeometricCorrection = true;
-    public static bool EnableGammaCorrection = true;
+    public static bool EnableGammaCorrection = false;
     public static bool EnableBrightnessCorrection = true;
     public static bool EnableContrastSaturation = true;
     public static bool EnableBlending = true;
