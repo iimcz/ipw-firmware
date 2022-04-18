@@ -125,7 +125,6 @@ public class DualCameraComponent : MonoBehaviour
         Cursor.visible = false;
 
         ProjectorTransformationPass.Vertical = Setting.Orientation == IPWSetting.IPWOrientation.Vertical;
-        // TODO: Crossover
 
         TopCamera.ApplySettings();
         BottomCamera.ApplySettings();

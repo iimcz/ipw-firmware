@@ -59,7 +59,7 @@ Shader "Unlit/AlignShader"
                 float yWidth = (1.0 / _VertLines) * _LineSize;
 
                 fixed4 col = xPos < xWidth || xPos > ((1.0 / _HorLines) - xWidth) ? fixed4(0, 1, 0, 1) : fixed4(0, 0, 0, 0);
-                col += yPos < yWidth ? fixed4(0, 1, 1, 1) : fixed4(0, 0, 0, 0);
+                col += yPos < yWidth || yPos > ((1.0 / _VertLines) - yWidth) ? fixed4(0, 1, 1, 1) : fixed4(0, 0, 0, 0);
 
                 return col;
             }

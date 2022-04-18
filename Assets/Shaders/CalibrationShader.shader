@@ -112,7 +112,7 @@ Shader "Unlit/CalibrationShader"
 
                 // Reduce overlap strength in the middle of display to blend the two projections together
                 float antiOv = 1.0;
-                if (enableBlending > 0.1) antiOv = antiOverlap(uv, _Cutoff1, flipCurve);
+                if (enableBlending > 0.1) antiOv = antiOverlap(uv, crossOver, flipCurve);
 
                 if (enableGammaCorrection > 0.1)
                 {
@@ -121,21 +121,29 @@ Shader "Unlit/CalibrationShader"
                 }
 
                 // Flip image in vertical layout
-                float rampValue = uv.y;
                 if (vertical > 0.1)
                 {
                     fixed2 uv_b = uv;
 
                     uv.x = 1 - uv_b.y;
                     uv.y = uv_b.x;
-
-                    rampValue = uv.x;
                 }
 
                 fixed4 col = tex.Sample(trilinear_clamp_sampler, uv);
                 if (enableColorRamp > 0.1)
                 {
-                    col = colorRamp(rampValue);
+                    if (vertical > 0.1)
+                    {
+                        col = colorRamp(uv.x);
+                        //col *= step(crossOver / 2.0, uv.y);
+                        //col *= step(uv.y, 1.0 - crossOver / 2.0);
+                    }
+                    else
+                    {
+                        col = colorRamp(uv.y);
+                        //col *= step(crossOver / 2.0, uv.x);
+                        //col *= step(uv.x, 1.0 - crossOver / 2.0);
+                    }
                 }
 
                 if (enableContrastSaturation > 0.1)

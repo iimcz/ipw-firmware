@@ -52,16 +52,18 @@ float antiOverlap(fixed2 uv, float overlap, float flipCurve) {
 }
 
 fixed4 colorRamp(float val) {
-  float lightness = (val % (1.0 / 4.0)) * 4.0;
+  float lightness = (val % (1.0 / 5.0)) * 5.0;
 
-  if (val < 0.25) {
+  if (val < 0.20) {
     return fixed4(lightness, lightness, lightness, 1);
-  } else if (val < 0.50) {
+  } else if (val < 0.40) {
     return fixed4(1, lightness, lightness, 1);
-  } else if (val < 0.75) {
+  } else if (val < 0.60) {
     return fixed4(lightness, 1, lightness, 1);
-  } else {
+  } else if (val < 0.80) {
     return fixed4(lightness, lightness, 1, 1);
+  } else {
+    return fixed4(lightness, 1, 1, 1);
   }
 }
 

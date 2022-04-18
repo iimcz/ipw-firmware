@@ -33,14 +33,14 @@ public class ColorModeComponent : MonoBehaviour
     {
         UpdateText();
         ProjectorTransformationPass.EnableColorRamp = true;
-        ProjectorTransformationPass.EnableBlending = false;
+        //ProjectorTransformationPass.EnableBlending = false;
         ProjectorTransformationPass.EnableContrastSaturation = false;
     }
 
     private void OnDisable()
     {
         ProjectorTransformationPass.EnableColorRamp = false;
-        ProjectorTransformationPass.EnableBlending = true;
+        //ProjectorTransformationPass.EnableBlending = true;
         ProjectorTransformationPass.EnableContrastSaturation = true;
     }
 

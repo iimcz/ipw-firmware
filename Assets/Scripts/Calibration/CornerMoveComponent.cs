@@ -33,11 +33,13 @@ public class CornerMoveComponent : MonoBehaviour
     private void OnEnable()
     {
         Crosshair.gameObject.SetActive(true);
+        ProjectorTransformationPass.EnableBlending = false;
         UpdateCrosshair();
     }
 
     private void OnDisable()
     {
+        ProjectorTransformationPass.EnableBlending = true;
         Crosshair.gameObject.SetActive(false);
     }
 

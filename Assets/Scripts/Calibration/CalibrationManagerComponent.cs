@@ -16,9 +16,10 @@ public class CalibrationManagerComponent : MonoBehaviour
         Uninitialized,
         PhysicalAlignment,
         CornerAlignment,
-        OverlapCorrection,
-        ColorCorrection,
+        // TODO: remove OverlapCorrection step completely
+        //OverlapCorrection, // Overlap moved to LensShift and tied together
         LensShift,
+        ColorCorrection,
         Audio,
         NetworkConfiguration,
         NetworkCheck,
@@ -136,9 +137,11 @@ public class CalibrationManagerComponent : MonoBehaviour
             case CalibrationStateEnum.CornerAlignment:
                 if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
                 break;
-            case CalibrationStateEnum.OverlapCorrection:
-                if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
-                break;
+            // OverlapCorrection moved to LensShift and tied together
+            // TODO: remove
+            //case CalibrationStateEnum.OverlapCorrection:
+            //    if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
+            //    break;
             case CalibrationStateEnum.ColorCorrection:
                 if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
                 break;

@@ -99,11 +99,13 @@ Shader "Unlit/ProjectorShader"
 
                 // Compensate for uneven projector brightness on edges
                 float bc = 1.0 + brightnessCurve(uv, flipCurve) * 10;
-                bc = gammaCorrection(bc, _Gamma);
 
                 // Reduce overlap strength in the middle of display to blend the two projections together
-                float antiOv = antiOverlap(uv, _Cutoff1, flipCurve);
-                antiOv = gammaCorrection(antiOv, _Gamma);
+                float antiOv = antiOverlap(uv, crossOver, flipCurve);
+
+                // NOTE: Gamma correction is handled by Unity. We can work in linear color scale here.
+                //bc = gammaCorrection(bc, _Gamma);
+                //antiOv = gammaCorrection(antiOv, _Gamma);
 
                 // Flip image in vertical layout
                 if (vertical > 0.1)
