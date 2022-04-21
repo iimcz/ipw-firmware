@@ -412,9 +412,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hostname: 
-  TargetServer: 127.0.0.1
-  Port: 3917
-  DebugLoadTest: 0
 --- !u!114 &1515476730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -422,7 +419,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515476725}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d3c4710b8ec8f84c869f627e30f0b5b, type: 3}
   m_Name: 
@@ -435,7 +432,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515476725}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce3e2dc631909c975aa1c3cda36abc35, type: 3}
   m_Name: 
@@ -543,6 +540,10 @@ PrefabInstance:
     - target: {fileID: 1942462218087130139, guid: f6bbb8fc5e4b88dadbde34c104a89ee0, type: 3}
       propertyPath: m_Name
       value: Cursor
+      objectReference: {fileID: 0}
+    - target: {fileID: 1942462218087130139, guid: f6bbb8fc5e4b88dadbde34c104a89ee0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6bbb8fc5e4b88dadbde34c104a89ee0, type: 3}

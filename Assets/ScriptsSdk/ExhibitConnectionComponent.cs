@@ -51,6 +51,9 @@ public class ExhibitConnectionComponent : MonoBehaviour
             case "video":
                 SceneManager.LoadScene("VideoScene");
                 break;
+            case "gallery":
+                SceneManager.LoadScene("GalleryScene");
+                break;
             default:
                 throw new NotImplementedException();
         }

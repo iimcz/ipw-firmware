@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Assets.ScriptsSdk.Extensions;
 using emt_sdk.Scene;
 using emt_sdk.Settings;
@@ -54,16 +56,12 @@ public class GalleryPoolComponent : MonoBehaviour
                 listLayout.Spacing = list.Spacing;
                 listLayout.VisibleListLength = list.VisibleImages;
                 listLayout.ScrollDelay = scene.ScrollDelay;
-
-                // TODO: Debug only
-                Sprites = GalleryLoader.LoadSpriteFolder("/home/ipw/Documents/gallery/");
-                /*
+                
                 Sprites = list.Images.Select(i =>
                 {
                     var fileName = Path.Combine(basePath, i.FileName);
                     return GalleryLoader.LoadSprite(fileName);
                 }).ToList();
-                */
                 break;
             case Gallery.GridLayout grid:
                 break;
@@ -79,24 +77,84 @@ public class GalleryPoolComponent : MonoBehaviour
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
         
-        // TODO: Store a copy of the received data in some static manager and use it here
-       Apply(new Gallery
-       {
-           BackgroundColor = "#000000",
-           LayoutType = Gallery.GalleryLayoutEnum.List,
-           Layout = new Gallery.ListLayout
-           {
-               Spacing = 0.1f,
-               VisibleImages = 2
-           },
-           Padding = new Naki3D.Common.Protocol.Vector2
-           {
-               X = 0.1f,
-               Y = 0.1f
-           },
-           ScrollDelay = 0f,
-           SlideAnimationLength = 0.3f
-       }, string.Empty);
+        // Debug mode
+        if (ExhibitConnectionComponent.ActivePackage == null)
+        {
+            Apply(new Gallery
+            {
+                BackgroundColor = "#000000",
+                LayoutType = Gallery.GalleryLayoutEnum.List,
+                Layout = new Gallery.ListLayout
+                {
+                    Spacing = 0.1f,
+                    VisibleImages = 2,
+                    Images = new Gallery.GalleryImage[]
+                    {
+                        new Gallery.GalleryImage
+                        {
+                            FileName = "test1.png"
+                        },
+                        new Gallery.GalleryImage
+                        {
+                            FileName = "test2.png"
+                        },
+                        new Gallery.GalleryImage
+                        {
+                            FileName = "test3.png"
+                        }
+                    }
+                },
+                Padding = new Naki3D.Common.Protocol.Vector2
+                {
+                    X = 0.1f,
+                    Y = 0.1f
+                },
+                ScrollDelay = 0f,
+                SlideAnimationLength = 0.3f
+            }, string.Empty);
+        }
+        else
+        {
+            var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
+            var layoutType = (Gallery.GalleryLayoutEnum)Enum.Parse(typeof(Gallery.GalleryLayoutEnum), settings.LayoutType.Value.ToString());
+
+            Gallery.GalleryLayout MapLayoutType()
+            {
+                return layoutType switch
+                {
+                    Gallery.GalleryLayoutEnum.List => new Gallery.ListLayout
+                    {
+                        VisibleImages = (int)settings.Layout.VisibleImages,
+                        Spacing = (float)settings.Layout.Spacing,
+                        Images = settings.Layout.Images.Select(i => new Gallery.GalleryImage
+                        {
+                            ActivatedAction = i.ActivatedEvent,
+                            SelectedAction = i.SelectedEvent,
+                            FileName = i.FileName
+                        }).ToArray()
+                    },
+                    Gallery.GalleryLayoutEnum.Grid => new Gallery.GridLayout
+                    {
+                        Width = (int)settings.Layout.Width,
+                        Height = (int)settings.Layout.Height,
+                        HorizontalSpacing = (float)settings.Layout.HorizontalSpacing,
+                        VerticalSpacing = (float)settings.Layout.VerticalSpacing,
+                        Images = null
+                    },
+                    _ => throw new NotImplementedException(),
+                };
+            }
+
+            Apply(new Gallery
+            {
+                BackgroundColor = settings.BackgroundColor,
+                LayoutType = layoutType,
+                Padding = new Naki3D.Common.Protocol.Vector2 { X = (float)settings.Padding.X.Value, Y = (float)settings.Padding.Y.Value }, // TODO: I think we're generating the same type twice? Once from JSON schema, once from protobuf
+                ScrollDelay = (float)settings.ScrollDelay.Value,
+                SlideAnimationLength = (float)settings.SlideAnimationLength.Value,
+                Layout = MapLayoutType()
+            }, ExhibitConnectionComponent.ActivePackage.DataRoot);
+        }
     }
 
     void Update()
