@@ -67,6 +67,16 @@ public class ManagementMuterComponent : MonoBehaviour
                 Debug.Log("Management request - Unmuted audio");
                 response.WriteDelimitedTo(stream);
             }
+            else
+            {
+                var response = new ManagementResponse
+                {
+                    DeviceStatus = ManagementResponse.Types.DeviceStatus.Error
+                };
+
+                Debug.Log("Unhandled request - responding with error.");
+                response.WriteDelimitedTo(stream);
+            }
         }
         catch (Exception e)
         {
