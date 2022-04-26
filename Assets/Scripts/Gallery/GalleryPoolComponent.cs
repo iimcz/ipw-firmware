@@ -64,6 +64,18 @@ public class GalleryPoolComponent : MonoBehaviour
                 }).ToList();
                 break;
             case Gallery.GridLayout grid:
+                var gridLayout = (GalleryGridLayout)Layout;
+                gridLayout.Padding = scene.Padding.ToUnityVector();
+                gridLayout.Spacing = new UnityEngine.Vector2(grid.HorizontalSpacing, grid.VerticalSpacing);
+                gridLayout.Columns = grid.Width;
+                gridLayout.Rows = grid.Height;
+
+                Sprites = new List<Sprite>();
+                foreach (var img in grid.Images)
+                {
+                    var fileName = Path.Combine(basePath, img.FileName);
+                    Sprites.Add(GalleryLoader.LoadSprite(fileName));
+                }
                 break;
         }
         
@@ -139,7 +151,24 @@ public class GalleryPoolComponent : MonoBehaviour
                         Height = (int)settings.Layout.Height,
                         HorizontalSpacing = (float)settings.Layout.HorizontalSpacing,
                         VerticalSpacing = (float)settings.Layout.VerticalSpacing,
-                        Images = null
+
+                        // HACK: this is ugly, horrible and should be replaced
+                        Images = new Func<Gallery.GalleryImage[,]>(() => {
+                            var images = new Gallery.GalleryImage[(int)settings.Layout.Width, (int)settings.Layout.Height];
+                            var intermediate = settings.Layout.Images.Select(i => new Gallery.GalleryImage
+                            {
+                                ActivatedAction = i.ActivatedEvent,
+                                SelectedAction = i.SelectedEvent,
+                                FileName = i.FileName
+                            }).ToArray();
+
+                            for (int i = 0; i < intermediate.Length; i++)
+                            {
+                                images[i % (int)settings.Layout.Width, i / (int)settings.Layout.Width] = intermediate[i];
+                            }
+
+                            return images;
+                        })()
                     },
                     _ => throw new NotImplementedException(),
                 };

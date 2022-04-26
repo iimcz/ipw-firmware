@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 /// <summary>
 /// Orbits a gameobject around a point
@@ -49,6 +50,7 @@ public class OrbitComponent : MonoBehaviour
     {
         // Don|t orbit until we have been initialized
         if (_pivot == null) return;
+        if (LookAt == null) return;
         
         if (AutoOrbit) _rotationProgress += Time.deltaTime;
         if (_rotationProgress >= RotationPeriod) _rotationProgress -= RotationPeriod;

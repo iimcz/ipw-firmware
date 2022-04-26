@@ -27,7 +27,16 @@ public static class SkyboxLoader
         var skyboxTexture = new Texture2D(2, 2);
 
         ImageConversion.LoadImage(skyboxTexture, cubemapData);
-        RenderSettings.skybox.mainTexture = skyboxTexture;
-        RenderSettings.skybox.color = tint;
+        RenderSettings.skybox.SetTexture("_Tex", skyboxTexture);
+        RenderSettings.skybox.SetColor("_Tint", tint);
+    }
+
+    /// <summary>
+    /// Uses a solid color for the skybox.
+    /// </summary>
+    /// <param name="tint">Color of the skybox</param>
+    public static void ApplyTint(Color tint)
+    {
+        RenderSettings.skybox.SetColor("_Tint", tint);
     }
 }
