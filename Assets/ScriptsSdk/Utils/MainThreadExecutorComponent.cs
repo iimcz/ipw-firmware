@@ -11,7 +11,7 @@ public class MainThreadExecutorComponent : MonoBehaviour
         while (_mainThreadActions.TryDequeue(out var action)) action();
     }
 
-    protected void ExecuteOnMainThread(Action action)
+    public void ExecuteOnMainThread(Action action)
     {
         _mainThreadActions.Enqueue(action);
     }
