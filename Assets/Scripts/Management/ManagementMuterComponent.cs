@@ -47,7 +47,7 @@ public class ManagementMuterComponent : MonoBehaviour
             var managementRequest = ManagementRequest.Parser.ParseDelimitedFrom(stream);
             if (managementRequest.ManagementType == ManagementRequest.Types.ManagementType.StartMute)
             {
-                _mainThreadExecutor.ExecuteOnMainThread(() => _videoPlayer.audioOutputMode = VideoAudioOutputMode.None);
+                _mainThreadExecutor.ExecuteOnMainThread(() => _videoPlayer.SetDirectAudioMute(0, true));
                 var response = new ManagementResponse
                 {
                     DeviceStatus = ManagementResponse.Types.DeviceStatus.Ok
@@ -58,7 +58,7 @@ public class ManagementMuterComponent : MonoBehaviour
             }
             else if (managementRequest.ManagementType == ManagementRequest.Types.ManagementType.Start)
             {
-                _mainThreadExecutor.ExecuteOnMainThread(() => _videoPlayer.audioOutputMode = VideoAudioOutputMode.Direct);
+                _mainThreadExecutor.ExecuteOnMainThread(() => _videoPlayer.SetDirectAudioMute(0, false));
                 var response = new ManagementResponse
                 {
                     DeviceStatus = ManagementResponse.Types.DeviceStatus.Ok
