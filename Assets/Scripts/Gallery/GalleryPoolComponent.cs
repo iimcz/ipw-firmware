@@ -69,10 +69,12 @@ public class GalleryPoolComponent : MonoBehaviour
                 gridLayout.Spacing = new UnityEngine.Vector2(grid.HorizontalSpacing, grid.VerticalSpacing);
                 gridLayout.Columns = grid.Width;
                 gridLayout.Rows = grid.Height;
+                gridLayout.ScrollDelay = scene.ScrollDelay;
 
                 Sprites = new List<Sprite>();
                 foreach (var img in grid.Images)
                 {
+                    if (img == null) continue; // skip empty cells for non-fitting image counts
                     var fileName = Path.Combine(basePath, img.FileName);
                     Sprites.Add(GalleryLoader.LoadSprite(fileName));
                 }
