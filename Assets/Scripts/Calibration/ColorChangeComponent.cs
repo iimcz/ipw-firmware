@@ -140,6 +140,12 @@ public class ColorChangeComponent : MonoBehaviour
         if (InputExtensions.GetKeyModified(KeyCode.KeypadPlus)) delta = speed;
         if (InputExtensions.GetKeyModified(KeyCode.KeypadMinus)) delta = -speed;
 
+        if (InputExtensions.GetKeyModified(KeyCode.Equals)) delta = speed;
+        if (InputExtensions.GetKeyModified(KeyCode.Minus)) delta = -speed;
+
+        if (InputExtensions.GetKeyModified(KeyCode.Period)) delta = speed;
+        if (InputExtensions.GetKeyModified(KeyCode.Comma)) delta = -speed;
+
         if (delta == 0) return;
         AddActiveValue(delta);
         Camera.ApplySettings();

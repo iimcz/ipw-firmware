@@ -35,6 +35,13 @@ public class LensShiftComponent : MonoBehaviour
         if (InputExtensions.GetKeyModified(KeyCode.KeypadPlus)) delta = Speed;
         else if (InputExtensions.GetKeyModified(KeyCode.KeypadMinus)) delta = -Speed;
 
+        if (InputExtensions.GetKeyModified(KeyCode.Equals)) delta = Speed;
+        else if (InputExtensions.GetKeyModified(KeyCode.Minus)) delta = -Speed;
+
+        if (InputExtensions.GetKeyModified(KeyCode.Period)) delta = Speed;
+        else if (InputExtensions.GetKeyModified(KeyCode.Comma)) delta = -Speed;
+
+
         if (Input.GetKey(KeyCode.LeftShift)) delta *= ShiftMultiplier;
         if (delta != 0f && Input.GetKey(KeyCode.RightShift)) delta = Mathf.Sign(delta) * RShiftStep;
 
