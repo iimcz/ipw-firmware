@@ -57,6 +57,9 @@ public class ExhibitConnectionComponent : MonoBehaviour
             case "model":
                 SceneManager.LoadScene("3DObject");
                 break;
+            case "scene":
+                ActivePackage.Run();
+                break;
             default:
                 throw new NotImplementedException();
         }

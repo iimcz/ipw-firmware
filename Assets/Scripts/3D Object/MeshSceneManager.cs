@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Collections;
+using System.Linq;
 using Assets.ScriptsSdk.Extensions;
 using emt_sdk.Events;
 using emt_sdk.Scene;
+using emt_sdk.Generated.ScenePackage;
 using Siccity.GLTFUtility;
 using Naki3D.Common.Protocol;
 using UnityEngine;
@@ -21,9 +24,8 @@ public class MeshSceneManager : MonoBehaviour
     private void Start()
     {
         EventManager.Instance.OnEventReceived += EventReceived;
-        
-        // TODO: Remove only for debug
-        _cameraOrbit.Invalidate();
+
+        StartCoroutine(DelayApply());
     }
 
     private void OnDestroy()
@@ -33,12 +35,18 @@ public class MeshSceneManager : MonoBehaviour
 
     public void Apply(GltfObject scene, string basePath)
     {
-        var skyboxPath = Path.Combine(basePath, scene.Skybox);
         if (ColorUtility.TryParseHtmlString(scene.SkyboxTint ?? "#FFFFFF", out var tint) == false)
             throw new ArgumentException("Background color is not a valid HTML hex color string",
                 nameof(scene.SkyboxTint));
-        
-        SkyboxLoader.ApplySkybox(skyboxPath, tint);
+        if (!String.IsNullOrEmpty(scene.Skybox))
+        {
+            var skyboxPath = Path.Combine(basePath, scene.Skybox);
+            SkyboxLoader.ApplySkybox(skyboxPath, tint);
+        }
+        else
+        {
+            SkyboxLoader.ApplyTint(tint);
+        }
 
         switch (scene.CameraAnimation)
         {
@@ -64,6 +72,80 @@ public class MeshSceneManager : MonoBehaviour
         
         string gltfPath = Path.Combine(basePath, scene.FileName);
         Importer.ImportGLBAsync(gltfPath, new ImportSettings(), (result, clips) => { });
+    }
+
+    private IEnumerator DelayApply()
+    {
+        // Wait two frames for the camera transformation to apply
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+
+        // Debug mode
+        if (ExhibitConnectionComponent.ActivePackage != null)
+        {
+            var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
+            Apply(new GltfObject
+            {
+                FileName = settings.FileName,
+                Skybox = settings.Skybox,
+                SkyboxTint = settings.SkyboxTint,
+                CameraAnimation = new GltfObject.OrbitAnimation
+                {
+                    Origin = new GltfObject.GltfLocation
+                    {
+                        ObjectName = settings.CameraAnimation.Origin.ObjectName,
+                        Offset = new Naki3D.Common.Protocol.Vector3
+                        {
+                            X = (float)settings.CameraAnimation.Origin.Offset.X,
+                            Y = (float)settings.CameraAnimation.Origin.Offset.Y,
+                            Z = (float)settings.CameraAnimation.Origin.Offset.Z,
+                        }
+                    },
+                    LookAt = new GltfObject.GltfLocation
+                    {
+                        ObjectName = settings.CameraAnimation.LookAt.ObjectName,
+                        Offset = new Naki3D.Common.Protocol.Vector3
+                        {
+                            X = (float)settings.CameraAnimation.LookAt.Offset.X,
+                            Y = (float)settings.CameraAnimation.LookAt.Offset.Y,
+                            Z = (float)settings.CameraAnimation.LookAt.Offset.Z,
+                        }
+                    },
+                    Distance = (float)settings.CameraAnimation.Distance,
+                    Height = (float)settings.CameraAnimation.Height,
+                    RevolutionTime = (float)settings.CameraAnimation.RevolutionTime,
+                },
+                FlagInteraction = settings.FlagInteraction switch
+                {
+                    FlagInteraction.Swipe => GltfObject.FlagInteractionTypeEnum.Swipe,
+                    FlagInteraction.Point => GltfObject.FlagInteractionTypeEnum.Point,
+                    _ => throw new NotSupportedException(),
+                },
+                Flags = settings.Flags.Select(f =>
+                {
+                    return new GltfObject.Flag
+                    {
+                        Location = new GltfObject.GltfLocation
+                        {
+                            ObjectName = "",
+                            Offset = new Naki3D.Common.Protocol.Vector3
+                            {
+                                X = (float)f.Location.X,
+                                Y = (float)f.Location.Y,
+                                Z = (float)f.Location.Z
+                            }
+                        },
+                        Text = f.Text,
+                        ActivatedAction = f.ActivatedAction,
+                        SelectedAction = f.SelectedAction,
+                        ForegroundColor = f.ForegroundColor,
+                        BackgroundColor = f.BackgroundColor,
+                        StalkColor = f.StalkColor,
+                        CanSelect = (bool)f.CanSelect
+                    };
+                }).ToList()
+            }, ExhibitConnectionComponent.ActivePackage.DataRoot);
+        }
     }
 
     private void EventReceived(object sender, SensorMessage e)
