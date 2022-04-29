@@ -8,7 +8,7 @@ public class GalleryGridLayout : GalleryLayout
     public int Columns { get; set; }
     public UnityEngine.Vector2 Spacing { get; set; }
 
-    public override int PoolSize => Rows * Columns + Rows * 2;
+    public override int PoolSize => Rows * Columns + Rows;
 
 
     private readonly List<UnityEngine.Vector2> _startPositions = new List<UnityEngine.Vector2>();
@@ -32,7 +32,7 @@ public class GalleryGridLayout : GalleryLayout
         if (_scrollProgress >= ScrollDelay)
         {
             _scrollProgress -= ScrollDelay;
-            Next();
+            Previous();
         }
     }
 
@@ -109,7 +109,37 @@ public class GalleryGridLayout : GalleryLayout
 
     public override void Previous()
     {
-        //throw new System.NotImplementedException();
+        var boundaries = _pool.Camera.GetBoundaries(5);
+
+        // Move the last column to the right
+        for (int i = 0; i < Rows; i++)
+        {
+            var image = _pool.ImagePool[(_firstImage + (Columns - 1) * Rows + i) % PoolSize];
+            var target = image.GameObject.transform.localPosition;
+            target.x = boundaries.xMax + Spacing.x;
+            image.Slider.SetTarget(target);
+        }
+
+        // Shift remaining images
+        for (int i = 0; i < Rows * (Columns - 1); i++)
+        {
+            var pos = i + Rows;
+            _pool.ImagePool[(_firstImage + i) % PoolSize].Slider.SetTarget(new UnityEngine.Vector3(boundaries.x + _startPositions[pos].x * boundaries.width, boundaries.yMax - (_startPositions[pos].y + HalfSlotSize.y) * boundaries.height, 0));
+        }
+
+        _firstImage += PoolSize - Rows;
+        _firstImage %= PoolSize;
+        _firstSprite += PoolSize - Rows;
+        _firstSprite %= _pool.Sprites.Count;
+
+        // Move in last column
+        for (int i = 0; i < Rows; i++)
+        {
+            var lastImage = _pool.ImagePool[(_firstImage + i) % PoolSize];
+            lastImage.GameObject.transform.localPosition = new UnityEngine.Vector3(boundaries.x - (ImageSize.x * 2f * boundaries.width), boundaries.yMax - (_startPositions[i].y + HalfSlotSize.y) * boundaries.height, 0);
+            lastImage.Slider.SetTarget(new UnityEngine.Vector3(boundaries.x + _startPositions[i].x * boundaries.width, boundaries.yMax - (_startPositions[i].y + HalfSlotSize.y) * boundaries.height, 0));
+            lastImage.Renderer.sprite = _pool.Sprites[(_firstImage + i) % _pool.Sprites.Count];
+        }
     }
 
     public override void Gesture(GestureData gesture)
