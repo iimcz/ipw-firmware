@@ -252,24 +252,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
---- !u!1 &359378387 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4899629861708391906, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
-  m_PrefabInstance: {fileID: 286004851}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &359378388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 359378387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5590b6106bede372be17cbf7d9c78f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 1.5
 --- !u!1 &645400217
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,6 +282,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _panoMat: {fileID: 2100000, guid: 41835bc552f03ce89a75190dcf0ce5b4, type: 2}
+  lines: 64
+  radius: 10
+  rotationSpeed: 1.5
+  cameraVerticalAngle: 0
 --- !u!4 &645400219
 Transform:
   m_ObjectHideFlags: 0

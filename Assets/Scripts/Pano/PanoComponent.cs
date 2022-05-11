@@ -18,6 +18,12 @@ public class PanoComponent : MonoBehaviour {
 
 	[SerializeField] 
 	int radius = 10;
+
+	[SerializeField] 
+	float rotationSpeed = 1.5f;
+
+	[SerializeField] 
+	float cameraVerticalAngle = 0.0f;
 	
 	public void SetPanorama(Texture2D tex){
 		m_Renderer.material.mainTexture = tex;
@@ -100,6 +106,10 @@ public class PanoComponent : MonoBehaviour {
 		meshFilter.mesh = mesh;
 	}
 
+	void Update(){
+		transform.Rotate(0, -rotationSpeed * Time.deltaTime, 0, Space.Self);
+	}
+
 	public IEnumerator Apply(){
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
@@ -113,6 +123,7 @@ public class PanoComponent : MonoBehaviour {
 		var filePath = Path.Combine(basePath, fileName);
 
 		LoadPanorama(filePath);
+		transform.Rotate(cameraVerticalAngle, 0, 0, Space.Self);
 	}
 
 	void Start () {
