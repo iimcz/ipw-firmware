@@ -57,7 +57,7 @@ public class PanoComponent : MonoBehaviour {
 				float z = (float) (Math.Cos(j * long_step) * y_slice_r);
 				vertices[processed] = new Vector3(x, y, z);
 
-				float u = 1 - ((float) j / lines);
+				float u = ((float) j / lines);
 				float v = 1 - ((float) i / lines);
 				uvs[processed] = new Vector2(u, v);
 				processed++;
