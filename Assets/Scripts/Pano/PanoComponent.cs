@@ -2,6 +2,7 @@ using UnityEngine;
 using emt_sdk.Events;
 using emt_sdk.Scene;
 using System.IO;
+using System.Collections;
 using System;
 
 
@@ -99,7 +100,10 @@ public class PanoComponent : MonoBehaviour {
 		meshFilter.mesh = mesh;
 	}
 
-	void Start () {
+	public IEnumerator Apply(){
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+
 		SetupMesh();
 
 		var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
@@ -109,5 +113,9 @@ public class PanoComponent : MonoBehaviour {
 		var filePath = Path.Combine(basePath, fileName);
 
 		LoadPanorama(filePath);
+	}
+
+	void Start () {
+		StartCoroutine(Apply());
 	}
 }
