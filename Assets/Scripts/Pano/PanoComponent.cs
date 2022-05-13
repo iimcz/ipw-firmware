@@ -122,6 +122,9 @@ public class PanoComponent : MonoBehaviour {
 
 		var filePath = Path.Combine(basePath, fileName);
 
+		cameraVerticalAngle = (float) settings.CameraVerticalAngle;
+		rotationSpeed = (float) settings.RotationSpeed;
+
 		LoadPanorama(filePath);
 		transform.Rotate(cameraVerticalAngle, 0, 0, Space.Self);
 	}
