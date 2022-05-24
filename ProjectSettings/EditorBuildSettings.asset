@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/3DObject/3DObject.unity
     guid: c94ab1968a5e9156b868bcd9b320f60d
+  - enabled: 1
+    path: Assets/Scenes/PanoScene/PanoScene.unity
+    guid: 0e59ce61994911588a173dba6d5b95e2
   m_configObjects: {}
