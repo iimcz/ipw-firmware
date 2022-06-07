@@ -5,9 +5,12 @@ using System.IO;
 using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Assets.Extensions;
 
 public class DualCameraComponent : MonoBehaviour
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
     [SceneObjectsOnly, Required, BoxGroup("Rendering")]
     public TransformCameraComponent TopCamera;
     [SceneObjectsOnly, Required, BoxGroup("Rendering")]
@@ -145,7 +148,7 @@ public class DualCameraComponent : MonoBehaviour
         }
 
         File.WriteAllText(configFile, json);
-        Debug.Log("Configuration saved");
+        Logger.InfoUnity("Configuration saved");
     }
 
     [Button, LabelText("Swap Settings"), BoxGroup("Rendering")]

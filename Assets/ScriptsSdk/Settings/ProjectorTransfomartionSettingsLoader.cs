@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Assets.Extensions;
 using emt_sdk.Settings;
 using Newtonsoft.Json;
 using UnityEngine;
 
 public static class ProjectorTransfomartionSettingsLoader
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
     public static string SettingsPath
     {
         get
@@ -29,7 +32,7 @@ public static class ProjectorTransfomartionSettingsLoader
         }
         catch (Exception e)
         {
-            Debug.Log(e);
+            Logger.ErrorUnity("Failed to load settings", e);
             return new IPWSetting
             {
                 Displays = new List<DisplaySetting>

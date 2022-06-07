@@ -1,3 +1,4 @@
+using Assets.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine.Events;
 
 public class NavigationNodeComponent : MonoBehaviour, ILookable
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
     public enum NavigationNodeTypeEnum
     {
         StopPoint,
@@ -93,7 +96,7 @@ public class NavigationNodeComponent : MonoBehaviour, ILookable
 
         if (closest == null)
         {
-            Debug.Log("Couldn't find closest lookable, defaulting to first");
+            Logger.InfoUnity("Couldn't find closest lookable, defaulting to first");
             return _lookList.First();
         }
         else return closest;

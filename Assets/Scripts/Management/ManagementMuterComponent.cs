@@ -1,3 +1,4 @@
+using Assets.Extensions;
 using Google.Protobuf;
 using Naki3D.Common.Protocol;
 using System;
@@ -9,6 +10,8 @@ using UnityEngine.Video;
 
 public class ManagementMuterComponent : MonoBehaviour
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
     private TcpListener _listener;
 
     [SerializeField]
@@ -27,7 +30,7 @@ public class ManagementMuterComponent : MonoBehaviour
             while (true)
             {
                 var client = _listener.AcceptTcpClient();
-                Debug.Log($"Accepted management connection from {client.Client.RemoteEndPoint}");
+                Logger.InfoUnity($"Accepted management connection from {client.Client.RemoteEndPoint}");
                 Task.Run(() => HandleConnection(client));
             }
         });
@@ -53,7 +56,7 @@ public class ManagementMuterComponent : MonoBehaviour
                     DeviceStatus = ManagementResponse.Types.DeviceStatus.Ok
                 };
 
-                Debug.Log("Management request - Muted audio");
+                Logger.InfoUnity("Management request - Muted audio");
                 response.WriteDelimitedTo(stream);
             }
             else if (managementRequest.ManagementType == ManagementRequest.Types.ManagementType.Start)
@@ -64,7 +67,7 @@ public class ManagementMuterComponent : MonoBehaviour
                     DeviceStatus = ManagementResponse.Types.DeviceStatus.Ok
                 };
 
-                Debug.Log("Management request - Unmuted audio");
+                Logger.InfoUnity("Management request - Unmuted audio");
                 response.WriteDelimitedTo(stream);
             }
             else
@@ -74,13 +77,13 @@ public class ManagementMuterComponent : MonoBehaviour
                     DeviceStatus = ManagementResponse.Types.DeviceStatus.Error
                 };
 
-                Debug.Log("Unhandled request - responding with error.");
+                Logger.InfoUnity("Unhandled request - responding with error.");
                 response.WriteDelimitedTo(stream);
             }
         }
         catch (Exception e)
         {
-            Debug.LogError("Invalid management message received, closing connection" + e);
+            Logger.ErrorUnity("Invalid management message received, closing connection", e);
         }
         finally
         {

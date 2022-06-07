@@ -13,9 +13,12 @@ using UnityEngine.SceneManagement;
 using emt_sdk.Generated.ScenePackage;
 using emt_sdk.Settings;
 using NLog.Config;
+using Assets.Extensions;
 
 public class ExhibitConnectionComponent : MonoBehaviour
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
     public static ExhibitConnection Connection;
     public EmtSetting Settings;
 
@@ -98,7 +101,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
     private void Instance_OnEventReceived(object sender, SensorMessage e)
     {
-        Debug.Log(e);
+        Logger.DebugUnity(e.ToString());
     }
 
     public void Connect()
@@ -121,6 +124,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
         catch (SocketException e)
         {
             // DNS resolve fail, abort
+            Logger.ErrorUnity("Failed to estabilish exhibit connection, aborting", e);
             return;
         }
         
@@ -131,12 +135,16 @@ public class ExhibitConnectionComponent : MonoBehaviour
     void LoadPackage(LoadPackage pckg)
     {
         var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
+        Logger.InfoUnity($"Starting file download for package '{package.Metadata.PackageName}'");
         package.DownloadFile();
+        Logger.InfoUnity($"Download complete");
+
         Task.Run(() => EventManager.Instance.Start(package.Sync));
 
         Settings.StartupPackage = package.Package.Checksum;
         Settings.Save();
-        
+
+        Logger.InfoUnity($"Switching scene to package '{package.Metadata.PackageName}'");
         SwitchScene(package);
     }
 

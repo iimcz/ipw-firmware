@@ -1,7 +1,10 @@
+using Assets.Extensions;
 using UnityEngine;
 
 public class CameraRigSpawnerComponent : MonoBehaviour
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
     [SerializeField]
     private GameObject _dualCameraRig;
 
@@ -11,7 +14,7 @@ public class CameraRigSpawnerComponent : MonoBehaviour
     void Start()
     {
         var config = emt_sdk.Settings.EmtSetting.FromConfig();
-        if (config == null) Debug.LogError("Could not determine device type, not spawning any camera prefab");
+        if (config == null) Logger.ErrorUnity("Could not determine device type, not spawning any camera prefab");
 
         switch (config.Type)
         {
