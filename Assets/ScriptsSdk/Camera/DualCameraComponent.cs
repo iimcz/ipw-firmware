@@ -127,8 +127,6 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
             BottomCamera.gameObject.transform.position = new Vector3(-BottomCamera.Camera.orthographicSize + Setting.LensShift, 0, 0);
         }
 
-        Cursor.visible = false;
-
         ProjectorTransformationPass.Vertical = Setting.Orientation == IPWSetting.IPWOrientation.Vertical;
 
         TopCamera.ApplySettings();

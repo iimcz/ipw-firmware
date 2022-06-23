@@ -29,7 +29,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
     public bool DisableAutoConnect;
 
     private PackageLoader _loader;
-    private bool _changeScene;
+    private static bool _changeScene;
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +40,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
         StartCoroutine(ApplyDelay());
         Settings = EmtSetting.FromConfig() ?? new EmtSetting
         {
+            // TODO: maybe remove?
             Type = Naki3D.Common.Protocol.DeviceType.Ipw,
             Communication = new CommunicationSettings(),
             PerformanceCap = PerformanceCap.Fast
@@ -76,7 +77,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.Instance.Stop();
-        Connection?.Dispose();
+        //Connection?.Dispose();
     }
 
     private IEnumerator ApplyDelay()
@@ -102,10 +103,10 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
         if (!DisableAutoConnect)
         {
-            Task.Run(() =>
-            {
-                Connect();
-            });
+            //Task.Run(() =>
+            //{
+                //Connect();
+            //});
         }
     }
 

@@ -66,7 +66,7 @@ public class CalibrationManagerComponent : MonoBehaviour
         yield return new WaitForEndOfFrame();
         
         var isCalibrated = ProjectorTransfomartionSettingsLoader.SettingsExists && !AlwaysCalibrate;
-        yield return new WaitForSecondsRealtime(5f); // Give the user few seconds to react
+        if (isCalibrated) yield return new WaitForSecondsRealtime(5f); // Give the user few seconds to react
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) isCalibrated = false;
 
         // TODO: Validate with schema

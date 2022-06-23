@@ -977,7 +977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 707b39be4c750014bb2bc1391ca1c7fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ExhibitConnection: {fileID: 0}
+  ExhibitConnection: {fileID: 1773959802}
   IPWInfo: {fileID: 20137809}
   LocalIps: "192.168.23.55\n\t901B0E48353C\nfe80::921b:eff:fe48:353c%2\n\t901B0E48353C"
 --- !u!114 &676684364
