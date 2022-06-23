@@ -1009,6 +1009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hostname: 
+  DisableAutoConnect: 1
 --- !u!114 &199075601
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -26,6 +26,8 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
     public string Hostname;
 
+    public bool DisableAutoConnect;
+
     private PackageLoader _loader;
     private bool _changeScene;
 
@@ -97,6 +99,14 @@ public class ExhibitConnectionComponent : MonoBehaviour
         });
 
         EventManager.Instance.OnEventReceived += Instance_OnEventReceived;
+
+        if (!DisableAutoConnect)
+        {
+            Task.Run(() =>
+            {
+                Connect();
+            });
+        }
     }
 
     private void Instance_OnEventReceived(object sender, SensorMessage e)
