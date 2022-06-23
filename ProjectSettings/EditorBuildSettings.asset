@@ -5,12 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/EmtToolboxScene.unity
-    guid: db9094e372a3e7e4d824f4eaf9f5d5a6
   - enabled: 0
     path: Assets/Scenes/TestingScene/Testing3DScene.unity
     guid: 24aeb9550cec2a043a67513ef6c224b0
+  - enabled: 1
+    path: Assets/Scenes/PreCalibrationScene.unity
+    guid: a9e91e020224fe745b07717bf12f08dd
+  - enabled: 1
+    path: Assets/Scenes/EmtToolboxScene.unity
+    guid: db9094e372a3e7e4d824f4eaf9f5d5a6
+  - enabled: 1
+    path: Assets/Scenes/EmtToolboxScenePge.unity
+    guid: 7fa9f17d830f8b24287f0f83f948697e
   - enabled: 1
     path: Assets/Scenes/VideoScene/VideoScene.unity
     guid: 953b9ef9ea7bc25588489e263ee0f12b

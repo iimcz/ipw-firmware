@@ -8,7 +8,7 @@ using Vector3 = UnityEngine.Vector3;
 public class VideoDisplayComponent : MonoBehaviour
 {
     public VideoPlayer VideoPlayer;
-    public DualCameraComponent Camera;
+    public CameraRigSpawnerComponent RigSpawner;
 
     public void SetVolume(double volume)
     {
@@ -23,7 +23,7 @@ public class VideoDisplayComponent : MonoBehaviour
     
     public void Resize(VideoScene.VideoAspectRatioEnum aspectRatio)
     {
-        var viewport = Camera.GetBoundaries(5);
+        var viewport = RigSpawner.CameraRig.GetBoundaries(5);
         var videoAspect = VideoPlayer.width / (float)VideoPlayer.height;
 
         // 10m is the default unity plane size, why it's not 1 is beyond me...
@@ -32,7 +32,7 @@ public class VideoDisplayComponent : MonoBehaviour
         var widthFit = new Vector3(viewport.width / planeSize, 1, (viewport.width / videoAspect) / planeSize);
         var heightFit = new Vector3((viewport.height * videoAspect) / planeSize, 1, viewport.height / planeSize);
 
-        if (Camera.Orientation == IPWSetting.IPWOrientation.Horizontal)
+        if (RigSpawner.CameraRig.Orientation == IPWSetting.IPWOrientation.Horizontal)
         {
             switch (aspectRatio)
             {

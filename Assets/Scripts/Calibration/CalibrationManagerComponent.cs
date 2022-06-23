@@ -1,23 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Assets.Extensions;
 using emt_sdk.Communication;
 using emt_sdk.ScenePackage;
 using UnityEngine;
 
+// TODO: Write custom inspector for states to make it easier to read
 public class CalibrationManagerComponent : MonoBehaviour
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
     public enum CalibrationStateEnum
     {
         Uninitialized,
         PhysicalAlignment,
         CornerAlignment,
-        // TODO: remove OverlapCorrection step completely
-        //OverlapCorrection, // Overlap moved to LensShift and tied together
         LensShift,
         ColorCorrection,
         Audio,
@@ -41,15 +42,19 @@ public class CalibrationManagerComponent : MonoBehaviour
     
     [SerializeField] private ExhibitConnectionComponent _connection;
     [SerializeField] private NetworkComponent _network;
-    [SerializeField] private DualCameraComponent _camera;
     [SerializeField] private AudioTestComponent _audioTest;
+
+    // Unity can't serialize interfaces...
+    private ICameraRig _camera;
+    private Naki3D.Common.Protocol.DeviceType _deviceType => _camera.DeviceType;
 
     public List<GameObject> UiStates;
 
     private void UpdateUi(CalibrationStateEnum state)
     {
-        UiStates[(int)_calibrationState].SetActive(false);
-        UiStates[(int)state].SetActive(true);
+        // Steps can be empty for different devices
+        if (UiStates[(int)_calibrationState] != null) UiStates[(int)_calibrationState].SetActive(false);
+        if (UiStates[(int)state] != null) UiStates[(int)state].SetActive(true);
         
         _calibrationState = state;
     }
@@ -127,26 +132,41 @@ public class CalibrationManagerComponent : MonoBehaviour
 
     private void Update()
     {
-        // HACK: this should have a better place/pattern of setting
-        ProjectorTransformationPass.EnableBlending = true;
+        if (_camera == null)
+        {
+            var cameraObject = GameObject.FindGameObjectWithTag("MainCamera");
+            if (cameraObject == null) return; // Waiting for camera spawn
+
+            // Can't get an interface directly
+            _camera = cameraObject.GetComponent<PeppersGhostCameraComponent>();
+            if (_camera == null) _camera = cameraObject.GetComponent<DualCameraComponent>();
+            if (_camera == null)
+            {
+                Logger.ErrorUnity("Main camera doesn't have an emt-sdk compatible display");
+                throw new NotSupportedException("Main camera doesn't have an emt-sdk compatible display");
+            }
+        }
+
         switch (_calibrationState)
         {
             case CalibrationStateEnum.Uninitialized:
                 break;
             case CalibrationStateEnum.PhysicalAlignment:
                 if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
+                if (_deviceType == Naki3D.Common.Protocol.DeviceType.Pge) UpdateUi(_calibrationState + 1);
                 break;
             case CalibrationStateEnum.CornerAlignment:
                 ProjectorTransformationPass.EnableBlending = false;
-                if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    UpdateUi(_calibrationState + 1);
+                    ProjectorTransformationPass.EnableBlending = true;
+                }
+                if (_deviceType == Naki3D.Common.Protocol.DeviceType.Pge) UpdateUi(_calibrationState + 1);
                 break;
-            // OverlapCorrection moved to LensShift and tied together
-            // TODO: remove
-            //case CalibrationStateEnum.OverlapCorrection:
-            //    if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
-            //    break;
             case CalibrationStateEnum.ColorCorrection:
                 if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
+                if (_deviceType == Naki3D.Common.Protocol.DeviceType.Pge) UpdateUi(_calibrationState + 1);
                 break;
             case CalibrationStateEnum.LensShift:
                 if (Input.GetKeyDown(KeyCode.Return))
@@ -155,6 +175,11 @@ public class CalibrationManagerComponent : MonoBehaviour
                     StartCoroutine(_audioTest.StartTest());
                     
                     _camera.SaveSettings(); // Save after changing all display related settings
+                }
+                if (_deviceType == Naki3D.Common.Protocol.DeviceType.Pge)
+                {
+                    StartCoroutine(_audioTest.StartTest());
+                    UpdateUi(_calibrationState + 1);
                 }
                 break;
             case CalibrationStateEnum.Audio:

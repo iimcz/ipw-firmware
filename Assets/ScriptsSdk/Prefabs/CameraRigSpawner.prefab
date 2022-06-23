@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dualCameraRig: {fileID: 4899629861708391906, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
-  _peppersGhostRig: {fileID: 3974562748193335033, guid: 45c894ff9272ad542ba3f63c3c0d1b72, type: 3}
+  _peppersGhostRig: {fileID: 7195108854095319497, guid: e759ff5d8fbdea24e976943c8cdfa446, type: 3}

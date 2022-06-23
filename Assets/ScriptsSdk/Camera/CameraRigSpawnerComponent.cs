@@ -5,6 +5,10 @@ public class CameraRigSpawnerComponent : MonoBehaviour
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+    public  ICameraRig CameraRig { get; private set; }
+
+    private GameObject _spawnedRig;
+
     [SerializeField]
     private GameObject _dualCameraRig;
 
@@ -19,10 +23,12 @@ public class CameraRigSpawnerComponent : MonoBehaviour
         switch (config.Type)
         {
             case Naki3D.Common.Protocol.DeviceType.Ipw:
-                Instantiate(_dualCameraRig);
+                _spawnedRig = Instantiate(_dualCameraRig, transform);
+                CameraRig = _spawnedRig.GetComponent<DualCameraComponent>();
                 break;
             case Naki3D.Common.Protocol.DeviceType.Pge:
-                Instantiate(_peppersGhostRig);
+                _spawnedRig = Instantiate(_peppersGhostRig, transform);
+                CameraRig = _spawnedRig.GetComponent<PeppersGhostCameraComponent>();
                 break;
         }
     }

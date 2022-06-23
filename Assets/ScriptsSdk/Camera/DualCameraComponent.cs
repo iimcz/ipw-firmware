@@ -7,7 +7,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Assets.Extensions;
 
-public class DualCameraComponent : MonoBehaviour
+public class DualCameraComponent : MonoBehaviour, ICameraRig
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -16,9 +16,11 @@ public class DualCameraComponent : MonoBehaviour
     [SceneObjectsOnly, Required, BoxGroup("Rendering")]
     public TransformCameraComponent BottomCamera;
     [OnValueChanged("OrientationChanged"), BoxGroup("Rendering")]
-    public IPWSetting.IPWOrientation Orientation;
+    public IPWSetting.IPWOrientation Orientation { get; set; }
 
     public IPWSetting Setting;
+
+    Naki3D.Common.Protocol.DeviceType ICameraRig.DeviceType => Naki3D.Common.Protocol.DeviceType.Ipw;
 
     [OnValueChanged("CurveChanged"), LabelText("Brightness curve on"), BoxGroup("Debug")]
     public bool CurveOn = true;
@@ -165,5 +167,20 @@ public class DualCameraComponent : MonoBehaviour
 
         TopCamera.TargetDisplay = secondDisplay;
         BottomCamera.TargetDisplay = firstDisplay;
+    }
+
+    public void SetBackgroundColor(Color color)
+    {
+        TopCamera.Camera.clearFlags = CameraClearFlags.SolidColor;
+        TopCamera.Camera.backgroundColor = color;
+
+        BottomCamera.Camera.clearFlags = CameraClearFlags.SolidColor;
+        BottomCamera.Camera.backgroundColor = color;
+    }
+
+    public void ShowSkybox()
+    {
+        TopCamera.Camera.clearFlags = CameraClearFlags.Skybox;
+        BottomCamera.Camera.clearFlags = CameraClearFlags.Skybox;
     }
 }

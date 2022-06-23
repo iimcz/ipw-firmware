@@ -63,7 +63,7 @@ public class GalleryListLayout : GalleryLayout
             pos += ImageSize + Spacing;
         }
         
-        var boundaries = _pool.Camera.GetBoundaries(5);
+        var boundaries = _pool.RigSpawner.CameraRig.GetBoundaries(5);
         for (int i = 0; i < PoolSize; i++)
         {
             var image = _pool.ImagePool[(_firstImage + i) % PoolSize];
@@ -82,7 +82,7 @@ public class GalleryListLayout : GalleryLayout
 
     public override void Next()
     {
-        var boundaries = _pool.Camera.GetBoundaries(5);
+        var boundaries = _pool.RigSpawner.CameraRig.GetBoundaries(5);
 
         // Move first image to the left
         _pool.ImagePool[_firstImage % PoolSize].Slider.SetTarget(new Vector3(boundaries.x - (ImageSize * 2f * boundaries.width), 0, 0));
@@ -107,7 +107,7 @@ public class GalleryListLayout : GalleryLayout
 
     public override void Previous()
     {
-        var boundaries = _pool.Camera.GetBoundaries(5);
+        var boundaries = _pool.RigSpawner.CameraRig.GetBoundaries(5);
         // Move last image to the right
         _pool.ImagePool[(_firstImage + VisibleListLength - 1) % PoolSize].Slider.SetTarget(new Vector3(boundaries.x + boundaries.width + (boundaries.width * Padding.x), 0, 0));
             

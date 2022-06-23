@@ -4188,7 +4188,6 @@ MonoBehaviour:
   AlwaysCalibrate: 0
   _connection: {fileID: 199075600}
   _network: {fileID: 847099904}
-  _camera: {fileID: 454132774}
   _audioTest: {fileID: 726877568}
   UiStates:
   - {fileID: 1151819272}
@@ -5150,6 +5149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _text: {fileID: 1969815013}
+  _deviceName: IPW
 --- !u!114 &1969815012
 MonoBehaviour:
   m_ObjectHideFlags: 0

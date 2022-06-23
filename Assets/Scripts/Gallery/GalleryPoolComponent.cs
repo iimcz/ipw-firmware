@@ -21,7 +21,7 @@ public class ImageInfo
 public class GalleryPoolComponent : MonoBehaviour
 {
     public GameObject ImagePrefab;
-    public DualCameraComponent Camera;
+    public CameraRigSpawnerComponent RigSpawner;
 
     public Gallery.GalleryLayoutEnum LayoutType;
     public List<ImageInfo> ImagePool; // No need to keep creating new images, keep a pool
@@ -42,8 +42,7 @@ public class GalleryPoolComponent : MonoBehaviour
         if (ColorUtility.TryParseHtmlString(scene.BackgroundColor, out var backgroundColor) == false)
             throw new ArgumentException("Background color is not a valid HTML hex color string", nameof(scene.BackgroundColor));
         
-        Camera.TopCamera.Camera.backgroundColor = backgroundColor;
-        Camera.BottomCamera.Camera.backgroundColor = backgroundColor;
+        RigSpawner.CameraRig.SetBackgroundColor(backgroundColor);
 
         LayoutType = scene.LayoutType;
         CreateLayout();
@@ -227,8 +226,8 @@ public class GalleryPoolComponent : MonoBehaviour
         };
 
         if (Layout is GalleryListLayout ll)
-            ll.Orientation = 
-                Camera.Orientation == IPWSetting.IPWOrientation.Horizontal
+            ll.Orientation =
+                RigSpawner.CameraRig.Orientation == IPWSetting.IPWOrientation.Horizontal
                 ? GalleryListLayout.GalleryListOrientation.Horizontal
                 : GalleryListLayout.GalleryListOrientation.Vertical;
     }

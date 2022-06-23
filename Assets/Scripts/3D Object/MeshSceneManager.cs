@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections;
 using System.Linq;
@@ -20,6 +20,9 @@ public class MeshSceneManager : MonoBehaviour
 
     [SerializeField] 
     private OrbitComponent _cameraOrbit;
+
+    [SerializeField]
+    private CameraRigSpawnerComponent _rigSpawner;
     
     private void Start()
     {
@@ -40,12 +43,18 @@ public class MeshSceneManager : MonoBehaviour
                 nameof(scene.SkyboxTint));
         if (!String.IsNullOrEmpty(scene.Skybox))
         {
+            _rigSpawner.CameraRig.ShowSkybox();
             var skyboxPath = Path.Combine(basePath, scene.Skybox);
             SkyboxLoader.ApplySkybox(skyboxPath, tint);
         }
         else
         {
-            SkyboxLoader.ApplyTint(tint);
+            _rigSpawner.CameraRig.SetBackgroundColor(tint);
+            SkyboxLoader.ApplyTint(Color.gray);
+
+
+            // TODO: Talk about lights
+            //SkyboxLoader.ApplyTint(tint);
         }
 
         switch (scene.CameraAnimation)
@@ -81,7 +90,24 @@ public class MeshSceneManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         // Debug mode
-        if (ExhibitConnectionComponent.ActivePackage != null)
+        if (ExhibitConnectionComponent.ActivePackage == null)
+        {
+            Apply(new GltfObject
+            {
+                FileName = "Assets/Scenes/3DObject/Sample/monkey.glb",
+                SkyboxTint = "#000000",
+                Flags = new System.Collections.Generic.List<GltfObject.Flag>(),
+                CameraAnimation = new GltfObject.OrbitAnimation
+                {
+                    Distance = 5,
+                    Height = 2,
+                    RevolutionTime = 5f,
+                    LookAt = new GltfObject.GltfLocation { Offset = new Naki3D.Common.Protocol.Vector3() },
+                    Origin = new GltfObject.GltfLocation { Offset = new Naki3D.Common.Protocol.Vector3() },
+                }
+            }, string.Empty);
+        }
+        else
         {
             var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
             Apply(new GltfObject

@@ -147,7 +147,14 @@ MonoBehaviour:
   Target: {fileID: 0}
   Text: aaa
   TextMesh: {fileID: 136771951099016257}
-  Height: 20
+  OnActivate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSelect:
+    m_PersistentCalls:
+      m_Calls: []
+  NextFlag: {fileID: 0}
+  PreviousFlag: {fileID: 0}
 --- !u!114 &136771950150523090
 MonoBehaviour:
   m_ObjectHideFlags: 0

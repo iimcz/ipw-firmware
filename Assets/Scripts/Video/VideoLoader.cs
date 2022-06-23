@@ -29,8 +29,7 @@ public class VideoLoader : MonoBehaviour
             throw new ArgumentException("Background color is not a valid HTML hex color string",
                 nameof(scene.BackgroundColor));
 
-        _display.Camera.TopCamera.Camera.backgroundColor = backgroundColor;
-        _display.Camera.BottomCamera.Camera.backgroundColor = backgroundColor;
+        _display.RigSpawner.CameraRig.SetBackgroundColor(backgroundColor);
         
         var fileName = Path.Combine(basePath, scene.FileName);
         _player.clip = null;

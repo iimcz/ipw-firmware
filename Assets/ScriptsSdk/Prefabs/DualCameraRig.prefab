@@ -131,6 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 4899629860299532103}
+  AlignCorners: 0
   _settingIndex: 0
   _targetDisplay: 0
 --- !u!1 &4899629861708391906
@@ -145,7 +146,7 @@ GameObject:
   - component: {fileID: 4899629861708391908}
   m_Layer: 0
   m_Name: DualCameraRig
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -304,5 +305,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 4899629861798286046}
+  AlignCorners: 0
   _settingIndex: 1
   _targetDisplay: 1

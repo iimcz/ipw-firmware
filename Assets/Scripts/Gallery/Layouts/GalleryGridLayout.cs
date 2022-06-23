@@ -52,7 +52,7 @@ public class GalleryGridLayout : GalleryLayout
             pos.x += ImageSize.x + Spacing.x;
         }
         
-        var boundaries = _pool.Camera.GetBoundaries(5);
+        var boundaries = _pool.RigSpawner.CameraRig.GetBoundaries(5);
         for (int i = 0; i < PoolSize; i++)
         {
             var image = _pool.ImagePool[(_firstImage + i) % PoolSize];
@@ -74,7 +74,7 @@ public class GalleryGridLayout : GalleryLayout
 
     public override void Next()
     {
-        var boundaries = _pool.Camera.GetBoundaries(5);
+        var boundaries = _pool.RigSpawner.CameraRig.GetBoundaries(5);
 
         // Move the first column to the left
         for (int i = 0; i < Rows; i++)
@@ -109,7 +109,7 @@ public class GalleryGridLayout : GalleryLayout
 
     public override void Previous()
     {
-        var boundaries = _pool.Camera.GetBoundaries(5);
+        var boundaries = _pool.RigSpawner.CameraRig.GetBoundaries(5);
 
         // Move the last column to the right
         for (int i = 0; i < Rows; i++)
