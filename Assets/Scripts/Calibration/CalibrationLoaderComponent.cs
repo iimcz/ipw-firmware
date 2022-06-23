@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DeviceType = Naki3D.Common.Protocol.DeviceType;
 
 public class CalibrationLoaderComponent : MonoBehaviour
 {
@@ -15,7 +16,10 @@ public class CalibrationLoaderComponent : MonoBehaviour
         var nlogConfig = Path.Combine(Application.streamingAssetsPath, "NLog.config");
         NLog.LogManager.Configuration = new XmlLoggingConfiguration(nlogConfig);
 
-        var deviceType = EmtSetting.FromConfig()?.Type ?? Naki3D.Common.Protocol.DeviceType.Unknown;
+        var settings = EmtSetting.FromConfig();
+        if (settings == null) new EmtSetting { Type = DeviceType.Unknown }.Save();
+        
+        var deviceType = settings?.Type ?? DeviceType.Unknown;
 
         switch (deviceType)
         {
