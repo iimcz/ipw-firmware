@@ -12,39 +12,34 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using emt_sdk.Generated.ScenePackage;
 using emt_sdk.Settings;
-using NLog.Config;
 using Assets.Extensions;
+using System.Collections.Generic;
 
 public class ExhibitConnectionComponent : MonoBehaviour
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+    // These persist between scenes
     public static ExhibitConnection Connection;
-    public EmtSetting Settings;
-
     public static PackageDescriptor ActivePackage;
+    private static bool _changeScene;
 
+    public EmtSetting Settings;
     public string Hostname;
 
-    public bool DisableAutoConnect;
-
     private PackageLoader _loader;
-    private static bool _changeScene;
 
     // Start is called before the first frame update
     void Start()
-    {
-        var nlogConfig = Path.Combine(Application.streamingAssetsPath, "NLog.config");
-        NLog.LogManager.Configuration = new XmlLoggingConfiguration(nlogConfig);
-        
+    {      
         StartCoroutine(ApplyDelay());
-        Settings = EmtSetting.FromConfig() ?? new EmtSetting
+
+        Settings = EmtSetting.FromConfig();
+        if (Settings == null)
         {
-            // TODO: maybe remove?
-            Type = Naki3D.Common.Protocol.DeviceType.Ipw,
-            Communication = new CommunicationSettings(),
-            PerformanceCap = PerformanceCap.Fast
-        };
+            Logger.ErrorUnity("Attempted to create ExhibitConnectionComponent without a valid EMT config, assuming defaults");
+            Settings = new EmtSetting();
+        }
     }
     
     void Update()
@@ -55,29 +50,24 @@ public class ExhibitConnectionComponent : MonoBehaviour
         switch (ActivePackage.Parameters.DisplayType)
         {
             case "video":
-                SceneManager.LoadScene("VideoScene");
+                SceneManager.LoadSceneAsync("VideoScene");
                 break;
             case "gallery":
-                SceneManager.LoadScene("GalleryScene");
+                SceneManager.LoadSceneAsync("GalleryScene");
                 break;
             case "model":
-                SceneManager.LoadScene("3DObject");
+                SceneManager.LoadSceneAsync("3DObject");
                 break;
             case "scene":
                 ActivePackage.Run();
                 break;
             case "panorama":
-                SceneManager.LoadScene("PanoScene");
+                SceneManager.LoadSceneAsync("PanoScene");
                 break;
             default:
-                throw new NotImplementedException(ActivePackage.Parameters.DisplayType);
+                Logger.ErrorUnity($"Package display type '{ActivePackage.Parameters.DisplayType}' is not implemented");
+                throw new NotImplementedException($"Package display type '{ActivePackage.Parameters.DisplayType}' is not implemented");
         }
-    }
-
-    private void OnDestroy()
-    {
-        EventManager.Instance.Stop();
-        //Connection?.Dispose();
     }
 
     private IEnumerator ApplyDelay()
@@ -92,22 +82,11 @@ public class ExhibitConnectionComponent : MonoBehaviour
         if (string.IsNullOrWhiteSpace(Hostname)) Hostname = Dns.GetHostName();
         
         Task.Run(() => {
-            var sync = new Sync
-            {
-                Elements = new System.Collections.Generic.List<Element>()
-            };
+            var sync = new Sync { Elements = new List<Element>() };
             EventManager.Instance.Start(sync);
         });
 
         EventManager.Instance.OnEventReceived += Instance_OnEventReceived;
-
-        if (!DisableAutoConnect)
-        {
-            //Task.Run(() =>
-            //{
-                //Connect();
-            //});
-        }
     }
 
     private void Instance_OnEventReceived(object sender, SensorMessage e)
