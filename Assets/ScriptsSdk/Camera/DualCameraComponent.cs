@@ -4,40 +4,22 @@ using System;
 using System.IO;
 using System.Collections;
 using UnityEngine;
-using Sirenix.OdinInspector;
 using Assets.Extensions;
 
 public class DualCameraComponent : MonoBehaviour, ICameraRig
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    [SceneObjectsOnly, Required, BoxGroup("Rendering")]
     public TransformCameraComponent TopCamera;
-    [SceneObjectsOnly, Required, BoxGroup("Rendering")]
     public TransformCameraComponent BottomCamera;
-    [OnValueChanged("OrientationChanged"), BoxGroup("Rendering")]
     public IPWSetting.IPWOrientation Orientation { get; set; }
 
     public IPWSetting Setting;
 
     Naki3D.Common.Protocol.DeviceType ICameraRig.DeviceType => Naki3D.Common.Protocol.DeviceType.Ipw;
 
-    [OnValueChanged("CurveChanged"), LabelText("Brightness curve on"), BoxGroup("Debug")]
-    public bool CurveOn = true;
-
     // TODO: Fix ortho sizing, lens shift is just physical worldspace shift scaled by orthosize
     // TODO: Disable culling on ortho scenes, leaves black squares for some reason
-
-    private void OrientationChanged()
-    {
-        Setting.Orientation = Orientation;
-        ApplySettings();
-    }
-
-    void CurveChanged()
-    {
-        //ProjectorTransformationPass.EnableCurve = CurveOn;
-    }
 
     void Awake()
     {
@@ -58,7 +40,6 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
         ApplySettings();
     }
 
-    [Button, BoxGroup("Settings")]
     public void LoadSettings()
     {
         Setting = ProjectorTransfomartionSettingsLoader.LoadSettings();
@@ -97,7 +78,6 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
         }
     }
 
-    [Button, BoxGroup("Settings")]
     public void ApplySettings()
     {
         switch (Setting.Orientation)
@@ -133,7 +113,6 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
         BottomCamera.ApplySettings();
     }
 
-    [Button, BoxGroup("Settings")]
     public void SaveSettings()
     {
         var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -151,13 +130,11 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
         Logger.InfoUnity("Configuration saved");
     }
 
-    [Button, LabelText("Swap Settings"), BoxGroup("Rendering")]
     public void SwapSettings()
     {
         (TopCamera.SettingIndex, BottomCamera.SettingIndex) = (BottomCamera.SettingIndex, TopCamera.SettingIndex);
     }
 
-    [Button, LabelText("Swap Displays"), BoxGroup("Rendering")]
     public void SwapDisplays()
     {
         var firstDisplay = TopCamera.TargetDisplay;

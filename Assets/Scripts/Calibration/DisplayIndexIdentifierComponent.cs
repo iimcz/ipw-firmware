@@ -1,15 +1,9 @@
-using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
 public class DisplayIndexIdentifierComponent : MonoBehaviour
 {
-    [Required]
-    [SceneObjectsOnly]
     public Camera Camera;
-
-    [Required]
-    [SceneObjectsOnly]
     public TextMeshProUGUI Text;
 
     private int _displayId;

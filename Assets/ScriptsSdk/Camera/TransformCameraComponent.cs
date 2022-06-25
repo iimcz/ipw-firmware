@@ -1,6 +1,5 @@
 using Assets.ScriptsSdk.Extensions;
 using emt_sdk.Settings;
-using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,6 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class TransformCameraComponent : MonoBehaviour
 {
-    [SceneObjectsOnly, Required]
     public Camera Camera;
 
     public bool AlignCorners;
@@ -42,12 +40,10 @@ public class TransformCameraComponent : MonoBehaviour
     public DisplaySetting Setting => Settings[SettingIndex];
 
     [SerializeField]
-    [OnValueChanged("ApplyEditorFields")]
     [Range(0, 7)]
     private int _settingIndex = 0;
 
     [SerializeField]
-    [OnValueChanged("ApplyEditorFields")]
     [Range(0, 7)]
     private int _targetDisplay;
 
@@ -95,17 +91,6 @@ public class TransformCameraComponent : MonoBehaviour
         ProjectorTransformationPass.FlipCurve[TargetDisplay] = TargetDisplay == 0;
         ProjectorTransformationPass.CrossOver[TargetDisplay] = Setting.CrossOver;
     }
-
-    #if UNITY_EDITOR
-    private void ApplyEditorFields()
-    {
-        // No settings loaded anyways
-        if (!Application.isPlaying) return;
-        
-        //Setting.DisplayId = _targetDisplay;
-        ApplySettings();
-    }
-    #endif
 
     private Vector3[] SettingsVertices => new[] { 
         Setting.Skew.BottomLeft.ToUnityVector(),

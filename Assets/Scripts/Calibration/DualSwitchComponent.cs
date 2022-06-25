@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class DualSwitchComponent : MonoBehaviour
@@ -9,10 +8,7 @@ public class DualSwitchComponent : MonoBehaviour
     public List<MonoBehaviour> GroupA;
     public List<MonoBehaviour> GroupB;
     
-    [Required, SceneObjectsOnly]
     public RectTransform GroupAActiveMarker;
-    
-    [Required, SceneObjectsOnly]
     public RectTransform GroupBActiveMarker;
 
     private void OnEnable()
