@@ -416,6 +416,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1622444857}
   - component: {fileID: 1622444858}
+  - component: {fileID: 1622444859}
   m_Layer: 0
   m_Name: SceneLoader
   m_TagString: Untagged
@@ -449,6 +450,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111931c2124c7964c985df3ef687df51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1622444859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1622444856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deebf52db8f228744a851bade73a7e9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _configName: NLog.config
 --- !u!1 &1657883953
 GameObject:
   m_ObjectHideFlags: 0
