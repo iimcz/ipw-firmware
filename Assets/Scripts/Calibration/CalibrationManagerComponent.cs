@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Assets.Extensions;
 using emt_sdk.Communication;
 using emt_sdk.ScenePackage;
+using emt_sdk.Settings;
 using UnityEngine;
 
 // TODO: Write custom inspector for states to make it easier to read
@@ -64,19 +65,33 @@ public class CalibrationManagerComponent : MonoBehaviour
         // Give the rendering pipeline a while to get itself sorted
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
-        
-        var isCalibrated = ProjectorTransfomartionSettingsLoader.SettingsExists && !AlwaysCalibrate;
-        if (isCalibrated) yield return new WaitForSecondsRealtime(5f); // Give the user few seconds to react
-        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) isCalibrated = false;
 
-        // TODO: Validate with schema
-        var loader = new PackageLoader(null);
-        var startupPackage = loader.EnumeratePackages(false)
-            .FirstOrDefault(p => Path.GetFileName(p.PackageDirectory) == _connection.Settings.StartupPackage);
+        var deviceType = EmtSetting.FromConfig()?.Type ?? Naki3D.Common.Protocol.DeviceType.Unknown;
+        var isCalibrated = deviceType switch
+        {
+            Naki3D.Common.Protocol.DeviceType.Pge => true,
+            Naki3D.Common.Protocol.DeviceType.Ipw => ProjectorTransfomartionSettingsLoader.SettingsExists,
+            _ => true
+        };
+
+        if (AlwaysCalibrate) isCalibrated = false;
+        if (isCalibrated)
+        {
+            // Give the user few seconds to react
+            yield return new WaitForSecondsRealtime(5f); 
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) isCalibrated = false;
+        }
 
         if (isCalibrated)
         {
             ProjectorTransformationPass.SoftwareCalibration = false;
+
+            // TODO: Validate with schema
+            var loader = new PackageLoader(null);
+            var startupPackage = loader
+                .EnumeratePackages(false)
+                .FirstOrDefault(p => Path.GetFileName(p.PackageDirectory) == _connection.Settings.StartupPackage);
+            
             if (startupPackage != null)
             {
                 _connection.SwitchScene(startupPackage);
