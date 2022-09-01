@@ -1,6 +1,6 @@
 using emt_sdk.Events;
+using emt_sdk.Settings;
 using Naki3D.Common.Protocol;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [RequireComponent(typeof(NodeRotatorComponent))]
@@ -12,7 +12,7 @@ public class DebugInputComponent : MonoBehaviour
     {
         _rotaror = GetComponent<NodeRotatorComponent>();
 
-        Task.Run(() => EventManager.Instance.Start(null));
+        EventManager.Instance.ConnectSensor(EmtSetting.FromConfig().Communication);
     }
 
     public void GestureUpdate(SensorMessage message)

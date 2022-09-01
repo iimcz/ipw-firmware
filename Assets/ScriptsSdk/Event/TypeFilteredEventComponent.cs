@@ -5,9 +5,9 @@ public class TypeFilteredEventComponent : EventComponent
 {
     public DataOneofCase DataType;
 
-    protected override void OnEventReceived(object sender, SensorMessage e)
+    protected override void OnEventReceived(SensorMessage e)
     {
         if (e.DataCase != DataType) return;
-        base.OnEventReceived(sender, e);
+        base.OnEventReceived(e);
     }
 }

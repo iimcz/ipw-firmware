@@ -25,7 +25,7 @@ public class ActionEvent : MainThreadExecutorComponent
         EventManager.Instance.OnEffectCalled -= OnEventReceived;
     }
 
-    private void OnEventReceived(object sender, EffectCall e)
+    private void OnEventReceived(EffectCall e)
     {
         if (!string.Equals(e.Name, Effect, StringComparison.CurrentCultureIgnoreCase)) return;
 

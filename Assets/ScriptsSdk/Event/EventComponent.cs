@@ -20,7 +20,7 @@ public class EventComponent : MainThreadExecutorComponent
         EventManager.Instance.OnEventReceived -= OnEventReceived;
     }
 
-    protected virtual void OnEventReceived(object sender, SensorMessage e)
+    protected virtual void OnEventReceived(SensorMessage e)
     {
         Logger.DebugUnity(e.ToString());
         Logger.DebugUnity(e.DataCase.ToString());

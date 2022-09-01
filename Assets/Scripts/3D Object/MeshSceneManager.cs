@@ -174,7 +174,7 @@ public class MeshSceneManager : MonoBehaviour
         }
     }
 
-    private void EventReceived(object sender, SensorMessage e)
+    private void EventReceived(SensorMessage e)
     {
         if (_flagNavigator == null) return;
         

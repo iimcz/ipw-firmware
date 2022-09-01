@@ -26,6 +26,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
     public EmtSetting Settings;
     public string Hostname;
+    public bool AutoConnect;
 
     private PackageLoader _loader;
 
@@ -80,16 +81,18 @@ public class ExhibitConnectionComponent : MonoBehaviour
         _loader = new PackageLoader(null);
 
         if (string.IsNullOrWhiteSpace(Hostname)) Hostname = Dns.GetHostName();
-        
-        Task.Run(() => {
-            var sync = new Sync { Elements = new List<Element>() };
-            EventManager.Instance.Start(sync);
-        });
 
+        EventManager.Instance.ConnectSensor(Settings.Communication);
         EventManager.Instance.OnEventReceived += Instance_OnEventReceived;
+
+        if (AutoConnect)
+        {
+            if (EmtSetting.FromConfig() == null) Logger.ErrorUnity($"Attempted to connect to toolbox without a valid config, ignoring");
+            else Connect();
+        }
     }
 
-    private void Instance_OnEventReceived(object sender, SensorMessage e)
+    private void Instance_OnEventReceived(SensorMessage e)
     {
         Logger.DebugUnity(e.ToString());
     }
@@ -129,7 +132,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
         package.DownloadFile();
         Logger.InfoUnity($"Download complete");
 
-        Task.Run(() => EventManager.Instance.Start(package.Sync));
+        EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
 
         Settings.StartupPackage = package.Package.Checksum;
         Settings.Save();
