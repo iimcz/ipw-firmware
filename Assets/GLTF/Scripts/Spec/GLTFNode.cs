@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Siccity.GLTFUtility.Converters;
 using UnityEngine;
 using UnityEngine.Scripting;
+using static Siccity.GLTFUtility.KHR_lights_punctual;
 
 namespace Siccity.GLTFUtility {
 	// https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#node
@@ -28,13 +29,25 @@ namespace Siccity.GLTFUtility {
 		public int? camera;
 		public int? weights;
 
+		public Extensions extensions;
+
 		public bool ShouldSerializetranslation() { return translation != Vector3.zero; }
 		public bool ShouldSerializerotation() { return rotation != Quaternion.identity; }
 		public bool ShouldSerializescale() { return scale != Vector3.one; }
-#endregion
 
-#region Import
-		public class ImportResult {
+		public class KHR_lights_punctual
+		{
+            [JsonProperty(Required = Required.Always)] public int light;
+		}
+
+        public class Extensions
+        {
+            public KHR_lights_punctual KHR_lights_punctual;
+        }
+        #endregion
+
+        #region Import
+        public class ImportResult {
 			public int? parent;
 			public int[] children;
 			public Transform transform;
@@ -54,12 +67,14 @@ namespace Siccity.GLTFUtility {
 			GLTFMesh.ImportTask meshTask;
 			GLTFSkin.ImportTask skinTask;
 			List<GLTFCamera> cameras;
+			List<GLTFLight> lights;
 
-			public ImportTask(List<GLTFNode> nodes, GLTFMesh.ImportTask meshTask, GLTFSkin.ImportTask skinTask, List<GLTFCamera> cameras) : base(meshTask, skinTask) {
+            public ImportTask(List<GLTFNode> nodes, GLTFMesh.ImportTask meshTask, GLTFSkin.ImportTask skinTask, List<GLTFCamera> cameras, List<GLTFLight> lights) : base(meshTask, skinTask) {
 				this.nodes = nodes;
 				this.meshTask = meshTask;
 				this.skinTask = skinTask;
 				this.cameras = cameras;
+				this.lights = lights;
 				task = new Task(() => { });
 			}
 
@@ -141,6 +156,36 @@ namespace Siccity.GLTFUtility {
 							if (cameraData.perspective.zfar.HasValue) camera.farClipPlane = cameraData.perspective.zfar.Value;
 							if (cameraData.perspective.aspectRatio.HasValue) camera.aspect = cameraData.perspective.aspectRatio.Value;
 							camera.fieldOfView = Mathf.Rad2Deg * cameraData.perspective.yfov;
+						}
+					}
+
+					// Setup light
+					if (nodes[i]?.extensions?.KHR_lights_punctual != null)
+					{
+                        GLTFLight lightData = lights[nodes[i].extensions.KHR_lights_punctual.light];
+						Light light = Result[i].transform.gameObject.AddComponent<Light>();
+                        Result[i].transform.localRotation = Result[i].transform.localRotation * Quaternion.Euler(0, 180, 0);
+                        // TODO: Units
+                        // TODO: Shadows, might need to update Unity....
+                        light.intensity = lightData.intensity;
+						// TODO: Unity doesn't define a safe range anywhere and float.MaxValue causes graphical artefacts
+						light.range = lightData.range == 0 ? 10000 : lightData.range;
+						light.color = lightData.color;
+                        switch (lightData.type)
+						{
+							case LightType.directional:
+								light.type = UnityEngine.LightType.Directional;
+                                break;
+							case LightType.point:
+                                light.type = UnityEngine.LightType.Point;
+                                break;
+							case LightType.spot:
+                                light.type = UnityEngine.LightType.Spot;
+								light.innerSpotAngle = lightData.innerConeAngle;
+								light.spotAngle = lightData.outerConeAngle;
+                                break;
+							default:
+								throw new NotImplementedException($"Light type '{lightData.type}' is not supported");
 						}
 					}
 				}

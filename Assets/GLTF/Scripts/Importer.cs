@@ -207,7 +207,7 @@ namespace Siccity.GLTFUtility {
 			meshTask.RunSynchronously();
 			GLTFSkin.ImportTask skinTask = new GLTFSkin.ImportTask(gltfObject.skins, accessorTask);
 			skinTask.RunSynchronously();
-			GLTFNode.ImportTask nodeTask = new GLTFNode.ImportTask(gltfObject.nodes, meshTask, skinTask, gltfObject.cameras);
+			GLTFNode.ImportTask nodeTask = new GLTFNode.ImportTask(gltfObject.nodes, meshTask, skinTask, gltfObject.cameras, gltfObject.extensions?.KHR_lights_punctual?.lights);
 			nodeTask.RunSynchronously();
 			GLTFAnimation.ImportResult[] animationResult = gltfObject.animations.Import(accessorTask.Result, nodeTask.Result, importSettings);
 			if (animationResult != null) animations = animationResult.Select(x => x.clip).ToArray();
@@ -254,7 +254,7 @@ namespace Siccity.GLTFUtility {
 			importTasks.Add(meshTask);
 			GLTFSkin.ImportTask skinTask = new GLTFSkin.ImportTask(gltfObject.skins, accessorTask);
 			importTasks.Add(skinTask);
-			GLTFNode.ImportTask nodeTask = new GLTFNode.ImportTask(gltfObject.nodes, meshTask, skinTask, gltfObject.cameras);
+			GLTFNode.ImportTask nodeTask = new GLTFNode.ImportTask(gltfObject.nodes, meshTask, skinTask, gltfObject.cameras, gltfObject.extensions?.KHR_lights_punctual?.lights);
 			importTasks.Add(nodeTask);
 
 			// Ignite
@@ -300,6 +300,8 @@ namespace Siccity.GLTFUtility {
 						case "KHR_materials_pbrSpecularGlossiness":
 							break;
 						case "KHR_draco_mesh_compression":
+							break;
+						case "KHR_lights_punctual":
 							break;
 						default:
 							Debug.LogWarning($"GLTFUtility: Required extension '{gLTFObject.extensionsRequired[i]}' not supported. Import process will proceed but results may vary.");

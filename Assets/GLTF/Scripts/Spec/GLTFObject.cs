@@ -20,7 +20,13 @@ namespace Siccity.GLTFUtility {
 		public List<GLTFImage> images;
 		public List<GLTFMaterial> materials;
 		public List<GLTFCamera> cameras;
+		public Extensions extensions;
 		public List<string> extensionsUsed;
 		public List<string> extensionsRequired;
+
+		public class Extensions
+		{
+			public KHR_lights_punctual KHR_lights_punctual;
+        }
 	}
 }
