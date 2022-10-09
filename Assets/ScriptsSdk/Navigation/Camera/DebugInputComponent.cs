@@ -19,13 +19,13 @@ public class DebugInputComponent : MonoBehaviour
     {
         switch (message.Gesture.Type)
         {
-            case GestureType.GestureSwipeLeft:
+            case HandGestureType.GestureSwipeLeft:
                 _rotaror.TurnLeft();
                 break;
-            case GestureType.GestureSwipeRight:
+            case HandGestureType.GestureSwipeRight:
                 _rotaror.TurnRight();
                 break;
-            case GestureType.GestureSwipeUp:
+            case HandGestureType.GestureSwipeUp:
                 _rotaror.Activate();
                 break;
         }

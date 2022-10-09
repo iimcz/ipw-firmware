@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections;
 using System.Linq;
 using Assets.ScriptsSdk.Extensions;
-using emt_sdk.Events;
 using emt_sdk.Scene;
 using emt_sdk.Generated.ScenePackage;
 using Siccity.GLTFUtility;
@@ -22,26 +21,24 @@ public class MeshSceneManager : MonoBehaviour
     private OrbitComponent _cameraOrbit;
 
     [SerializeField]
+    private CameraHandMovement _handMovement;
+
+    [SerializeField]
     private CameraRigSpawnerComponent _rigSpawner;
     
     private void Start()
     {
-        EventManager.Instance.OnEventReceived += EventReceived;
-
         StartCoroutine(DelayApply());
-    }
-
-    private void OnDestroy()
-    {
-        EventManager.Instance.OnEventReceived -= EventReceived;
     }
 
     public void Apply(GltfObject scene, string basePath)
     {
         if (ColorUtility.TryParseHtmlString(scene.SkyboxTint ?? "#FFFFFF", out var tint) == false)
-            throw new ArgumentException("Background color is not a valid HTML hex color string",
-                nameof(scene.SkyboxTint));
-        if (!String.IsNullOrEmpty(scene.Skybox))
+        {
+            throw new ArgumentException("Background color is not a valid HTML hex color string", nameof(scene.SkyboxTint));
+        }
+
+        if (!string.IsNullOrEmpty(scene.Skybox))
         {
             _rigSpawner.CameraRig.ShowSkybox();
             var skyboxPath = Path.Combine(basePath, scene.Skybox);
@@ -51,7 +48,6 @@ public class MeshSceneManager : MonoBehaviour
         {
             _rigSpawner.CameraRig.SetBackgroundColor(tint);
             SkyboxLoader.ApplyTint(Color.gray);
-
 
             // TODO: Talk about lights
             //SkyboxLoader.ApplyTint(tint);
@@ -71,7 +67,7 @@ public class MeshSceneManager : MonoBehaviour
                 }
 
                 _cameraOrbit.RotationPeriod = orbit.RevolutionTime;
-                _cameraOrbit.gameObject.transform.position = new UnityEngine.Vector3(orbit.Distance, orbit.Height, 0);
+                _cameraOrbit.OrbitOffset = new UnityEngine.Vector3(orbit.Distance, orbit.Height, 0);
                     
                 _cameraOrbit.Invalidate();
                 break;
@@ -83,117 +79,120 @@ public class MeshSceneManager : MonoBehaviour
         Importer.ImportGLBAsync(gltfPath, new ImportSettings(), (result, clips) => { });
     }
 
+    public void GestureReceived(SensorMessage e)
+    {
+        // Flag navigation
+        if (_flagNavigator == null) return;
+        if (e.DataCase == SensorMessage.DataOneofCase.Gesture)
+        {
+            switch (e.Gesture.Type)
+            {
+                case HandGestureType.GestureSwipeLeft:
+                    _flagNavigator.SelectPrevious();
+                    break;
+                case HandGestureType.GestureSwipeRight:
+                    _flagNavigator.SelectNext();
+                    break;
+                case HandGestureType.GestureSwipeUp:
+                case HandGestureType.GestureSwipeDown:
+                    _flagNavigator.Activate();
+                    break;
+            }
+        }
+    }
+
     private IEnumerator DelayApply()
     {
         // Wait two frames for the camera transformation to apply
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
 
-        // Debug mode
-        if (ExhibitConnectionComponent.ActivePackage == null)
-        {
-            Apply(new GltfObject
-            {
-                FileName = "Assets/Scenes/3DObject/Sample/monkey.glb",
-                SkyboxTint = "#000000",
-                Flags = new System.Collections.Generic.List<GltfObject.Flag>(),
-                CameraAnimation = new GltfObject.OrbitAnimation
-                {
-                    Distance = 5,
-                    Height = 2,
-                    RevolutionTime = 5f,
-                    LookAt = new GltfObject.GltfLocation { Offset = new Naki3D.Common.Protocol.Vector3() },
-                    Origin = new GltfObject.GltfLocation { Offset = new Naki3D.Common.Protocol.Vector3() },
-                }
-            }, string.Empty);
-        }
-        else
-        {
-            var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
-            Apply(new GltfObject
-            {
-                FileName = settings.FileName,
-                Skybox = settings.Skybox,
-                SkyboxTint = settings.SkyboxTint,
-                CameraAnimation = new GltfObject.OrbitAnimation
-                {
-                    Origin = new GltfObject.GltfLocation
-                    {
-                        ObjectName = settings.CameraAnimation.Origin.ObjectName,
-                        Offset = new Naki3D.Common.Protocol.Vector3
-                        {
-                            X = (float)settings.CameraAnimation.Origin.Offset.X,
-                            Y = (float)settings.CameraAnimation.Origin.Offset.Y,
-                            Z = (float)settings.CameraAnimation.Origin.Offset.Z,
-                        }
-                    },
-                    LookAt = new GltfObject.GltfLocation
-                    {
-                        ObjectName = settings.CameraAnimation.LookAt.ObjectName,
-                        Offset = new Naki3D.Common.Protocol.Vector3
-                        {
-                            X = (float)settings.CameraAnimation.LookAt.Offset.X,
-                            Y = (float)settings.CameraAnimation.LookAt.Offset.Y,
-                            Z = (float)settings.CameraAnimation.LookAt.Offset.Z,
-                        }
-                    },
-                    Distance = (float)settings.CameraAnimation.Distance,
-                    Height = (float)settings.CameraAnimation.Height,
-                    RevolutionTime = (float)settings.CameraAnimation.RevolutionTime,
-                },
-                FlagInteraction = settings.FlagInteraction switch
-                {
-                    FlagInteraction.Swipe => GltfObject.FlagInteractionTypeEnum.Swipe,
-                    FlagInteraction.Point => GltfObject.FlagInteractionTypeEnum.Point,
-                    _ => throw new NotSupportedException(),
-                },
-                Flags = settings.Flags.Select(f =>
-                {
-                    return new GltfObject.Flag
-                    {
-                        Location = new GltfObject.GltfLocation
-                        {
-                            ObjectName = "",
-                            Offset = new Naki3D.Common.Protocol.Vector3
-                            {
-                                X = (float)f.Location.X,
-                                Y = (float)f.Location.Y,
-                                Z = (float)f.Location.Z
-                            }
-                        },
-                        Text = f.Text,
-                        ActivatedAction = f.ActivatedAction,
-                        SelectedAction = f.SelectedAction,
-                        ForegroundColor = f.ForegroundColor,
-                        BackgroundColor = f.BackgroundColor,
-                        StalkColor = f.StalkColor,
-                        CanSelect = (bool)f.CanSelect
-                    };
-                }).ToList()
-            }, ExhibitConnectionComponent.ActivePackage.DataRoot);
-        }
+        // Debug mode detection
+        if (ExhibitConnectionComponent.ActivePackage == null) SpawnDebugScene();
+        else SpawnLoadedScene();
     }
 
-    private void EventReceived(SensorMessage e)
+    private void SpawnDebugScene()
     {
-        if (_flagNavigator == null) return;
-        
-        if (e.DataCase == SensorMessage.DataOneofCase.Gesture)
+        Apply(new GltfObject
         {
-            switch (e.Gesture.Type)
+            FileName = "Assets/Scenes/3DObject/Sample/monkey.glb",
+            SkyboxTint = "#000000",
+            Flags = new System.Collections.Generic.List<GltfObject.Flag>(),
+            CameraAnimation = new GltfObject.OrbitAnimation
             {
-                case GestureType.GestureSwipeLeft:
-                    _flagNavigator.SelectPrevious();
-                    break;
-                case GestureType.GestureSwipeRight:
-                    _flagNavigator.SelectNext();
-                    break;
-                case GestureType.GesturePush: // TODO: Maybe too many options?
-                case GestureType.GestureSwipeUp: // TODO: Does push even work?
-                case GestureType.GestureSwipeDown:
-                    _flagNavigator.Activate();
-                    break;
+                Distance = 5,
+                Height = 2,
+                RevolutionTime = 5f,
+                LookAt = new GltfObject.GltfLocation { Offset = new Naki3D.Common.Protocol.Vector3() },
+                Origin = new GltfObject.GltfLocation { Offset = new Naki3D.Common.Protocol.Vector3() },
             }
-        }
+        }, string.Empty);
+    }
+
+    private void SpawnLoadedScene()
+    {
+        var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
+        Apply(new GltfObject
+        {
+            FileName = settings.FileName,
+            Skybox = settings.Skybox,
+            SkyboxTint = settings.SkyboxTint,
+            CameraAnimation = new GltfObject.OrbitAnimation
+            {
+                Origin = new GltfObject.GltfLocation
+                {
+                    ObjectName = settings.CameraAnimation.Origin.ObjectName,
+                    Offset = new Naki3D.Common.Protocol.Vector3
+                    {
+                        X = (float)settings.CameraAnimation.Origin.Offset.X,
+                        Y = (float)settings.CameraAnimation.Origin.Offset.Y,
+                        Z = (float)settings.CameraAnimation.Origin.Offset.Z,
+                    }
+                },
+                LookAt = new GltfObject.GltfLocation
+                {
+                    ObjectName = settings.CameraAnimation.LookAt.ObjectName,
+                    Offset = new Naki3D.Common.Protocol.Vector3
+                    {
+                        X = (float)settings.CameraAnimation.LookAt.Offset.X,
+                        Y = (float)settings.CameraAnimation.LookAt.Offset.Y,
+                        Z = (float)settings.CameraAnimation.LookAt.Offset.Z,
+                    }
+                },
+                Distance = (float)settings.CameraAnimation.Distance,
+                Height = (float)settings.CameraAnimation.Height,
+                RevolutionTime = (float)settings.CameraAnimation.RevolutionTime,
+            },
+            FlagInteraction = settings.FlagInteraction switch
+            {
+                FlagInteraction.Swipe => GltfObject.FlagInteractionTypeEnum.Swipe,
+                FlagInteraction.Point => GltfObject.FlagInteractionTypeEnum.Point,
+                _ => throw new NotSupportedException(),
+            },
+            Flags = settings.Flags.Select(f =>
+            {
+                return new GltfObject.Flag
+                {
+                    Location = new GltfObject.GltfLocation
+                    {
+                        ObjectName = "",
+                        Offset = new Naki3D.Common.Protocol.Vector3
+                        {
+                            X = (float)f.Location.X,
+                            Y = (float)f.Location.Y,
+                            Z = (float)f.Location.Z
+                        }
+                    },
+                    Text = f.Text,
+                    ActivatedAction = f.ActivatedAction,
+                    SelectedAction = f.SelectedAction,
+                    ForegroundColor = f.ForegroundColor,
+                    BackgroundColor = f.BackgroundColor,
+                    StalkColor = f.StalkColor,
+                    CanSelect = (bool)f.CanSelect
+                };
+            }).ToList()
+        }, ExhibitConnectionComponent.ActivePackage.DataRoot);
     }
 }

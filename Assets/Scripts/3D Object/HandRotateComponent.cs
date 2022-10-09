@@ -15,8 +15,8 @@ public class HandRotateComponent : MonoBehaviour
         {
             _orbit.AutoOrbit = false;
             
-            if (_cursor.ScreenPos.x > 0.8) _orbit.Advance(Time.deltaTime);
-            else if (_cursor.ScreenPos.x < 0.2) _orbit.Advance(-Time.deltaTime);
+            if (_cursor.ScreenPos.x > 0.8) _orbit.AdvanceTime(Time.deltaTime);
+            else if (_cursor.ScreenPos.x < 0.2) _orbit.AdvanceTime(-Time.deltaTime);
         }
         else
         {

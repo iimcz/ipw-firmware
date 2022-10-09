@@ -101,7 +101,7 @@ public class CursorComponent : MonoBehaviour
 
         var hand = msg.HandMovement;
         if (hand.UserId != 1) return;
-        if (hand.Hand != HandType.HandRight) return;
+        if (hand.Hand != HandSide.Right) return;
 
         var handPos = new UnityEngine.Vector2(1f - hand.ProjPosition.X, 1f - hand.ProjPosition.Y);
         _viewportPos = new UnityEngine.Vector3(

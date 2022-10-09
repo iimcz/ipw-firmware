@@ -149,10 +149,10 @@ public class GalleryGridLayout : GalleryLayout
 
         switch (gesture.Type)
         {
-            case Naki3D.Common.Protocol.GestureType.GestureSwipeLeft:
+            case Naki3D.Common.Protocol.HandGestureType.GestureSwipeLeft:
                 Next();
                 break;
-            case Naki3D.Common.Protocol.GestureType.GestureSwipeRight:
+            case Naki3D.Common.Protocol.HandGestureType.GestureSwipeRight:
                 Previous();
                 break;
         };

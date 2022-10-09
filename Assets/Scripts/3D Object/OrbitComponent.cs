@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 
 /// <summary>
 /// Orbits a gameobject around a point
@@ -11,6 +10,11 @@ public class OrbitComponent : MonoBehaviour
     /// Rotation origin
     /// </summary>
     public Vector3 Origin;
+
+    /// <summary>
+    /// Position offset from target
+    /// </summary>
+    public Vector3 OrbitOffset;
 
     /// <summary>
     /// Look target
@@ -32,28 +36,59 @@ public class OrbitComponent : MonoBehaviour
 
     public void Invalidate()
     {
-        if (_pivot != null) Destroy(_pivot);
+        if (_pivot != null)
+        {
+            // Unparent camera to prevent destruction
+            transform.parent = null;
+            Destroy(_pivot);
+        }
         
         // Create a new object on the origin point and parent ourself to it
         _pivot = new GameObject($"{gameObject.name} - Pivot");
         _pivot.transform.position = Origin;
-        
+        _pivot.transform.eulerAngles = Vector3.zero;
+
+        transform.position = OrbitOffset;
         transform.parent = _pivot.transform;
     }
 
-    public void Advance(float time)
+    /// <summary>
+    /// Advances the rotation by a period of time in seconds (same speed as autorotate)
+    /// </summary>
+    /// <param name="time">Time period</param>
+    public void AdvanceTime(float time)
     {
         _rotationProgress += time;
     }
 
+    /// <summary>
+    /// Advances the rotation by an angle in degrees
+    /// </summary>
+    /// <param name="angle">Rotation offset in degrees</param>
+    public void AdvanceAngle(float angle)
+    {
+        var degreeDuration = RotationPeriod / 360f;
+        var targetTime = angle * degreeDuration;
+
+        _rotationProgress += targetTime;
+    }
+
+    public void AdvancePivotRotation(Vector3 eurlerAngles)
+    {
+        _pivot.transform.eulerAngles += eurlerAngles;
+    }
+
     private void Update()
     {
-        // Don|t orbit until we have been initialized
+        // Don't orbit until we have been initialized
         if (_pivot == null) return;
         if (LookAt == null) return;
         
         if (AutoOrbit) _rotationProgress += Time.deltaTime;
+
+        // Clamp over/underflow
         if (_rotationProgress >= RotationPeriod) _rotationProgress -= RotationPeriod;
+        if (_rotationProgress < 0) _rotationProgress += RotationPeriod;
 
         var progress = _rotationProgress / RotationPeriod;
         var angle = Mathf.Lerp(0, 360, progress);

@@ -33,7 +33,7 @@ public class GalleryCursorComponent : MonoBehaviour
         if (message.DataCase != SensorMessage.DataOneofCase.Gesture) return;
         if (_activatedImage == null) return;
         
-        if (message.Gesture.Type == GestureType.GestureSwipeUp)
+        if (message.Gesture.Type == HandGestureType.GestureSwipeUp)
         {
             _activatedImage.transform.localPosition = _activatedPos;
             _activatedImage.transform.localScale = _activatedScale;
