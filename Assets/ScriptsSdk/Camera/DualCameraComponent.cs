@@ -1,10 +1,13 @@
 using emt_sdk.Settings;
+using emt_sdk.ScenePackage;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Collections;
 using UnityEngine;
 using Assets.Extensions;
+using System.Linq;
+using System.Net;
 
 public class DualCameraComponent : MonoBehaviour, ICameraRig
 {
@@ -17,6 +20,9 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
     public IPWSetting Setting;
 
     Naki3D.Common.Protocol.DeviceType ICameraRig.DeviceType => Naki3D.Common.Protocol.DeviceType.Ipw;
+
+    // Extra lens shift defined by Sync offset
+    private Vector2 _syncLensShift;
 
     // TODO: Fix ortho sizing, lens shift is just physical worldspace shift scaled by orthosize
     // TODO: Disable culling on ortho scenes, leaves black squares for some reason
@@ -80,6 +86,29 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public void ApplySettings()
     {
+        if (ExhibitConnectionComponent.ActivePackage != null)
+        {
+            // TODO: HACK
+            // May happen if we load an old package
+            if (ExhibitConnectionComponent.ActivePackage.Sync.CanvasDimensions == null)
+            {
+                Logger.InfoUnity("Attempted to load a package without valid sync info, using default values");
+                SetViewport(new Vector2(2048, 2048), new Viewport(2048, 2048, 0, 0));
+            }
+            else
+            {
+                var canvasDimensions = ExhibitConnectionComponent.ActivePackage.Sync.CanvasDimensions;
+                var selfElement = ExhibitConnectionComponent.ActivePackage.Sync.Elements.First(e => e.Hostname == Dns.GetHostName());
+
+                SetViewport(new Vector2(canvasDimensions.Width.Value, canvasDimensions.Height.Value), selfElement.Viewport);
+            }
+        }
+        else
+        {
+            // TODO: Debug mode
+            SetViewport(new Vector2(2048, 2048), new Viewport(2048, 2048, 0, 0));
+        }
+
         switch (Setting.Orientation)
         {
             case IPWSetting.IPWOrientation.Vertical:
@@ -108,6 +137,10 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
         }
 
         ProjectorTransformationPass.Vertical = Setting.Orientation == IPWSetting.IPWOrientation.Vertical;
+
+        // Apply Sync viewport transformation
+        TopCamera.Camera.lensShift += _syncLensShift;
+        BottomCamera.Camera.lensShift += _syncLensShift;
 
         TopCamera.ApplySettings();
         BottomCamera.ApplySettings();
@@ -157,5 +190,16 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
     {
         TopCamera.Camera.clearFlags = CameraClearFlags.Skybox;
         BottomCamera.Camera.clearFlags = CameraClearFlags.Skybox;
+    }
+
+    public void SetViewport(Vector2 canvasSize, Viewport viewport)
+    {
+        if (viewport.Width != 2048 || viewport.Height != 2048)
+        {
+            Logger.ErrorUnity("Attempted to set viewport size of an IPW camera to something other than 2048x2048, this will not work");
+            return;
+        }
+
+        _syncLensShift = new Vector2(viewport.X / canvasSize.x, viewport.Y / canvasSize.y);
     }
 }

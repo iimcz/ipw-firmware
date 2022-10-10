@@ -1,4 +1,5 @@
 ﻿using emt_sdk.Settings;
+using emt_sdk.ScenePackage;
 using UnityEngine;
 
 public class PeppersGhostCameraComponent : MonoBehaviour, ICameraRig
@@ -43,5 +44,10 @@ public class PeppersGhostCameraComponent : MonoBehaviour, ICameraRig
     public void ShowSkybox()
     {
         Camera.clearFlags = CameraClearFlags.Skybox;
+    }
+
+    public void SetViewport(Vector2 canvasSize, Viewport viewport)
+    {
+        // Nothing to apply, always fixed
     }
 }

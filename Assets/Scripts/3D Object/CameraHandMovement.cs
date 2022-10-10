@@ -50,9 +50,6 @@ public class CameraHandMovement : MonoBehaviour
 
     void Update()
     {
-        // TODO: Debug
-        EventReceived(null);
-
         // Only update if we have new data
         if (_lastInputTime >= _autoOrbitDelay) return;
 
