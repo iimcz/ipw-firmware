@@ -18,9 +18,15 @@ public class VideoLoader : MonoBehaviour
     [SerializeField] 
     private VideoDisplayComponent _display;
 
-    public void Start()
+    IEnumerator Start()
     {
-        StartCoroutine(DelayApply());
+        // Wait two frames for the camera transformation to apply
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+
+        // Debug mode
+        if (ExhibitConnectionComponent.ActivePackage == null) SpawnDebugScene();
+        else yield return SpawnLoadedScene();
     }
 
     public IEnumerator Apply(VideoScene scene, string basePath)
@@ -45,59 +51,52 @@ public class VideoLoader : MonoBehaviour
         _display.Resize(scene.AspectRatio);
     }
 
-    private IEnumerator DelayApply()
+    private void SpawnDebugScene()
     {
-        // Wait two frames for the camera transformation to apply
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForEndOfFrame();
+        _display.Resize(VideoScene.VideoAspectRatioEnum.FitInside);
 
-        // Debug mode
-        if (ExhibitConnectionComponent.ActivePackage == null)
+        _player.Stop();
+        EventManager.Instance.Actions.Add(new Action
         {
-            _display.Resize(VideoScene.VideoAspectRatioEnum.FitInside);
-            
-            _player.Stop();
-            EventManager.Instance.Actions.Add(new Action
+            Effect = "play",
+            Type = TypeEnum.ValueTrigger,
+            Mapping = new Mapping
             {
-                Effect = "play",
-                Type = TypeEnum.ValueTrigger,
-                Mapping = new Mapping
-                {
-                    Source = "atom_1_pir_1",
-                    Condition = Condition.Equals,
-                    ThresholdType = ThresholdType.Integer,
-                    Threshold = ((int)PirMovementEvent.MovementStarted).ToString()
-                }
-            });
-            
-            EventManager.Instance.Actions.Add(new Action
+                Source = "atom_1_pir_1",
+                Condition = Condition.Equals,
+                ThresholdType = ThresholdType.Integer,
+                Threshold = ((int)PirMovementEvent.MovementStarted).ToString()
+            }
+        });
+
+        EventManager.Instance.Actions.Add(new Action
+        {
+            Effect = "setVolume",
+            Type = TypeEnum.Value,
+            Mapping = new Mapping
             {
-                Effect = "setVolume",
-                Type = TypeEnum.Value,
-                Mapping = new Mapping
-                {
-                    Source = "raspi-1-ultrasonic-1",
-                    InMin = 0,
-                    InMax = 60,
-                    OutMin = 1,
-                    OutMax = 0,
-                }
-            });
-            
-            yield break;
-        }
-        
+                Source = "raspi-1-ultrasonic-1",
+                InMin = 0,
+                InMax = 60,
+                OutMin = 1,
+                OutMax = 0,
+            }
+        });
+    }
+
+    private IEnumerator SpawnLoadedScene()
+    {
         var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
         yield return Apply(new VideoScene
         {
             Loop = settings.Loop.Value,
-            AspectRatio = (VideoScene.VideoAspectRatioEnum) Enum.Parse(typeof(VideoScene.VideoAspectRatioEnum), settings.AspectRatio.Value.ToString()),
+            AspectRatio = (VideoScene.VideoAspectRatioEnum)Enum.Parse(typeof(VideoScene.VideoAspectRatioEnum), settings.AspectRatio.Value.ToString()),
             AutoStart = settings.AutoStart.Value,
             BackgroundColor = settings.BackgroundColor,
             FileName = settings.FileName,
             VideoEvents = settings.VideoEvents.Select(ve => new VideoScene.VideoEvent
             {
-                Timestamp = (float) ve.Timestamp.Value,
+                Timestamp = (float)ve.Timestamp.Value,
                 EventName = ve.EventName
             }).ToArray()
         }, ExhibitConnectionComponent.ActivePackage.DataRoot);
