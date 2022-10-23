@@ -27,6 +27,12 @@ public class VideoLoader : MonoBehaviour
         // Debug mode
         if (ExhibitConnectionComponent.ActivePackage == null) SpawnDebugScene();
         else yield return SpawnLoadedScene();
+
+        // Enable NTP for multiple display devices
+        if (/* TODO: DEBUG ONLY */ ExhibitConnectionComponent.ActivePackage == null || ExhibitConnectionComponent.ActivePackage.Sync.Elements.Count > 1)
+        {
+            GetComponent<NtpVideoSyncComponent>().enabled = true;
+        }
     }
 
     public IEnumerator Apply(VideoScene scene, string basePath)

@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 680857480}
   - component: {fileID: 680857479}
   - component: {fileID: 680857478}
+  - component: {fileID: 680857489}
   - component: {fileID: 680857486}
   - component: {fileID: 680857485}
   - component: {fileID: 680857484}
@@ -442,6 +443,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55b2594f42c74563ba86a4d1652b2874, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &680857489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680857477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccdbca93cda713f49b41ae9064990d73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ResyncPeriod: 30
+  _player: {fileID: 680857479}
 --- !u!1 &685421687
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,3 +746,77 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hostname: 
+  AutoConnect: 0
+--- !u!1 &1848626514
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1848626516}
+  - component: {fileID: 1848626515}
+  - component: {fileID: 1848626517}
+  m_Layer: 0
+  m_Name: Debug
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1848626515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848626514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f6872758941a6342b6277c010d533e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 680857489}
+        m_TargetAssemblyTypeName: NtpVideoSyncComponent, Assembly-CSharp
+        m_MethodName: OnCustomEvent
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  DataType: 25
+--- !u!4 &1848626516
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848626514}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.9175525, y: 1.3784943, z: -0.32131004}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1848626517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848626514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebe4847135c34b49bff73ceec14493b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sync: {fileID: 680857489}
