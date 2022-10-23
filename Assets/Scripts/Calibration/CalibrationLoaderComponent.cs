@@ -27,7 +27,8 @@ public class CalibrationLoaderComponent : MonoBehaviour
                 SceneManager.LoadScene("EmtToolboxScene");
                 break;
             case Naki3D.Common.Protocol.DeviceType.Pge:
-                SceneManager.LoadScene("EmtToolboxScenePge");
+                // THIS BRANCH IS ONLY FOR TESTING
+                SceneManager.LoadScene("3DObject");
                 break;
             case Naki3D.Common.Protocol.DeviceType.Unknown:
             default:
