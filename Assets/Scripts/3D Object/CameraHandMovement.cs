@@ -20,6 +20,10 @@ public class CameraHandMovement : MonoBehaviour
     [SerializeField]
     private HandStateEnum _handState = HandStateEnum.None;
 
+    private KalmanFilter _filterX = new KalmanFilter(1, 1, 0.125, 1, 0.1, 0);
+    private KalmanFilter _filterY = new KalmanFilter(1, 1, 0.125, 1, 0.1, 0);
+    private KalmanFilter _filterZ = new KalmanFilter(1, 1, 0.125, 1, 0.1, 0);
+
     private Vector3 _previousPositon = Vector3.zero;
     private Vector3 _position = Vector3.zero;
 
@@ -71,8 +75,8 @@ public class CameraHandMovement : MonoBehaviour
         _lastInputTime += Time.deltaTime;
         if (_lastInputTime >= _autoOrbitDelay)
         {
-            _orbit.AutoOrbit = true;
-            _orbit.Invalidate(); // Reset to known position
+            //_orbit.AutoOrbit = true;
+            //_orbit.Invalidate(); // Reset to known position
         }
     }
 
@@ -98,5 +102,19 @@ public class CameraHandMovement : MonoBehaviour
 
         _previousPositon = _position;
         _position = e.HandTracking.CenterPosition.ToUnityVector();
+        //var z = e.HandTracking.CenterPosition.Z;
+
+
+        _position = new Vector3(
+            _filterX.Output(_position.x),
+            _filterY.Output(_position.y),
+            _filterZ.Output(_position.z)
+        );
+
+        _position *= 2f;
+        //_position.z *= 10000f;
+        _position -= new Vector3(1,1,1);
+
+        print(_position);
     }
 }

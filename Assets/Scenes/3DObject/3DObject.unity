@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.005996694, g: 0.99121004, b: 0.35815355, a: 1}
+  m_IndirectSpecularColor: {r: 0.21215841, g: 0.21215841, b: 0.21215841, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -170,6 +170,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  LogEvents: 0
   DataType: 15
 --- !u!114 &6998766
 MonoBehaviour:
@@ -185,6 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Hostname: 
   AutoConnect: 0
+  LogEvents: 0
 --- !u!4 &6998767
 Transform:
   m_ObjectHideFlags: 0
@@ -399,6 +401,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53db34fe618cd7b4c84226318de4317e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1863770803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863770800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f6872758941a6342b6277c010d533e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1863770804}
+        m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
+        m_MethodName: EventReceived
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  LogEvents: 0
+  DataType: 15
 --- !u!114 &1863770804
 MonoBehaviour:
   m_ObjectHideFlags: 0
