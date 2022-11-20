@@ -28,6 +28,8 @@ public class ExhibitConnectionComponent : MonoBehaviour
     public string Hostname;
     public bool AutoConnect;
 
+    public bool LogEvents;
+
     private PackageLoader _loader;
 
     // Start is called before the first frame update
@@ -83,7 +85,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
         if (string.IsNullOrWhiteSpace(Hostname)) Hostname = Dns.GetHostName();
 
         EventManager.Instance.ConnectSensor(Settings.Communication);
-        EventManager.Instance.OnEventReceived += Instance_OnEventReceived;
+        if (LogEvents) EventManager.Instance.OnEventReceived += Instance_OnEventReceived;
 
         if (AutoConnect)
         {

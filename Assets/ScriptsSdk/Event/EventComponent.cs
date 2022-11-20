@@ -9,6 +9,7 @@ public class EventComponent : MainThreadExecutorComponent
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public UnityEvent<SensorMessage> EventReceived;
+    public bool LogEvents;
 
     void Start()
     {
@@ -22,8 +23,12 @@ public class EventComponent : MainThreadExecutorComponent
 
     protected virtual void OnEventReceived(SensorMessage e)
     {
-        Logger.DebugUnity(e.ToString());
-        Logger.DebugUnity(e.DataCase.ToString());
+        if (LogEvents)
+        {
+            Logger.DebugUnity(e.ToString());
+            Logger.DebugUnity(e.DataCase.ToString());
+        }
+        
         ExecuteOnMainThread(() => EventReceived.Invoke(e));
     }
 }
