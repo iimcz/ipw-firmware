@@ -73,9 +73,9 @@ public class OrbitComponent : MonoBehaviour
         _rotationProgress += targetTime;
     }
 
-    public void AdvancePivotRotation(Vector3 eurlerAngles)
+    public void AdvancePivotRotation(Quaternion rotation)
     {
-        _pivot.transform.eulerAngles += eurlerAngles;
+        _pivot.transform.rotation *= rotation;
     }
 
     private void Update()

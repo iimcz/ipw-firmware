@@ -2,6 +2,8 @@
 using Naki3D.Common.Protocol;
 using System;
 using UnityEngine;
+
+using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 
 public class CameraHandMovement : MonoBehaviour
@@ -16,7 +18,6 @@ public class CameraHandMovement : MonoBehaviour
         Zoom
     }
 
-
     [SerializeField]
     private HandStateEnum _handState = HandStateEnum.None;
 
@@ -26,6 +27,12 @@ public class CameraHandMovement : MonoBehaviour
 
     private Vector3 _previousPositon = Vector3.zero;
     private Vector3 _position = Vector3.zero;
+
+    [SerializeField]
+    private Vector3 _minSourceRange, _maxSourceRange;
+
+    [SerializeField]
+    private Vector3 _minTargetRange, _maxTargetRange;
 
     private Vector3 _delta => _position - _previousPositon;
 
@@ -55,7 +62,13 @@ public class CameraHandMovement : MonoBehaviour
     void Update()
     {
         // Only update if we have new data
-        if (_lastInputTime >= _autoOrbitDelay) return;
+        if (_lastInputTime >= _autoOrbitDelay)
+        {
+            // Maybe have a separate anti-spin delay?
+            _position = Vector3.zero;
+            _previousPositon = Vector3.zero;
+            return;
+        }
 
         switch (_handState)
         {
@@ -63,7 +76,9 @@ public class CameraHandMovement : MonoBehaviour
                 break;
             case HandStateEnum.Rotate:
                 _orbit.AdvanceAngle(_delta.x * MovementSpeed);
-                _orbit.AdvancePivotRotation(new Vector3(0, 0, -_delta.y * MovementSpeed));
+
+                var rotation = Quaternion.AngleAxis(-_delta.y * MovementSpeed, Vector3.forward);
+                _orbit.AdvancePivotRotation(rotation);
                 break;
             case HandStateEnum.Zoom:
                 _orbit.transform.position += _delta.z * ZoomSpeed * _orbit.transform.forward;
@@ -102,8 +117,9 @@ public class CameraHandMovement : MonoBehaviour
 
         _previousPositon = _position;
         _position = e.HandTracking.CenterPosition.ToUnityVector();
-        //var z = e.HandTracking.CenterPosition.Z;
 
+        // Prevent jump in case it's out first event
+        if (_previousPositon == Vector3.zero) _previousPositon = _position;
 
         _position = new Vector3(
             _filterX.Output(_position.x),
@@ -111,10 +127,6 @@ public class CameraHandMovement : MonoBehaviour
             _filterZ.Output(_position.z)
         );
 
-        _position *= 2f;
-        //_position.z *= 10000f;
-        _position -= new Vector3(1,1,1);
-
-        print(_position);
+        _position = _position.Map(_minSourceRange, _maxSourceRange, _minTargetRange,_maxTargetRange);
     }
 }
