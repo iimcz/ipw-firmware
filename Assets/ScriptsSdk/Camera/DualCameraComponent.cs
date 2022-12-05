@@ -93,7 +93,7 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
             if (ExhibitConnectionComponent.ActivePackage.Sync.CanvasDimensions == null)
             {
                 Logger.InfoUnity("Attempted to load a package without valid sync info, using default values");
-                SetViewport(new Vector2(2048, 2048), new Viewport(2048, 2048, 0, 0));
+                SetViewport(new Vector2(4096, 2048), new Viewport(4096, 2048, 0, 0));
             }
             else
             {
@@ -106,7 +106,7 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
         else
         {
             // TODO: Debug mode
-            SetViewport(new Vector2(2048, 2048), new Viewport(2048, 2048, 0, 0));
+            SetViewport(new Vector2(4096, 2048), new Viewport(4096, 2048, 0, 0));
         }
 
         switch (Setting.Orientation)
@@ -194,12 +194,12 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public void SetViewport(Vector2 canvasSize, Viewport viewport)
     {
-        if (viewport.Width != 2048 || viewport.Height != 2048)
+        if (viewport.Width != 4096 || viewport.Height != 2048)
         {
-            Logger.ErrorUnity("Attempted to set viewport size of an IPW camera to something other than 2048x2048, this will not work");
+            Logger.ErrorUnity("Attempted to set viewport size of an IPW camera to something other than 4096x2048, this will not work");
             return;
         }
 
-        _syncLensShift = new Vector2(viewport.X / canvasSize.x, viewport.Y / canvasSize.y);
+        _syncLensShift = new Vector2(viewport.X / 4096, viewport.Y / 2048);
     }
 }

@@ -154,7 +154,7 @@
       }
     },
     "cz.naki3d.emt-sdk": {
-      "version": "file:/home/ipw/Documents/emt-sdk.tgz",
+      "version": "file:/home/slabyon3/emt-sdk.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {}

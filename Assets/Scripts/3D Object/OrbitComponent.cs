@@ -61,6 +61,11 @@ public class OrbitComponent : MonoBehaviour
         _rotationProgress += time;
     }
 
+    public void ResetTime()
+    {
+        _rotationProgress = 0f;
+    }
+
     /// <summary>
     /// Advances the rotation by an angle in degrees
     /// </summary>

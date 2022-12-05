@@ -84,7 +84,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(Hostname)) Hostname = Dns.GetHostName();
 
-        EventManager.Instance.ConnectSensor(Settings.Communication);
+        if (EventManager.Instance?.SensorManager?.IsListening == false) EventManager.Instance.ConnectSensor(Settings.Communication);
         if (LogEvents) EventManager.Instance.OnEventReceived += Instance_OnEventReceived;
 
         if (AutoConnect)
@@ -149,6 +149,8 @@ public class ExhibitConnectionComponent : MonoBehaviour
         
         EventManager.Instance.Actions.Clear();
         EventManager.Instance.Actions.AddRange(package.Inputs);
+
+        EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
         
         _changeScene = true;
     }

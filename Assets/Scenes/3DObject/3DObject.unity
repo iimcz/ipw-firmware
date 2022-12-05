@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 6998765}
   - component: {fileID: 6998768}
   - component: {fileID: 6998769}
+  - component: {fileID: 6998770}
   m_Layer: 0
   m_Name: 3D Object
   m_TagString: Untagged
@@ -158,9 +159,9 @@ MonoBehaviour:
   EventReceived:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6998768}
-        m_TargetAssemblyTypeName: MeshSceneManager, Assembly-CSharp
-        m_MethodName: GestureReceived
+      - m_Target: {fileID: 6998770}
+        m_TargetAssemblyTypeName: Ntp3DObjectSyncComponent, Assembly-CSharp
+        m_MethodName: OnCustomEvent
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -170,8 +171,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  LogEvents: 0
-  DataType: 15
+  LogEvents: 1
+  DataType: 25
 --- !u!114 &6998766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +198,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.8471527, y: 21.007113, z: -27.475317}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -217,6 +219,7 @@ MonoBehaviour:
   _cameraOrbit: {fileID: 1863770801}
   _handMovement: {fileID: 0}
   _rigSpawner: {fileID: 1863770802}
+  _ntpSync: {fileID: 6998770}
 --- !u!114 &6998769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,6 +234,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cursor: {fileID: 550624406}
   _orbit: {fileID: 0}
+--- !u!114 &6998770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6998764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed7bbf9b2bd2014b397dbf9af3318275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ResyncPeriod: 30
+  _orbit: {fileID: 1863770801}
 --- !u!114 &550624406 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1942462218087130133, guid: f6bbb8fc5e4b88dadbde34c104a89ee0, type: 3}
@@ -444,6 +461,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _orbit: {fileID: 1863770801}
   _handState: 0
+  _minSourceRange: {x: -1, y: -1, z: -1}
+  _maxSourceRange: {x: 1, y: 1, z: 1}
+  _minTargetRange: {x: -1, y: -1, z: -1}
+  _maxTargetRange: {x: 1, y: 1, z: 1}
   _autoOrbitDelay: 5
   MovementSpeed: 50
   ZoomSpeed: 10

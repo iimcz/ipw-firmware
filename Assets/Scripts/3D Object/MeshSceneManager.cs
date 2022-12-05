@@ -25,6 +25,9 @@ public class MeshSceneManager : MonoBehaviour
 
     [SerializeField]
     private CameraRigSpawnerComponent _rigSpawner;
+
+    [SerializeField]
+    private Ntp3DObjectSyncComponent _ntpSync;
     
     private void Start()
     {
@@ -77,6 +80,8 @@ public class MeshSceneManager : MonoBehaviour
         
         string gltfPath = Path.Combine(basePath, scene.FileName);
         Importer.ImportGLBAsync(gltfPath, new ImportSettings(), (result, clips) => { });
+
+        _ntpSync.SendReset();
     }
 
     public void GestureReceived(SensorMessage e)
