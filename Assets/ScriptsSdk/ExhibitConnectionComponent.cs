@@ -73,6 +73,14 @@ public class ExhibitConnectionComponent : MonoBehaviour
         }
     }
 
+    void OnApplicationQuit()
+    {
+        Logger.InfoUnity("Application quitting, stopping sensor manager");
+        EventManager.Instance.SensorManager.Stop();
+
+        // TODO: Stop remote emt connections as well
+    }
+
     private IEnumerator ApplyDelay()
     {
         yield return new WaitForEndOfFrame();
@@ -84,7 +92,11 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(Hostname)) Hostname = Dns.GetHostName();
 
-        if (EventManager.Instance?.SensorManager?.IsListening == false) EventManager.Instance.ConnectSensor(Settings.Communication);
+        if (EventManager.Instance.SensorManager == null || !EventManager.Instance.SensorManager.IsListening)
+        {
+            Logger.InfoUnity("Application starting, starting sensor manager");
+            EventManager.Instance.ConnectSensor(Settings.Communication);
+        }
         if (LogEvents) EventManager.Instance.OnEventReceived += Instance_OnEventReceived;
 
         if (AutoConnect)

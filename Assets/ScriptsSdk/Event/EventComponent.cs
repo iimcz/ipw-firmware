@@ -23,11 +23,7 @@ public class EventComponent : MainThreadExecutorComponent
 
     protected virtual void OnEventReceived(SensorMessage e)
     {
-        if (LogEvents)
-        {
-            Logger.DebugUnity(e.ToString());
-            Logger.DebugUnity(e.DataCase.ToString());
-        }
+        if (LogEvents) Logger.DebugUnity(e.ToString());
         
         ExecuteOnMainThread(() => EventReceived.Invoke(e));
     }
