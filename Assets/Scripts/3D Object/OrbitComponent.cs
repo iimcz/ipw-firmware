@@ -27,11 +27,27 @@ public class OrbitComponent : MonoBehaviour
     public float RotationPeriod = 5f;
 
     /// <summary>
+    /// Minimal allowed orbit postion longitude. -90 corresponds to the camera looking straight up from the bottom of the model if height is 0;
+    /// </summary>
+    public float LongitudeMin = -85;
+
+    /// <summary>
+    /// Maximal allowed orbit postion longitude. 90 corresponds to the camera looking straight down from the top of the model if height is 0;
+    /// </summary>
+    public float LongitudeMax = 85;
+
+    /// <summary>
     /// Whether the object orbits automatically
     /// </summary>
     public bool AutoOrbit = true;
 
     private GameObject _pivot;
+
+    /// <summary>
+    /// Camera position on rotation sphere
+    /// </summary>
+    private float _latitude, _longitude;
+
     private float _rotationProgress;
 
     public void Invalidate()
@@ -70,17 +86,10 @@ public class OrbitComponent : MonoBehaviour
     /// Advances the rotation by an angle in degrees
     /// </summary>
     /// <param name="angle">Rotation offset in degrees</param>
-    public void AdvanceAngle(float angle)
+    public void AdvanceAngle(float latitude, float longitude)
     {
-        var degreeDuration = RotationPeriod / 360f;
-        var targetTime = angle * degreeDuration;
-
-        _rotationProgress += targetTime;
-    }
-
-    public void AdvancePivotRotation(Quaternion rotation)
-    {
-        _pivot.transform.rotation *= rotation;
+        _latitude += latitude;
+        _longitude += longitude;
     }
 
     private void Update()
@@ -98,10 +107,10 @@ public class OrbitComponent : MonoBehaviour
         var progress = _rotationProgress / RotationPeriod;
         var angle = Mathf.Lerp(0, 360, progress);
 
-        // TODO: Maybe use quaternions instead?
-        var currentRotation = _pivot.transform.eulerAngles;
-        _pivot.transform.eulerAngles = new Vector3(currentRotation.x, angle, currentRotation.z);
-        
+        // Prevent from flipping over
+        _longitude = Mathf.Clamp(_longitude, LongitudeMin, LongitudeMax);
+
+        _pivot.transform.rotation = Quaternion.AngleAxis(_latitude + angle, Vector3.up) * Quaternion.AngleAxis(_longitude, Vector3.forward);
         transform.LookAt(LookAt.transform);
     }
 }

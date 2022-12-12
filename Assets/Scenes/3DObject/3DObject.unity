@@ -406,6 +406,8 @@ MonoBehaviour:
   OrbitOffset: {x: 0, y: 0, z: 0}
   LookAt: {fileID: 0}
   RotationPeriod: 15
+  LongitudeMin: -95
+  LongitudeMax: 65
   AutoOrbit: 1
 --- !u!114 &1863770802 stripped
 MonoBehaviour:
@@ -468,3 +470,4 @@ MonoBehaviour:
   _autoOrbitDelay: 5
   MovementSpeed: 50
   ZoomSpeed: 10
+  _mouseInput: 0

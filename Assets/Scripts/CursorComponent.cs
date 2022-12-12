@@ -1,12 +1,14 @@
 using Naki3D.Common.Protocol;
 using UnityEngine;
 using UnityEngine.Events;
+
+using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
 public class CursorComponent : MonoBehaviour
 {
     [SerializeField]
-    private DualCameraComponent _camera;
+    private CameraRigSpawnerComponent _cameraRig;
 
     public float MinX = float.MaxValue;
     public float MaxX = float.MinValue;
@@ -19,15 +21,22 @@ public class CursorComponent : MonoBehaviour
     public float ActivationTime = 2f;
     public UnityEvent<GameObject> OnActivate;
 
-    public bool IsVisible => ScreenPos.y > 0.45f;//transform.localPosition.y > -0.43f;
+    public bool IsVisible => ScreenPos.y > 0.45f;
     public Vector3 ScreenPos;
     
     public GameObject HoveredObject { get; private set; }
     public float HoverTime { get; private set; }
 
     private SpriteRenderer _sprite;
-    private Vector3 _viewportPos;
+    private Vector2 _viewportPos;
     private bool _activated;
+
+    /// <summary>
+    /// Whether the detection boundaries should be set to min/max detected values.
+    /// E.g. when a user moves their hand further left than was the previous min value the entire mapping range rescales.
+    /// </summary>
+    [SerializeField]
+    private bool _updateBoundaries;
 
     private void Start()
     {
@@ -95,6 +104,15 @@ public class CursorComponent : MonoBehaviour
         return true;
     }
 
+    private void UpdateBoundaries(Vector2 handPos)
+    {
+        if (handPos.x < MinX) MinX = handPos.x;
+        if (handPos.y < MinY) MinY = handPos.y;
+
+        if (handPos.x > MaxX) MaxX = handPos.x;
+        if (handPos.y > MaxY) MaxY = handPos.y;
+    }
+
     public void HandMovement(SensorMessage msg)
     {
         if (msg.DataCase != SensorMessage.DataOneofCase.HandMovement) return;
@@ -103,34 +121,15 @@ public class CursorComponent : MonoBehaviour
         if (hand.UserId != 1) return;
         if (hand.Hand != HandSide.Right) return;
 
-        var handPos = new UnityEngine.Vector2(1f - hand.ProjPosition.X, 1f - hand.ProjPosition.Y);
-        _viewportPos = new UnityEngine.Vector3(
-            (handPos.x - MinX) / (MaxX - MinX),
-            (handPos.y - MinY) / (MaxY - MinY),
-            2.5f);
+        var handPos = new Vector2(1f - hand.ProjPosition.X, 1f - hand.ProjPosition.Y);
+        if (_updateBoundaries) UpdateBoundaries(handPos);
 
-        if (handPos.x < MinX) MinX = handPos.x;
-        if (handPos.y < MinY) MinY = handPos.y;
+        ScreenPos = handPos.Map(new Vector2(MinX, MinY), new Vector2(MaxX, MaxY), Vector2.zero, Vector2.one);
 
-        if (handPos.x > MaxX) MaxX = handPos.x;
-        if (handPos.y > MaxY) MaxY = handPos.y;
+        var boundaries = _cameraRig.CameraRig.GetBoundaries(2.5f);
+        var pos = _viewportPos.Map(Vector2.zero, Vector2.one, new Vector2(boundaries.xMin, boundaries.yMin), new Vector2(boundaries.xMin, boundaries.yMax));
 
-        Vector3 pos;
-        ScreenPos = _viewportPos;
-        
-        if (_viewportPos.x > 0.5f)
-        {
-            _viewportPos -= new Vector3(0.5f, 0, 0);
-            _viewportPos.Scale(new Vector3(2, 1, 1));
-            pos = _camera.TopCamera.Camera.ViewportToWorldPoint(_viewportPos);
-        }
-        else
-        {
-            _viewportPos.Scale(new Vector3(2, 1, 1));
-            pos = _camera.BottomCamera.Camera.ViewportToWorldPoint(_viewportPos);
-        }
-
-        transform.localPosition = pos;
+        transform.localPosition = new Vector3(pos.x, pos.y, 2.5f);
         _sprite.enabled = IsVisible;
     }
 }

@@ -7,6 +7,14 @@ public static class MathfExtensions
         return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
     }
 
+    public static Vector2 Map(this Vector2 value, Vector2 fromSource, Vector2 toSource, Vector2 fromTarget, Vector2 toTarget)
+    {
+        var xMap = value.x.Map(fromSource.x, toSource.x, fromTarget.x, toTarget.x);
+        var yMap = value.y.Map(fromSource.y, toSource.y, fromTarget.y, toTarget.y);
+
+        return new Vector2(xMap, yMap);
+    }
+
     public static Vector3 Map(this Vector3 value, Vector3 fromSource, Vector3 toSource, Vector3 fromTarget, Vector3 toTarget)
     {
         var xMap = value.x.Map(fromSource.x, toSource.x, fromTarget.x, toTarget.x);

@@ -50,15 +50,17 @@ public class MeshSceneManager : MonoBehaviour
         else
         {
             _rigSpawner.CameraRig.SetBackgroundColor(tint);
-            SkyboxLoader.ApplyTint(Color.gray);
-
-            // TODO: Talk about lights
-            //SkyboxLoader.ApplyTint(tint);
+            SkyboxLoader.ApplyTint(tint);
         }
 
         switch (scene.CameraAnimation)
         {
             case GltfObject.OrbitAnimation orbit:
+
+                // TODO: Figure out limits for height != 0 and/or add to JSON
+                _cameraOrbit.LongitudeMin = -85;
+                _cameraOrbit.LongitudeMax = 85;
+
                 _cameraOrbit.Origin = orbit.Origin.FindPosition();
                 
                 _cameraOrbit.LookAt = orbit.LookAt.FindObject();

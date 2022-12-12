@@ -28,18 +28,21 @@ public class GalleryCursorComponent : MonoBehaviour
         _pool.EnableInteraction = false;
     }
 
+    public void Deactivate()
+    {
+        if (_activatedImage == null) return;
+
+        _activatedImage.transform.localPosition = _activatedPos;
+        _activatedImage.transform.localScale = _activatedScale;
+        _activatedImage = null;
+        _pool.EnableInteraction = true;
+    }
+
     public void OnGesture(SensorMessage message)
     {
         if (message.DataCase != SensorMessage.DataOneofCase.Gesture) return;
-        if (_activatedImage == null) return;
-        
-        if (message.Gesture.Type == HandGestureType.GestureSwipeUp)
-        {
-            _activatedImage.transform.localPosition = _activatedPos;
-            _activatedImage.transform.localScale = _activatedScale;
-            _activatedImage = null;
-            _pool.EnableInteraction = true;
-        }
+
+        if (message.Gesture.Type == HandGestureType.GestureSwipeUp) Deactivate();
     }
     
     void Update()

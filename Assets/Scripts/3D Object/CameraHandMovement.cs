@@ -3,7 +3,6 @@ using Naki3D.Common.Protocol;
 using System;
 using UnityEngine;
 
-using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 
 public class CameraHandMovement : MonoBehaviour
@@ -52,6 +51,12 @@ public class CameraHandMovement : MonoBehaviour
     /// </summary>
     public float ZoomSpeed = 5f;
 
+    /// <summary>
+    /// Whether to use debug mouse input
+    /// </summary>
+    [SerializeField]
+    private bool _mouseInput = false;
+
     private float _lastInputTime;
 
     void Start()
@@ -61,6 +66,22 @@ public class CameraHandMovement : MonoBehaviour
 
     void Update()
     {
+        if (_mouseInput && Input.GetKey(KeyCode.Space))
+        {
+            _lastInputTime = 0f;
+            _orbit.AutoOrbit = false;
+
+            _previousPositon = _position;
+
+            _position = Input.mousePosition;
+            _position.Scale(new Vector3(1f / Screen.width, 1f / Screen.height, 1));
+
+            if (Input.GetKeyDown(KeyCode.Space)) _previousPositon = _position;
+        }
+
+        // Stop movement if we lose tracking
+        if (_lastInputTime > 0f) _previousPositon = _position;
+
         // Only update if we have new data
         if (_lastInputTime >= _autoOrbitDelay)
         {
@@ -75,10 +96,7 @@ public class CameraHandMovement : MonoBehaviour
             case HandStateEnum.None:
                 break;
             case HandStateEnum.Rotate:
-                _orbit.AdvanceAngle(_delta.x * MovementSpeed);
-
-                var rotation = Quaternion.AngleAxis(-_delta.y * MovementSpeed, Vector3.forward);
-                _orbit.AdvancePivotRotation(rotation);
+                _orbit.AdvanceAngle(_delta.x * MovementSpeed, -_delta.y * MovementSpeed);
                 break;
             case HandStateEnum.Zoom:
                 _orbit.transform.position += _delta.z * ZoomSpeed * _orbit.transform.forward;

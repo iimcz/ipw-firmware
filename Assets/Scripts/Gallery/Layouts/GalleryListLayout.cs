@@ -129,12 +129,12 @@ public class GalleryListLayout : GalleryLayout
         lastImage.Renderer.sprite = _pool.Sprites[_firstSprite];
     }
 
-    public override void Gesture(Naki3D.Common.Protocol.GestureData gesture)
+    public override void Gesture(Naki3D.Common.Protocol.HandGestureType gesture)
     {
         // Ignore input in automatic scrolling mode
         if (AutoScroll) return;
 
-        switch (gesture.Type)
+        switch (gesture)
         {
             case Naki3D.Common.Protocol.HandGestureType.GestureSwipeLeft:
                 Next();
@@ -143,5 +143,27 @@ public class GalleryListLayout : GalleryLayout
                 Previous();
                 break;
         };
+    }
+
+    public override GameObject GetImage(int index)
+    {
+        // Check if image is onscreen
+        var distanceFromFirst = index - _firstSprite;
+        if (distanceFromFirst >= VisibleListLength) return null;
+
+        var sprite = _pool.Sprites[index];
+
+        for (int i = 0; i < PoolSize; i++)
+        {
+            if (_pool.ImagePool[i].Renderer.sprite == sprite) return _pool.ImagePool[i].GameObject;
+        }
+
+        return null;
+    }
+
+    public override void ScrollTo(int index)
+    {
+        _firstImage = index;
+        Invalidate();
     }
 }

@@ -142,19 +142,29 @@ public class GalleryGridLayout : GalleryLayout
         }
     }
 
-    public override void Gesture(GestureData gesture)
+    public override void Gesture(HandGestureType gesture)
     {
         // Ignore input in automatic scrolling mode
         if (AutoScroll) return;
 
-        switch (gesture.Type)
+        switch (gesture)
         {
-            case Naki3D.Common.Protocol.HandGestureType.GestureSwipeLeft:
+            case HandGestureType.GestureSwipeLeft:
                 Next();
                 break;
-            case Naki3D.Common.Protocol.HandGestureType.GestureSwipeRight:
+            case HandGestureType.GestureSwipeRight:
                 Previous();
                 break;
         };
+    }
+
+    public override GameObject GetImage(int index)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ScrollTo(int index)
+    {
+        throw new System.NotImplementedException();
     }
 }
