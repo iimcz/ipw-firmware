@@ -7,6 +7,8 @@ using Vector3 = UnityEngine.Vector3;
 
 public class CameraHandMovement : MonoBehaviour
 {
+    private const float LOST_TRACKING_DELAY = 0.1f;
+
     [SerializeField]
     private OrbitComponent _orbit;
 
@@ -28,10 +30,17 @@ public class CameraHandMovement : MonoBehaviour
     private Vector3 _position = Vector3.zero;
 
     [SerializeField]
-    private Vector3 _minSourceRange, _maxSourceRange;
+    [Header("Input mapping")]
+    private Vector3 _minSourceRange;
 
     [SerializeField]
-    private Vector3 _minTargetRange, _maxTargetRange;
+    private Vector3 _maxSourceRange;
+
+    [SerializeField]
+    private Vector3 _minTargetRange;
+
+    [SerializeField]
+    private Vector3 _maxTargetRange;
 
     private Vector3 _delta => _position - _previousPositon;
 
@@ -39,6 +48,7 @@ public class CameraHandMovement : MonoBehaviour
     /// How long the script will wait until auto-orbit resumes
     /// </summary>
     [SerializeField]
+    [Header("Orbit parameters")]
     private float _autoOrbitDelay = 5f;
 
     /// <summary>
@@ -49,12 +59,26 @@ public class CameraHandMovement : MonoBehaviour
     /// <summary>
     /// Zoom speed multiplier
     /// </summary>
+    [Header("Zoom parameters")]
     public float ZoomSpeed = 5f;
+
+    /// <summary>
+    /// Determines minimal zoom from original position in meters
+    /// </summary>
+    public float MinZoom = 0f;
+
+    /// <summary>
+    /// Determines minimal zoom from original position in meters
+    /// </summary>
+    public float MaxZoom = 2f;
+
+    private float _zoom;
 
     /// <summary>
     /// Whether to use debug mouse input
     /// </summary>
     [SerializeField]
+    [Header("Debug")]
     private bool _mouseInput = false;
 
     private float _lastInputTime;
@@ -62,6 +86,7 @@ public class CameraHandMovement : MonoBehaviour
     void Start()
     {
         _lastInputTime = _autoOrbitDelay;
+        _zoom = MinZoom;
     }
 
     void Update()
@@ -75,12 +100,13 @@ public class CameraHandMovement : MonoBehaviour
 
             _position = Input.mousePosition;
             _position.Scale(new Vector3(1f / Screen.width, 1f / Screen.height, 1));
+            _position.z = _position.y; // For zoom
 
             if (Input.GetKeyDown(KeyCode.Space)) _previousPositon = _position;
         }
 
         // Stop movement if we lose tracking
-        if (_lastInputTime > 0f) _previousPositon = _position;
+        if (_lastInputTime > LOST_TRACKING_DELAY) _previousPositon = _position;
 
         // Only update if we have new data
         if (_lastInputTime >= _autoOrbitDelay)
@@ -96,10 +122,13 @@ public class CameraHandMovement : MonoBehaviour
             case HandStateEnum.None:
                 break;
             case HandStateEnum.Rotate:
-                _orbit.AdvanceAngle(_delta.x * MovementSpeed, -_delta.y * MovementSpeed);
+                _orbit.AdvanceAngle(_delta.x * MovementSpeed, _delta.y * MovementSpeed);
                 break;
             case HandStateEnum.Zoom:
-                _orbit.transform.position += _delta.z * ZoomSpeed * _orbit.transform.forward;
+                _zoom += _delta.z * ZoomSpeed;
+                _zoom = Mathf.Clamp(_zoom, MinZoom, MaxZoom);
+
+                _orbit.transform.localPosition = _orbit.OrbitOffset + new Vector3(_zoom, 0, 0);
                 break;
             default:
                 throw new NotImplementedException("This hand state is not supported");
@@ -108,8 +137,8 @@ public class CameraHandMovement : MonoBehaviour
         _lastInputTime += Time.deltaTime;
         if (_lastInputTime >= _autoOrbitDelay)
         {
-            //_orbit.AutoOrbit = true;
-            //_orbit.Invalidate(); // Reset to known position
+            _orbit.AutoOrbit = true;
+            _orbit.Invalidate(); // Reset to known position
         }
     }
 

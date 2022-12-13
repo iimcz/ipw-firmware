@@ -9,6 +9,7 @@ public class OrbitComponent : MonoBehaviour
     /// <summary>
     /// Rotation origin
     /// </summary>
+    [Header("Origin")]
     public Vector3 Origin;
 
     /// <summary>
@@ -24,6 +25,7 @@ public class OrbitComponent : MonoBehaviour
     /// <summary>
     /// Length of a single revolution in seconds
     /// </summary>
+    [Header("Rotation")]
     public float RotationPeriod = 5f;
 
     /// <summary>
@@ -66,6 +68,7 @@ public class OrbitComponent : MonoBehaviour
 
         transform.position = OrbitOffset;
         transform.parent = _pivot.transform;
+        transform.LookAt(LookAt.transform);
     }
 
     /// <summary>
@@ -111,6 +114,5 @@ public class OrbitComponent : MonoBehaviour
         _longitude = Mathf.Clamp(_longitude, LongitudeMin, LongitudeMax);
 
         _pivot.transform.rotation = Quaternion.AngleAxis(_latitude + angle, Vector3.up) * Quaternion.AngleAxis(_longitude, Vector3.forward);
-        transform.LookAt(LookAt.transform);
     }
 }
