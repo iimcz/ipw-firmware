@@ -21,9 +21,22 @@ namespace Assets.Scripts
             var nlogConfig = Path.Combine(Application.streamingAssetsPath, _configName);
             LogManager.Configuration = new XmlLoggingConfiguration(nlogConfig);
             Logger.InfoUnity($"Loaded NLog config from '{nlogConfig}'");
+        }
 
-            MethodCallTarget target = new MethodCallTarget("MyTarget", (logEvent,parms) => print(logEvent.FormattedMessage));
-            LogManager.Configuration.AddRuleForAllLevels(target);
+        public static void LogUnity(string level, string message)
+        {
+            switch (level)
+            {
+                case "Warn":
+                    Debug.LogWarning(message);
+                    break;
+                case "Error":
+                    Debug.LogError(message);
+                    break;
+                default:
+                    print($"{level} | {message}");;
+                    break;
+            }
         }
     }
 }
