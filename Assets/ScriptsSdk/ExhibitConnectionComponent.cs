@@ -10,10 +10,10 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using emt_sdk.Events.Relay;
 using emt_sdk.Generated.ScenePackage;
 using emt_sdk.Settings;
 using Assets.Extensions;
-using System.Collections.Generic;
 
 public class ExhibitConnectionComponent : MonoBehaviour
 {
@@ -62,8 +62,20 @@ public class ExhibitConnectionComponent : MonoBehaviour
                 SceneManager.LoadSceneAsync("3DObject");
                 break;
             case "scene":
-                ActivePackage.Run();
-                break;
+                {
+                    var relayServer = new EventRelayServer();
+                    Task.Run(() => relayServer.Listen());
+
+                    // TODO: We want to wait for the TCP listener to initialize, but this is horrible
+                    System.Threading.Thread.Sleep(500);
+
+                    var process = ActivePackage.Run();
+                    process.WaitForExit();
+                    relayServer.TokenSource.Cancel();
+
+                    Logger.ErrorUnity($"Scene package exitted with code '{process.ExitCode}', this probably shouldn't happen");
+                    break;
+                }
             case "panorama":
                 SceneManager.LoadSceneAsync("PanoScene");
                 break;
