@@ -167,8 +167,6 @@ public class ExhibitConnectionComponent : MonoBehaviour
         File.Move(currentFile, backupFile);
         File.WriteAllText(currentFile, pckg.DescriptorJson);
 
-        EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
-
         Settings.StartupPackage = package.Package.Checksum;
         Settings.Save();
 
@@ -196,8 +194,11 @@ public class ExhibitConnectionComponent : MonoBehaviour
         EventManager.Instance.Actions.Clear();
         EventManager.Instance.Actions.AddRange(package.Inputs);
 
-        EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
-        
+        if (!EventManager.Instance.ConnectedRemote)
+        {
+            EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
+        }
+
         _changeScene = true;
     }
 }
