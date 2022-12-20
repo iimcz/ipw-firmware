@@ -14,6 +14,7 @@ using emt_sdk.Events.Relay;
 using emt_sdk.Generated.ScenePackage;
 using emt_sdk.Settings;
 using Assets.Extensions;
+using Newtonsoft.Json;
 
 public class ExhibitConnectionComponent : MonoBehaviour
 {
@@ -154,9 +155,17 @@ public class ExhibitConnectionComponent : MonoBehaviour
     void LoadPackage(LoadPackage pckg)
     {
         var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
+
+        // Download package
         Logger.InfoUnity($"Starting file download for package '{package.Metadata.PackageName}'");
         package.DownloadFile();
-        Logger.InfoUnity($"Download complete");
+        Logger.InfoUnity($"Download + extraction complete to '{package.PackageDirectory}'");
+
+        // Replace original scene .json with received one
+        var currentFile = Path.Combine(package.PackageDirectory, "package.json");
+        var backupFile = Path.Combine(package.PackageDirectory, "package_original.json");
+        File.Move(currentFile, backupFile);
+        File.WriteAllText(currentFile, pckg.DescriptorJson);
 
         EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
 
