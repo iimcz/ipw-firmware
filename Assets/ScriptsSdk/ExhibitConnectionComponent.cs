@@ -138,7 +138,7 @@ public class ExhibitConnectionComponent : MonoBehaviour
             Connection = new ExhibitConnection(Settings.Communication, descriptor)
             {
                 LoadPackageHandler = LoadPackage,
-                ClearPackageHandler = pckg => { }
+                ClearPackageHandler = ClearStartupPackge
             };
         }
         catch (SocketException e)
@@ -174,6 +174,19 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
         Logger.InfoUnity($"Switching scene to package '{package.Metadata.PackageName}'");
         SwitchScene(package);
+    }
+
+    void ClearStartupPackge(ClearPackage package)
+    {
+        // TODO: Validate with schema
+        var loader = new PackageLoader(null);
+        var startupPackage = loader
+            .EnumeratePackages(false)
+            .FirstOrDefault(p => Path.GetFileName(p.PackageDirectory) == Settings.StartupPackage);
+
+        if (package.PurgeData) startupPackage.RemoveFile();
+        Settings.StartupPackage = "";
+        Settings.Save();
     }
 
     public void SwitchScene(PackageDescriptor package)
