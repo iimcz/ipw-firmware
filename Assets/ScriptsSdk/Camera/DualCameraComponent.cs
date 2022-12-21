@@ -21,6 +21,14 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     Naki3D.Common.Protocol.DeviceType ICameraRig.DeviceType => Naki3D.Common.Protocol.DeviceType.Ipw;
 
+    public emt_sdk.Generated.ScenePackage.CanvasDimensions DefaultCanvasDimensions => Orientation switch
+    {
+        IPWSetting.IPWOrientation.Horizontal => new emt_sdk.Generated.ScenePackage.CanvasDimensions { Width = 4096, Height = 2048 },
+        IPWSetting.IPWOrientation.Vertical => new emt_sdk.Generated.ScenePackage.CanvasDimensions { Width = 2048, Height = 4096 },
+        IPWSetting.IPWOrientation.Single => new emt_sdk.Generated.ScenePackage.CanvasDimensions { Width = 2048, Height = 2048 },
+        _ => throw new NotImplementedException()
+    };
+
     // Extra lens shift defined by Sync offset
     private Vector2 _syncLensShift;
 
@@ -86,27 +94,26 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public void ApplySettings()
     {
+        var canvasDimensions = ExhibitConnectionComponent.ActivePackage?.Sync?.CanvasDimensions ?? DefaultCanvasDimensions;
+        var canvasDimensionVector = new Vector2((int)DefaultCanvasDimensions.Width.Value, (int)DefaultCanvasDimensions.Height.Value);
+
         if (ExhibitConnectionComponent.ActivePackage != null)
         {
-            // TODO: HACK
-            // May happen if we load an old package
             if (ExhibitConnectionComponent.ActivePackage.Sync.CanvasDimensions == null)
             {
-                Logger.InfoUnity("Attempted to load a package without valid sync info, using default values");
-                SetViewport(new Vector2(4096, 2048), new Viewport(4096, 2048, 0, 0));
+                Logger.Info("Loaded a package without sync info, using default canvas size with no shift");
+                SetViewport(canvasDimensionVector, ((ICameraRig)this).DefaultViewport);
             }
             else
             {
-                var canvasDimensions = ExhibitConnectionComponent.ActivePackage.Sync.CanvasDimensions;
                 var selfElement = ExhibitConnectionComponent.ActivePackage.Sync.Elements.First(e => e.Hostname == Dns.GetHostName());
-
                 SetViewport(new Vector2(canvasDimensions.Width.Value, canvasDimensions.Height.Value), selfElement.Viewport);
             }
         }
         else
         {
-            // TODO: Debug mode
-            SetViewport(new Vector2(4096, 2048), new Viewport(4096, 2048, 0, 0));
+            // Debug mode
+            SetViewport(canvasDimensionVector, ((ICameraRig)this).DefaultViewport);
         }
 
         switch (Setting.Orientation)
@@ -194,12 +201,26 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public void SetViewport(Vector2 canvasSize, Viewport viewport)
     {
-        if (viewport.Width != 4096 || viewport.Height != 2048)
+        var expectedResolution = Orientation switch
         {
-            Logger.ErrorUnity("Attempted to set viewport size of an IPW camera to something other than 4096x2048, this will not work");
+            IPWSetting.IPWOrientation.Vertical => new Vector2(2048, 4096),
+            IPWSetting.IPWOrientation.Horizontal => new Vector2(4096, 2048),
+            IPWSetting.IPWOrientation.Single => new Vector2(2048, 2048),
+            _ => throw new NotImplementedException()
+        };
+
+        if (expectedResolution != new Vector2(viewport.Width, viewport.Height))
+        {
+            Logger.ErrorUnity($"Attempted to set viewport size of an IPW camera to something other than {viewport.Width}x{viewport.Height}, this will not work");
             return;
         }
 
-        _syncLensShift = new Vector2(viewport.X / 4096, viewport.Y / 2048);
+        _syncLensShift = Orientation switch
+        {
+            IPWSetting.IPWOrientation.Vertical => new Vector2(viewport.X / 2048, viewport.Y / 4096),
+            IPWSetting.IPWOrientation.Horizontal => new Vector2(viewport.X / 4096, viewport.Y / 2048),
+            IPWSetting.IPWOrientation.Single => new Vector2(viewport.X / 2048, viewport.Y / 2048),
+            _ => throw new NotImplementedException()
+        };
     }
 }

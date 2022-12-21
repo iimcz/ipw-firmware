@@ -12,4 +12,7 @@ public interface ICameraRig
 
     Naki3D.Common.Protocol.DeviceType DeviceType { get; }
     emt_sdk.Settings.IPWSetting.IPWOrientation Orientation { get; }
+
+    emt_sdk.Generated.ScenePackage.CanvasDimensions DefaultCanvasDimensions { get; }
+    Viewport DefaultViewport => new((int)DefaultCanvasDimensions.Width.Value, (int)DefaultCanvasDimensions.Height.Value, 0, 0);
 }

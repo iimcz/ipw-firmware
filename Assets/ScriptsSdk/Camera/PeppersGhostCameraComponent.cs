@@ -8,6 +8,8 @@ public class PeppersGhostCameraComponent : MonoBehaviour, ICameraRig
 
     public IPWSetting.IPWOrientation Orientation => IPWSetting.IPWOrientation.Single;
 
+    public emt_sdk.Generated.ScenePackage.CanvasDimensions DefaultCanvasDimensions => new emt_sdk.Generated.ScenePackage.CanvasDimensions { Width = 2048, Height = 2048 };
+
     public Camera Camera;
 
     void Awake()
