@@ -29,6 +29,8 @@ public static class SkyboxLoader
         ImageConversion.LoadImage(skyboxTexture, cubemapData);
         RenderSettings.skybox.SetTexture("_Tex", skyboxTexture);
         RenderSettings.skybox.SetColor("_Tint", tint);
+
+        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
     }
 
     /// <summary>
@@ -38,5 +40,17 @@ public static class SkyboxLoader
     public static void ApplyTint(Color tint)
     {
         RenderSettings.skybox.SetColor("_Tint", tint);
+    }
+     
+    /// <summary>
+    /// Uses a solid color for the ambient source.
+    /// </summary>
+    /// <param name="color">Ambient light color</param>
+    /// <param name="intensity">Ambient light intensity (default 1.0)</param>
+    public static void ApplyAmbientLight(Color color, float intensity = 1.0f)
+    {
+        RenderSettings.ambientLight = color;
+        RenderSettings.ambientIntensity = intensity;
+        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
     }
 }

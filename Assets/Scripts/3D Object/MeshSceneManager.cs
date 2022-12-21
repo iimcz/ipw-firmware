@@ -51,6 +51,7 @@ public class MeshSceneManager : MonoBehaviour
         {
             _rigSpawner.CameraRig.SetBackgroundColor(tint);
             SkyboxLoader.ApplyTint(tint);
+            SkyboxLoader.ApplyAmbientLight(tint);
         }
 
         switch (scene.CameraAnimation)
