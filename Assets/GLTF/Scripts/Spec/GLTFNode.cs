@@ -162,12 +162,21 @@ namespace Siccity.GLTFUtility {
 					// Setup light
 					if (nodes[i]?.extensions?.KHR_lights_punctual != null)
 					{
-                        GLTFLight lightData = lights[nodes[i].extensions.KHR_lights_punctual.light];
+						GLTFLight lightData = lights[nodes[i].extensions.KHR_lights_punctual.light];
 						Light light = Result[i].transform.gameObject.AddComponent<Light>();
-                        Result[i].transform.localRotation = Result[i].transform.localRotation * Quaternion.Euler(0, 180, 0);
-                        // TODO: Units
-                        // TODO: Shadows, might need to update Unity....
-                        light.intensity = lightData.intensity;
+						Result[i].transform.localRotation = Result[i].transform.localRotation * Quaternion.Euler(0, 180, 0);
+
+						light.shadows = LightShadows.Soft;
+
+						// This is a GIANT oversimplification
+						light.intensity = lightData.type switch
+						{
+							LightType.spot => lightData.intensity * 0.0001f,
+							LightType.point => lightData.intensity * 0.0001f,
+							LightType.directional => lightData.intensity * 0.001f,
+							_ => throw new NotImplementedException()
+						};
+
 						// TODO: Unity doesn't define a safe range anywhere and float.MaxValue causes graphical artefacts
 						light.range = lightData.range == 0 ? 10000 : lightData.range;
 						light.color = lightData.color;
