@@ -15,6 +15,7 @@ using emt_sdk.Generated.ScenePackage;
 using emt_sdk.Settings;
 using Assets.Extensions;
 using Newtonsoft.Json;
+using System.Linq;
 
 public class ExhibitConnectionComponent : MonoBehaviour
 {
@@ -167,8 +168,6 @@ public class ExhibitConnectionComponent : MonoBehaviour
         File.Move(currentFile, backupFile);
         File.WriteAllText(currentFile, pckg.DescriptorJson);
 
-        EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
-
         Settings.StartupPackage = package.Package.Checksum;
         Settings.Save();
 
@@ -196,7 +195,11 @@ public class ExhibitConnectionComponent : MonoBehaviour
         EventManager.Instance.Actions.Clear();
         EventManager.Instance.Actions.AddRange(package.Inputs);
 
-        EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
+        // TODO: Terminate old connection if needed
+        if (EventManager.Instance.ConnectedRemote == false)
+        {
+            EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
+        }
         
         _changeScene = true;
     }
