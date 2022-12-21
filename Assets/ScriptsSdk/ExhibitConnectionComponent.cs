@@ -195,12 +195,11 @@ public class ExhibitConnectionComponent : MonoBehaviour
         EventManager.Instance.Actions.Clear();
         EventManager.Instance.Actions.AddRange(package.Inputs);
 
-        // TODO: Terminate old connection if needed
-        if (EventManager.Instance.ConnectedRemote == false)
+        if (!EventManager.Instance.ConnectedRemote)
         {
             EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
         }
-        
+
         _changeScene = true;
     }
 }

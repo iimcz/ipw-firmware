@@ -28,6 +28,9 @@ public class MeshSceneManager : MonoBehaviour
 
     [SerializeField]
     private Ntp3DObjectSyncComponent _ntpSync;
+
+    [SerializeField]
+    private ModelVisibilityComponent _modelVisibility;
     
     private void Start()
     {
@@ -82,7 +85,10 @@ public class MeshSceneManager : MonoBehaviour
         }
         
         string gltfPath = Path.Combine(basePath, scene.FileName);
-        Importer.ImportGLBAsync(gltfPath, new ImportSettings(), (result, clips) => { });
+        Importer.ImportGLBAsync(gltfPath, new ImportSettings(), (result, clips) =>
+        {
+            _modelVisibility.SetTarget(result);
+        });
 
         _ntpSync.SendReset();
     }
