@@ -122,7 +122,7 @@ public class CameraHandMovement : MonoBehaviour
             case HandStateEnum.None:
                 break;
             case HandStateEnum.Rotate:
-                _orbit.AdvanceAngle(-_delta.x * MovementSpeed, _delta.y * MovementSpeed);
+                _orbit.AdvanceAngle(_delta.x * MovementSpeed, _delta.y * MovementSpeed);
                 break;
             case HandStateEnum.Zoom:
                 _zoom += _delta.z * ZoomSpeed;
