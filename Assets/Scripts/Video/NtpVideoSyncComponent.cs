@@ -1,4 +1,5 @@
 using Assets.Extensions;
+using emt_sdk.Events;
 using emt_sdk.Events.NtpSync;
 using Naki3D.Common.Protocol;
 using Newtonsoft.Json;
@@ -39,6 +40,7 @@ public class NtpVideoSyncComponent : MonoBehaviour
         {
             var task = Scheduler.Resync();
             yield return new WaitUntil(() => task.IsCompleted);
+            SendResync();
             yield return new WaitForSecondsRealtime(ResyncPeriod);
         }
     }
@@ -93,6 +95,21 @@ public class NtpVideoSyncComponent : MonoBehaviour
             ScheduledTime = Scheduler.SynchronizedTime + TimeSpan.FromSeconds(1),
             SeekTime = _player.time + 1f
         };
+    }
+
+    public void SendResync()
+    {
+        var resync = GenerateResyncMessage();
+        var message = new Naki3D.Common.Protocol.SensorMessage
+        {
+            Event = new Naki3D.Common.Protocol.EventData
+            {
+                Name = "VideoPlayer_ScheduleResync",
+                Parameters = JsonConvert.SerializeObject(resync)
+            }
+        };
+
+        if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
     }
 
     public void OnCustomEvent(SensorMessage message)
