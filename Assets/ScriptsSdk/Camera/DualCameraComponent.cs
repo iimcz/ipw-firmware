@@ -29,8 +29,26 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
         _ => throw new NotImplementedException()
     };
 
+    public Vector2 CanvasDimensions { get; private set; }
+    public Viewport Viewport { get; private set; }
+
     // Extra lens shift defined by Sync offset
     private Vector2 _syncLensShift;
+    public Vector2 SyncLensShift
+    {
+        get => _syncLensShift;
+        set
+        {
+            TopCamera.Camera.lensShift -= _syncLensShift;
+            BottomCamera.Camera.lensShift -= _syncLensShift;
+
+            // We shift each camere individually so the shift is half of what is expected
+            _syncLensShift = value * 2f;
+
+            TopCamera.Camera.lensShift += _syncLensShift;
+            BottomCamera.Camera.lensShift += _syncLensShift;
+        }
+    }
 
     // TODO: Fix ortho sizing, lens shift is just physical worldspace shift scaled by orthosize
     // TODO: Disable culling on ortho scenes, leaves black squares for some reason
@@ -201,6 +219,9 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public void SetViewport(Vector2 canvasSize, Viewport viewport)
     {
+        Viewport = viewport;
+        CanvasDimensions = canvasSize;
+
         var expectedResolution = Orientation switch
         {
             IPWSetting.IPWOrientation.Vertical => new Vector2(2048, 4096),
@@ -211,15 +232,15 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
         if (expectedResolution != new Vector2(viewport.Width, viewport.Height))
         {
-            Logger.ErrorUnity($"Attempted to set viewport size of an IPW camera to something other than {viewport.Width}x{viewport.Height}, this will not work");
+            Logger.ErrorUnity($"Attempted to set viewport size of an IPW camera to something other than {expectedResolution.x}x{expectedResolution.y} (tried to use {viewport.Width}x{viewport.Height}), this will not work");
             return;
         }
 
         _syncLensShift = Orientation switch
         {
-            IPWSetting.IPWOrientation.Vertical => new Vector2(viewport.X / 2048, viewport.Y / 4096),
-            IPWSetting.IPWOrientation.Horizontal => new Vector2(viewport.X / 4096, viewport.Y / 2048),
-            IPWSetting.IPWOrientation.Single => new Vector2(viewport.X / 2048, viewport.Y / 2048),
+            IPWSetting.IPWOrientation.Vertical => new Vector2(viewport.X / 2048f, viewport.Y / 4096f),
+            IPWSetting.IPWOrientation.Horizontal => new Vector2(viewport.X / 4096f, viewport.Y / 2048f),
+            IPWSetting.IPWOrientation.Single => new Vector2(viewport.X / 2048f, viewport.Y / 2048f),
             _ => throw new NotImplementedException()
         };
     }

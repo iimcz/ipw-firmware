@@ -10,6 +10,15 @@ public class VideoDisplayComponent : MonoBehaviour
     public VideoPlayer VideoPlayer;
     public CameraRigSpawnerComponent RigSpawner;
 
+    public MeshRenderer VideoRenderer;
+    private Material _videoMaterial;
+    private RenderTexture _renderTexture;
+
+    public void Start()
+    {
+        _videoMaterial = VideoRenderer.material;
+    }
+
     public void SetVolume(double volume)
     {
         // Only works for direct, single track audio
@@ -23,50 +32,44 @@ public class VideoDisplayComponent : MonoBehaviour
     
     public void Resize(VideoScene.VideoAspectRatioEnum aspectRatio)
     {
-        var viewport = RigSpawner.CameraRig.GetBoundaries(5);
-        var videoAspect = VideoPlayer.width / (float)VideoPlayer.height;
-
         // 10m is the default unity plane size, why it's not 1 is beyond me...
         const float planeSize = 10f;
 
-        var widthFit = new Vector3(viewport.width / planeSize, 1, (viewport.width / videoAspect) / planeSize);
-        var heightFit = new Vector3((viewport.height * videoAspect) / planeSize, 1, viewport.height / planeSize);
+        var cameraViewport = RigSpawner.CameraRig.GetBoundaries(5);
+        var canvasSize = RigSpawner.CameraRig.CanvasDimensions;
 
-        if (RigSpawner.CameraRig.Orientation == IPWSetting.IPWOrientation.Horizontal)
+        // Match viewport and video size
+        transform.localScale = new Vector3(cameraViewport.width / planeSize, 1, cameraViewport.height / planeSize);
+
+        var viewportScale = new Vector3(
+            RigSpawner.CameraRig.CanvasDimensions.x / RigSpawner.CameraRig.Viewport.Width,
+            1,
+            RigSpawner.CameraRig.CanvasDimensions.y / RigSpawner.CameraRig.Viewport.Height
+        );
+
+        var scale = transform.localScale;
+        scale.Scale(viewportScale);
+        transform.localScale = scale;
+
+        _renderTexture = new RenderTexture((int)canvasSize.x, (int)canvasSize.y, 0);
+        _videoMaterial.mainTexture = _renderTexture;
+
+        VideoPlayer.targetTexture = _renderTexture;
+        VideoPlayer.aspectRatio = aspectRatio switch
         {
-            switch (aspectRatio)
-            {
-                case VideoScene.VideoAspectRatioEnum.Stretch:
-                    transform.localScale = new Vector3(viewport.width / planeSize, 1, viewport.height / planeSize);
-                    break;
-                case VideoScene.VideoAspectRatioEnum.FitInside:
-                    transform.localScale = videoAspect > 2 ? widthFit : heightFit;
-                    break;
-                case VideoScene.VideoAspectRatioEnum.FitOutside:
-                    transform.localScale = videoAspect > 2 ? heightFit : widthFit;
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-        else
-        {
-            switch (aspectRatio)
-            {
-                case VideoScene.VideoAspectRatioEnum.Stretch:
-                    transform.localScale = new Vector3(viewport.width / planeSize, 1, viewport.height / planeSize);
-                    break;
-                case VideoScene.VideoAspectRatioEnum.FitInside:
-                    transform.localScale = videoAspect < 2 ? widthFit : heightFit;
-                    break;
-                case VideoScene.VideoAspectRatioEnum.FitOutside:
-                    transform.localScale = videoAspect < 2 ? heightFit : widthFit;
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-        
-        transform.localPosition = new Vector3(viewport.center.x, viewport.center.y, 5);
+            VideoScene.VideoAspectRatioEnum.Stretch => VideoAspectRatio.Stretch,
+            VideoScene.VideoAspectRatioEnum.FitInside => VideoAspectRatio.FitInside,
+            VideoScene.VideoAspectRatioEnum.FitOutside => VideoAspectRatio.FitOutside,
+            _ => throw new NotSupportedException(),
+        };
+
+
+        // Left align video
+        var displayedSize = new Vector2(RigSpawner.CameraRig.Viewport.Width, RigSpawner.CameraRig.Viewport.Height);
+        var offsetFromCenter = (canvasSize - displayedSize) / 2f;
+        var pixelShift = new Vector2(RigSpawner.CameraRig.Viewport.X, RigSpawner.CameraRig.Viewport.Y) - offsetFromCenter;
+        pixelShift.Scale(new Vector2(1f / displayedSize.x, 1f / displayedSize.y));
+
+        RigSpawner.CameraRig.SyncLensShift = pixelShift;
     }
 }
