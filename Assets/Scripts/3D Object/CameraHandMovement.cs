@@ -128,7 +128,7 @@ public class CameraHandMovement : MonoBehaviour
                 _zoom += _delta.z * ZoomSpeed;
                 _zoom = Mathf.Clamp(_zoom, MinZoom, MaxZoom);
 
-                _orbit.transform.position = _orbit.OrbitOffset + new Vector3(_zoom, 0, 0);
+                _orbit.transform.localPosition = _orbit.OrbitOffset + new Vector3(_zoom, 0, 0);
                 break;
             default:
                 throw new NotImplementedException("This hand state is not supported");
