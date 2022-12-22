@@ -181,9 +181,20 @@ public class ExhibitConnectionComponent : MonoBehaviour
         var loader = new PackageLoader(null);
         var startupPackage = loader
             .EnumeratePackages(false)
-            .FirstOrDefault(p => Path.GetFileName(p.PackageDirectory) == Settings.StartupPackage);
+            .FirstOrDefault(p => Path.GetFileNameWithoutExtension(p.ArchivePath) == Settings.StartupPackage);
 
-        if (package.PurgeData) startupPackage.RemoveFile();
+        if (startupPackage == null)
+        {
+            Logger.Error($"Failed to locate package '{Settings.StartupPackage}', aborting clear");
+            return;
+        }
+
+        if (package.PurgeData)
+        {
+            Logger.Error($"Purging package '{Settings.StartupPackage}");
+            startupPackage.RemoveFile();
+        }
+
         Settings.StartupPackage = "";
         Settings.Save();
     }
