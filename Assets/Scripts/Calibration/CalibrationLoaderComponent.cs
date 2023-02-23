@@ -5,7 +5,8 @@ using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using DeviceType = Naki3D.Common.Protocol.DeviceType;
+using Microsoft.Extensions.DependencyInjection;
+using emt_sdk.Settings.EMT;
 
 public class CalibrationLoaderComponent : MonoBehaviour
 {
@@ -16,23 +17,21 @@ public class CalibrationLoaderComponent : MonoBehaviour
         var nlogConfig = Path.Combine(Application.streamingAssetsPath, "NLog.config");
         NLog.LogManager.Configuration = new XmlLoggingConfiguration(nlogConfig);
 
-        var settings = EmtSetting.FromConfig();
-        if (settings == null) new EmtSetting { Type = DeviceType.Unknown }.Save();
-        
-        var deviceType = settings?.Type ?? DeviceType.Unknown;
+        var provider = GlobalServices.Instance.ServiceProvider.GetRequiredService<EMTConfigurationProvider>();
+        var settings = provider.Configuration;
 
-        switch (deviceType)
+        switch (settings.Type)
         {
-            case Naki3D.Common.Protocol.DeviceType.Ipw:
+            case DeviceTypeEnum.DEVICE_TYPE_IPW:
                 SceneManager.LoadScene("EmtToolboxScene");
                 break;
-            case Naki3D.Common.Protocol.DeviceType.Pge:
+            case DeviceTypeEnum.DEVICE_TYPE_PGE:
                 SceneManager.LoadScene("EmtToolboxScenePge");
                 break;
-            case Naki3D.Common.Protocol.DeviceType.Unknown:
+            case DeviceTypeEnum.DEVICE_TYPE_UNKNOWN:
             default:
-                Logger.ErrorUnity($"Device type '{deviceType}' is not supported.");
-                throw new NotImplementedException($"Device type '{deviceType}' is not supported.");
+                Logger.ErrorUnity($"Device type '{settings.Type}' is not supported.");
+                throw new NotImplementedException($"Device type '{settings.Type}' is not supported.");
         }
     }
 }

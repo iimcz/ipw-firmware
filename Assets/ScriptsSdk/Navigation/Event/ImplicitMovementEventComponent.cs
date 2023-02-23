@@ -39,10 +39,9 @@ public class ImplicitMovementEventComponent : MonoBehaviour
     {
         var message = new SensorMessage
         {
-            SensorId = node.gameObject.name,
-            Event = new EventData
-            {
-                Name = movementEvent
+            Data = new SensorDataMessage {
+                Path = $"Scene/{node.gameObject.name}/{movementEvent}",
+                Void = new Google.Protobuf.WellKnownTypes.Empty()
             }
         };
 

@@ -129,17 +129,17 @@ public class GalleryListLayout : GalleryLayout
         lastImage.Renderer.sprite = _pool.Sprites[_firstSprite];
     }
 
-    public override void Gesture(Naki3D.Common.Protocol.HandGestureType gesture)
+    public override void Gesture(HandGestureType gesture)
     {
         // Ignore input in automatic scrolling mode
         if (AutoScroll) return;
 
         switch (gesture)
         {
-            case Naki3D.Common.Protocol.HandGestureType.GestureSwipeLeft:
+            case HandGestureType.SwipeLeft:
                 Next();
                 break;
-            case Naki3D.Common.Protocol.HandGestureType.GestureSwipeRight:
+            case HandGestureType.SwipeRight:
                 Previous();
                 break;
         };

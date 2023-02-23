@@ -13,12 +13,12 @@ public class EventComponent : MainThreadExecutorComponent
 
     void Start()
     {
-        EventManager.Instance.OnEventReceived += OnEventReceived;
+        // EventManager.Instance.OnEventReceived += OnEventReceived;
     }
     
     void OnDestroy()
     {
-        EventManager.Instance.OnEventReceived -= OnEventReceived;
+        // EventManager.Instance.OnEventReceived -= OnEventReceived;
     }
 
     protected virtual void OnEventReceived(SensorMessage e)

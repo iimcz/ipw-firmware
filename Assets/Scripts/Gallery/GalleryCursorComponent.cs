@@ -40,9 +40,9 @@ public class GalleryCursorComponent : MonoBehaviour
 
     public void OnGesture(SensorMessage message)
     {
-        if (message.DataCase != SensorMessage.DataOneofCase.Gesture) return;
+        // if (message.DataCase != SensorMessage.DataOneofCase.Gesture) return;
 
-        if (message.Gesture.Type == HandGestureType.GestureSwipeUp) Deactivate();
+        // if (message.Gesture.Type == HandGestureType.GestureSwipeUp) Deactivate();
     }
     
     void Update()

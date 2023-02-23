@@ -16,34 +16,34 @@ public class ConnectionUiComponent : MonoBehaviour
     {
         IPWInfo.text = $"Hostname: \t {ExhibitConnection.Hostname}\n" +
                        $"Server: \t {ExhibitConnection.Settings.Communication.ContentHostname}:{ExhibitConnection.Settings.Communication.ContentPort}\n" +
-                       $"Verze serveru: \t {ExhibitConnectionComponent.Connection?.ServerVersion}\n" +
-                       $"Stav: {TranslateConnectionState(ExhibitConnectionComponent.Connection?.ConnectionState)}\n" +
+                    //    $"Verze serveru: \t {ExhibitConnectionComponent.Connection?.ServerVersion}\n" +
+                    //    $"Stav: {TranslateConnectionState(ExhibitConnectionComponent.Connection?.ConnectionState)}\n" +
                        $"IP:\n{LocalIps}";
     }
 
-    private string TranslateConnectionState(ConnectionStateEnum? state)
-    {
-        switch (state)
-        {
-            case ConnectionStateEnum.Disconnected:
-                return "Není připojení";
-            case ConnectionStateEnum.Connected:
-                return "Připojeno";
-            case ConnectionStateEnum.VersionCheck:
-                return "Kontrola verze";
-            case ConnectionStateEnum.VerifyRequest:
-            case ConnectionStateEnum.VerifyWait:
-                return "Ověřování";
-            case ConnectionStateEnum.Verified:
-                return "Ověřeno připojení";
-            case ConnectionStateEnum.DescriptorSent:
-                return "Odeslán deskriptor zařízení";
-            case ConnectionStateEnum.PackageInfoReceived:
-                return "Balíček přijat, stahování...";
-            default:
-                return string.Empty;
-        }
-    }
+    // private string TranslateConnectionState(ConnectionStateEnum? state)
+    // {
+    //     switch (state)
+    //     {
+    //         case ConnectionStateEnum.Disconnected:
+    //             return "Není připojení";
+    //         case ConnectionStateEnum.Connected:
+    //             return "Připojeno";
+    //         case ConnectionStateEnum.VersionCheck:
+    //             return "Kontrola verze";
+    //         case ConnectionStateEnum.VerifyRequest:
+    //         case ConnectionStateEnum.VerifyWait:
+    //             return "Ověřování";
+    //         case ConnectionStateEnum.Verified:
+    //             return "Ověřeno připojení";
+    //         case ConnectionStateEnum.DescriptorSent:
+    //             return "Odeslán deskriptor zařízení";
+    //         case ConnectionStateEnum.PackageInfoReceived:
+    //             return "Balíček přijat, stahování...";
+    //         default:
+    //             return string.Empty;
+    //     }
+    // }
     
     private static string[] GetAllLocalIPv4()
     {

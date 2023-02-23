@@ -1,6 +1,7 @@
 using System;
 using Assets.Extensions;
 using emt_sdk.Events;
+using emt_sdk.Events.Effect;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,21 +18,21 @@ public class ActionEvent : MainThreadExecutorComponent
 
     void Start()
     {
-        EventManager.Instance.OnEffectCalled += OnEventReceived;
+        // EventManager.Instance.OnEffectCalled += OnEventReceived;
     }
 
     void OnDestroy()
     {
-        EventManager.Instance.OnEffectCalled -= OnEventReceived;
+        // EventManager.Instance.OnEffectCalled -= OnEventReceived;
     }
 
     private void OnEventReceived(EffectCall e)
     {
-        if (!string.Equals(e.Name, Effect, StringComparison.CurrentCultureIgnoreCase)) return;
+        // if (!string.Equals(e.Name, Effect, StringComparison.CurrentCultureIgnoreCase)) return;
 
-        Logger.InfoUnity($"[Action] {Effect}: {e.Value?.ToString() ?? "void"}");
+        // Logger.InfoUnity($"[Action] {Effect}: {e.Value?.ToString() ?? "void"}");
         
-        if (HasValue && e.Value.HasValue) ExecuteOnMainThread(() => ValueEffectCalled.Invoke(e.Value.Value));
-        else ExecuteOnMainThread(() => VoidEffectCalled.Invoke());
+        // if (HasValue && e.Value.HasValue) ExecuteOnMainThread(() => ValueEffectCalled.Invoke(e.Value.Value));
+        // else ExecuteOnMainThread(() => VoidEffectCalled.Invoke());
     }
 }

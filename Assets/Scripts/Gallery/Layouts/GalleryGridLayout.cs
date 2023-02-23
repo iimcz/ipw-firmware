@@ -149,10 +149,10 @@ public class GalleryGridLayout : GalleryLayout
 
         switch (gesture)
         {
-            case HandGestureType.GestureSwipeLeft:
+            case HandGestureType.SwipeLeft:
                 Next();
                 break;
-            case HandGestureType.GestureSwipeRight:
+            case HandGestureType.SwipeRight:
                 Previous();
                 break;
         };

@@ -1,5 +1,6 @@
 using Assets.ScriptsSdk.Extensions;
 using emt_sdk.Settings;
+using emt_sdk.Settings.IPW;
 using System;
 using System.Collections.Generic;
 using System.Linq;

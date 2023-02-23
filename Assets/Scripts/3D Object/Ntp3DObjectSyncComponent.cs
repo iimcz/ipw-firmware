@@ -24,7 +24,8 @@ public class Ntp3DObjectSyncComponent : MonoBehaviour
 
     void Start()
     {
-        var config = emt_sdk.Settings.EmtSetting.FromConfig();
+        var config = new emt_sdk.Settings.EMT.EMTSetting();
+        //var config = emt_sdk.Settings.EMT.EMTSetting.EmtSetting.FromConfig();
 
         if (config.Communication.NtpHostname == null) Scheduler = new NtpScheduler();
         else Scheduler = new NtpScheduler(config.Communication.NtpHostname);
@@ -52,15 +53,16 @@ public class Ntp3DObjectSyncComponent : MonoBehaviour
         var targetTime = Scheduler.SynchronizedTime + TimeSpan.FromSeconds(1);
         var message = new Naki3D.Common.Protocol.SensorMessage
         {
-            Event = new Naki3D.Common.Protocol.EventData
+            Data = new SensorDataMessage
             {
-                Name = "3DObject_ScheduleReset",
-                Parameters = targetTime.ToString()
+                Timestamp = (ulong)System.DateTime.UtcNow.Ticks,
+                Path = "3DObject_ScheduleReset",
+                String = targetTime.ToString()
             }
         };
 
         ScheduleReset(targetTime);
-        if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
+        //if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
     }
 
     public void ScheduleReset(DateTime scheduledTime)
@@ -87,11 +89,11 @@ public class Ntp3DObjectSyncComponent : MonoBehaviour
         if (!enabled) return;
 
         // TODO: Add hostname parameter
-        switch (message.Event.Name)
-        {
-            case "3DObject_ScheduleReset":
-                ScheduleReset(DateTime.Parse(message.Event.Parameters));
-                break;
-        }
+        // switch (message.Event.Name)
+        // {
+        //     case "3DObject_ScheduleReset":
+        //         ScheduleReset(DateTime.Parse(message.Event.Parameters));
+        //         break;
+        // }
     }
 }

@@ -17,16 +17,17 @@ public class CameraRigSpawnerComponent : MonoBehaviour
 
     void Start()
     {
-        var config = emt_sdk.Settings.EmtSetting.FromConfig();
+        //var config = emt_sdk.Settings.EmtSetting.FromConfig();
+        emt_sdk.Settings.EMT.EMTSetting config = null;
         if (config == null) Logger.ErrorUnity("Could not determine device type, not spawning any camera prefab");
 
         switch (config.Type)
         {
-            case Naki3D.Common.Protocol.DeviceType.Ipw:
+            case emt_sdk.Settings.EMT.DeviceTypeEnum.DEVICE_TYPE_IPW:
                 _spawnedRig = Instantiate(_dualCameraRig, transform);
                 CameraRig = _spawnedRig.GetComponent<DualCameraComponent>();
                 break;
-            case Naki3D.Common.Protocol.DeviceType.Pge:
+            case emt_sdk.Settings.EMT.DeviceTypeEnum.DEVICE_TYPE_PGE:
                 _spawnedRig = Instantiate(_peppersGhostRig, transform);
                 CameraRig = _spawnedRig.GetComponent<PeppersGhostCameraComponent>();
                 break;

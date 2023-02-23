@@ -15,15 +15,15 @@ public class DebugSchedulerComponent : MonoBehaviour
             var targetTime = _sync.Scheduler.SynchronizedTime + TimeSpan.FromSeconds(1);
             var message = new Naki3D.Common.Protocol.SensorMessage
             {
-                Event = new Naki3D.Common.Protocol.EventData
-                {
-                    Name = "VideoPlayer_ScheduleStart",
-                    Parameters = targetTime.ToString()
-                }
+                // Event = new Naki3D.Common.Protocol.EventData
+                // {
+                //     Name = "VideoPlayer_ScheduleStart",
+                //     Parameters = targetTime.ToString()
+                // }
             };
 
             _sync.ScheduleStart(targetTime);
-            if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
+            // if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
         }
 
 
@@ -32,14 +32,14 @@ public class DebugSchedulerComponent : MonoBehaviour
             var resync = _sync.GenerateResyncMessage();
             var message = new Naki3D.Common.Protocol.SensorMessage
             {
-                Event = new Naki3D.Common.Protocol.EventData
-                {
-                    Name = "VideoPlayer_ScheduleResync",
-                    Parameters = JsonConvert.SerializeObject(resync)
-                }
+                // Event = new Naki3D.Common.Protocol.EventData
+                // {
+                //     Name = "VideoPlayer_ScheduleResync",
+                //     Parameters = JsonConvert.SerializeObject(resync)
+                // }
             };
 
-            if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
+            // if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
         }
     }
 }

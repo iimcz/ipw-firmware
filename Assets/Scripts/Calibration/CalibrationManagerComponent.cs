@@ -6,8 +6,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Assets.Extensions;
 using emt_sdk.Communication;
+using emt_sdk.Communication.Discovery;
+using emt_sdk.Packages;
 using emt_sdk.ScenePackage;
 using emt_sdk.Settings;
+using emt_sdk.Settings.EMT;
+using Microsoft.Extensions.DependencyInjection;
 using UnityEngine;
 
 // TODO: Write custom inspector for states to make it easier to read
@@ -23,8 +27,6 @@ public class CalibrationManagerComponent : MonoBehaviour
         LensShift,
         ColorCorrection,
         Audio,
-        NetworkConfiguration,
-        NetworkCheck,
         Initialized
     }
 
@@ -47,7 +49,7 @@ public class CalibrationManagerComponent : MonoBehaviour
 
     // Unity can't serialize interfaces...
     private ICameraRig _camera;
-    private Naki3D.Common.Protocol.DeviceType _deviceType => _camera.DeviceType;
+    private DeviceTypeEnum _deviceType => _camera.DeviceType;
 
     public List<GameObject> UiStates;
 
@@ -66,11 +68,11 @@ public class CalibrationManagerComponent : MonoBehaviour
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
 
-        var deviceType = EmtSetting.FromConfig()?.Type ?? Naki3D.Common.Protocol.DeviceType.Unknown;
+        var deviceType = emt_sdk.Settings.EMT.DeviceTypeEnum.DEVICE_TYPE_UNKNOWN;//EmtSetting.FromConfig()?.Type ?? Naki3D.Common.Protocol.DeviceType.Unknown;
         var isCalibrated = deviceType switch
         {
-            Naki3D.Common.Protocol.DeviceType.Pge => true,
-            Naki3D.Common.Protocol.DeviceType.Ipw => ProjectorTransfomartionSettingsLoader.SettingsExists,
+            DeviceTypeEnum.DEVICE_TYPE_PGE => true,
+            DeviceTypeEnum.DEVICE_TYPE_IPW => ProjectorTransfomartionSettingsLoader.SettingsExists,
             _ => true
         };
 
@@ -86,6 +88,10 @@ public class CalibrationManagerComponent : MonoBehaviour
         {
             ProjectorTransformationPass.SoftwareCalibration = false;
 
+            // TODO: implement alternative to broadcast - unicast with target address/hostname input
+            var discovery = GlobalServices.Instance.ServiceProvider.GetService<IDiscoveryService>();
+            discovery?.StartBroadcast();
+
             // TODO: Validate with schema
             var loader = new PackageLoader(null);
             var startupPackage = loader
@@ -96,48 +102,12 @@ public class CalibrationManagerComponent : MonoBehaviour
             {
                 _connection.SwitchScene(startupPackage);
             }
-            else if (string.IsNullOrWhiteSpace(_connection.Settings.Communication.ContentHostname))
-            {
-                UpdateUi(CalibrationStateEnum.NetworkConfiguration);
-            }
-            else
-            {
-                Task.Run(VerifyNetwork);
-                UpdateUi(CalibrationStateEnum.NetworkCheck);
-            }
         }
         else
         {
             ProjectorTransformationPass.SoftwareCalibration = true;
             UpdateUi(CalibrationStateEnum.PhysicalAlignment);
         }
-    }
-
-    private async Task VerifyNetwork()
-    {
-        _connection.Connect();
-        _networkState = NetworkStateEnum.Waiting;
-        
-        // Server probably refused connection or cannot connect at all
-        if (ExhibitConnectionComponent.Connection == null ||
-            ExhibitConnectionComponent.Connection.ConnectionState == ConnectionStateEnum.Disconnected)
-        {
-            _networkState = NetworkStateEnum.Invalid;
-            return;
-        }
-
-        while (ExhibitConnectionComponent.Connection.ConnectionState <= ConnectionStateEnum.VerifyWait)
-        {
-            await Task.Delay(500);
-        }
-
-        if (ExhibitConnectionComponent.Connection.ConnectionState == ConnectionStateEnum.VerificationDenied)
-        {
-            _networkState = NetworkStateEnum.VerificationDenied;
-            return;
-        }
-        
-        _networkState = NetworkStateEnum.Valid;
     }
 
     private void Start()
@@ -168,7 +138,7 @@ public class CalibrationManagerComponent : MonoBehaviour
                 break;
             case CalibrationStateEnum.PhysicalAlignment:
                 if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
-                if (_deviceType == Naki3D.Common.Protocol.DeviceType.Pge) UpdateUi(_calibrationState + 1);
+                if (_deviceType == DeviceTypeEnum.DEVICE_TYPE_PGE) UpdateUi(_calibrationState + 1);
                 break;
             case CalibrationStateEnum.CornerAlignment:
                 ProjectorTransformationPass.EnableBlending = false;
@@ -177,11 +147,11 @@ public class CalibrationManagerComponent : MonoBehaviour
                     UpdateUi(_calibrationState + 1);
                     ProjectorTransformationPass.EnableBlending = true;
                 }
-                if (_deviceType == Naki3D.Common.Protocol.DeviceType.Pge) UpdateUi(_calibrationState + 1);
+                if (_deviceType == DeviceTypeEnum.DEVICE_TYPE_PGE) UpdateUi(_calibrationState + 1);
                 break;
             case CalibrationStateEnum.ColorCorrection:
                 if (Input.GetKeyDown(KeyCode.Return)) UpdateUi(_calibrationState + 1);
-                if (_deviceType == Naki3D.Common.Protocol.DeviceType.Pge) UpdateUi(_calibrationState + 1);
+                if (_deviceType == DeviceTypeEnum.DEVICE_TYPE_PGE) UpdateUi(_calibrationState + 1);
                 break;
             case CalibrationStateEnum.LensShift:
                 if (Input.GetKeyDown(KeyCode.Return))
@@ -191,7 +161,7 @@ public class CalibrationManagerComponent : MonoBehaviour
                     
                     _camera.SaveSettings(); // Save after changing all display related settings
                 }
-                if (_deviceType == Naki3D.Common.Protocol.DeviceType.Pge)
+                if (_deviceType == DeviceTypeEnum.DEVICE_TYPE_PGE)
                 {
                     StartCoroutine(_audioTest.StartTest());
                     UpdateUi(_calibrationState + 1);
@@ -199,37 +169,6 @@ public class CalibrationManagerComponent : MonoBehaviour
                 break;
             case CalibrationStateEnum.Audio:
                 if (_audioTest.Finished) UpdateUi(_calibrationState + 1);
-                break;
-            case CalibrationStateEnum.NetworkConfiguration:
-                if (Input.GetKeyDown(KeyCode.Return))
-                {
-                    if (string.IsNullOrWhiteSpace(_connection.Settings.Communication.ContentHostname)) return;
-                    
-                    _network.ShowWarning = false;
-                    _network.ShowVerification = false;
-                    
-                    _networkState = NetworkStateEnum.Waiting;
-                    Task.Run(VerifyNetwork);
-                    
-                    UpdateUi(_calibrationState + 1);
-                }
-                break;
-            case CalibrationStateEnum.NetworkCheck:
-                switch (_networkState)
-                {
-                    case NetworkStateEnum.Invalid:
-                        _network.ShowWarning = true;
-                        UpdateUi(_calibrationState - 1);
-                        break;
-                    case NetworkStateEnum.VerificationDenied:
-                        _network.ShowVerification = true;
-                        UpdateUi(_calibrationState - 1);
-                        break;
-                    case NetworkStateEnum.Valid:
-                        _connection.Settings.Save(); // Save network info
-                        UpdateUi(_calibrationState + 1);
-                        break;
-                }
                 break;
             case CalibrationStateEnum.Initialized:
                 ProjectorTransformationPass.SoftwareCalibration = false;
@@ -241,17 +180,9 @@ public class CalibrationManagerComponent : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Backspace) &&
             Input.GetKey(KeyCode.LeftShift) &&
             _calibrationState > CalibrationStateEnum.PhysicalAlignment &&
-            _calibrationState <= CalibrationStateEnum.NetworkConfiguration)
+            _calibrationState <= CalibrationStateEnum.Initialized)
         {
             UpdateUi(_calibrationState - 1);
-        }
-
-        // Checking the network again would just put us back where we were
-        if (Input.GetKeyDown(KeyCode.Backspace) &&
-            Input.GetKey(KeyCode.LeftShift) &&
-            _calibrationState == CalibrationStateEnum.Initialized)
-        {
-            UpdateUi(CalibrationStateEnum.NetworkConfiguration);
         }
     }
 }

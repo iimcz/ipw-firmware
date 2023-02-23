@@ -1,19 +1,20 @@
+using Naki3D.Common.Protocol;
 using UnityEngine;
 
 public static class VectorExtensions
 {
-    public static Naki3D.Common.Protocol.Vector2 ToNakiVector(this Vector2 v)
+    public static Vector2Data ToNakiVector(this Vector2 v)
     {
-        return new Naki3D.Common.Protocol.Vector2
+        return new Vector2Data
         {
             X = v.x,
             Y = v.y
         };
     }
 
-    public static Naki3D.Common.Protocol.Vector3 ToNakiVector(this Vector3 v)
+    public static Vector3Data ToNakiVector(this Vector3 v)
     {
-        return new Naki3D.Common.Protocol.Vector3
+        return new Vector3Data
         {
             X = v.x,
             Y = v.y,

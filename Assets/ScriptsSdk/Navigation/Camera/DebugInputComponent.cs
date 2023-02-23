@@ -12,41 +12,41 @@ public class DebugInputComponent : MonoBehaviour
     {
         _rotaror = GetComponent<NodeRotatorComponent>();
 
-        EventManager.Instance.ConnectSensor(EmtSetting.FromConfig().Communication);
+        // EventManager.Instance.ConnectSensor(EmtSetting.FromConfig().Communication);
     }
 
     public void GestureUpdate(SensorMessage message)
     {
-        switch (message.Gesture.Type)
-        {
-            case HandGestureType.GestureSwipeLeft:
-                _rotaror.TurnLeft();
-                break;
-            case HandGestureType.GestureSwipeRight:
-                _rotaror.TurnRight();
-                break;
-            case HandGestureType.GestureSwipeUp:
-                _rotaror.Activate();
-                break;
-        }
+        // switch (message.Gesture.Type)
+        // {
+        //     case HandGestureType.GestureSwipeLeft:
+        //         _rotaror.TurnLeft();
+        //         break;
+        //     case HandGestureType.GestureSwipeRight:
+        //         _rotaror.TurnRight();
+        //         break;
+        //     case HandGestureType.GestureSwipeUp:
+        //         _rotaror.Activate();
+        //         break;
+        // }
     }
 
     public void KbUpdate(SensorMessage message)
     {
-        if (message.KeyboardUpdate.Type == KeyActionType.KeyUp) return;
-        var keyCode = (KeyCode) message.KeyboardUpdate.Keycode;
+        // if (message.KeyboardUpdate.Type == KeyActionType.KeyUp) return;
+        // var keyCode = (KeyCode) message.KeyboardUpdate.Keycode;
 
-        switch (keyCode)
-        {
-            case KeyCode.LeftArrow:
-                _rotaror.TurnLeft();
-                break;
-            case KeyCode.RightArrow:
-                _rotaror.TurnRight();
-                break;
-            case KeyCode.Space:
-                _rotaror.Activate();
-                break;
-        }
+        // switch (keyCode)
+        // {
+        //     case KeyCode.LeftArrow:
+        //         _rotaror.TurnLeft();
+        //         break;
+        //     case KeyCode.RightArrow:
+        //         _rotaror.TurnRight();
+        //         break;
+        //     case KeyCode.Space:
+        //         _rotaror.Activate();
+        //         break;
+        // }
     }
 }

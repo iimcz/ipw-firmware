@@ -115,21 +115,21 @@ public class CursorComponent : MonoBehaviour
 
     public void HandMovement(SensorMessage msg)
     {
-        if (msg.DataCase != SensorMessage.DataOneofCase.HandMovement) return;
+        // if (msg.DataCase != SensorMessage.DataOneofCase.HandMovement) return;
 
-        var hand = msg.HandMovement;
-        if (hand.UserId != 1) return;
-        if (hand.Hand != HandSide.Right) return;
+        // var hand = msg.HandMovement;
+        // if (hand.UserId != 1) return;
+        // if (hand.Hand != HandSide.Right) return;
 
-        var handPos = new Vector2(1f - hand.ProjPosition.X, 1f - hand.ProjPosition.Y);
-        if (_updateBoundaries) UpdateBoundaries(handPos);
+        // var handPos = new Vector2(1f - hand.ProjPosition.X, 1f - hand.ProjPosition.Y);
+        // if (_updateBoundaries) UpdateBoundaries(handPos);
 
-        ScreenPos = handPos.Map(new Vector2(MinX, MinY), new Vector2(MaxX, MaxY), Vector2.zero, Vector2.one);
+        // ScreenPos = handPos.Map(new Vector2(MinX, MinY), new Vector2(MaxX, MaxY), Vector2.zero, Vector2.one);
 
-        var boundaries = _cameraRig.CameraRig.GetBoundaries(2.5f);
-        var pos = _viewportPos.Map(Vector2.zero, Vector2.one, new Vector2(boundaries.xMin, boundaries.yMin), new Vector2(boundaries.xMin, boundaries.yMax));
+        // var boundaries = _cameraRig.CameraRig.GetBoundaries(2.5f);
+        // var pos = _viewportPos.Map(Vector2.zero, Vector2.one, new Vector2(boundaries.xMin, boundaries.yMin), new Vector2(boundaries.xMin, boundaries.yMax));
 
-        transform.localPosition = new Vector3(pos.x, pos.y, 2.5f);
-        _sprite.enabled = IsVisible;
+        // transform.localPosition = new Vector3(pos.x, pos.y, 2.5f);
+        // _sprite.enabled = IsVisible;
     }
 }

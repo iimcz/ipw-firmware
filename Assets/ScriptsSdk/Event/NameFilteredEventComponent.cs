@@ -6,7 +6,7 @@ public class NameFilteredEventComponent : EventComponent
 
     protected override void OnEventReceived(SensorMessage e)
     {
-        if (e.SensorId != EventName) return;
+        if (e.Data.Path != EventName) return;
         base.OnEventReceived(e);
     }
 }

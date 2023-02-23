@@ -44,3 +44,9 @@ public abstract class GalleryLayout
 
     public abstract void Gesture(HandGestureType gesture);
 }
+
+public enum HandGestureType
+{
+    SwipeLeft,
+    SwipeRight
+}

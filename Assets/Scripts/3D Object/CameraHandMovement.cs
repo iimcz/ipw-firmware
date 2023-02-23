@@ -144,26 +144,26 @@ public class CameraHandMovement : MonoBehaviour
 
     public void EventReceived(SensorMessage e)
     {
-        if (e.DataCase != SensorMessage.DataOneofCase.HandTracking) return;
+        // if (e.DataCase != SensorMessage.DataOneofCase.HandTracking) return;
 
-        _lastInputTime = 0f;
-        _orbit.AutoOrbit = false;
+        // _lastInputTime = 0f;
+        // _orbit.AutoOrbit = false;
 
-        switch (e.HandTracking.Gesture)
-        {
-            case HandGestureType.GestureOpenHand:
-                _handState = HandStateEnum.None;
-                break;
-            case HandGestureType.GestureCloseHand:
-                _handState = HandStateEnum.Rotate;
-                break;
-            case HandGestureType.GesturePinch:
-                _handState = HandStateEnum.Zoom;
-                break;
-        }
+        // switch (e.HandTracking.Gesture)
+        // {
+        //     case HandGestureType.GestureOpenHand:
+        //         _handState = HandStateEnum.None;
+        //         break;
+        //     case HandGestureType.GestureCloseHand:
+        //         _handState = HandStateEnum.Rotate;
+        //         break;
+        //     case HandGestureType.GesturePinch:
+        //         _handState = HandStateEnum.Zoom;
+        //         break;
+        // }
 
-        _previousPositon = _position;
-        _position = e.HandTracking.CenterPosition.ToUnityVector();
+        // _previousPositon = _position;
+        // _position = e.HandTracking.CenterPosition.ToUnityVector();
 
         // Prevent jump in case it's out first event
         if (_previousPositon == Vector3.zero) _previousPositon = _position;

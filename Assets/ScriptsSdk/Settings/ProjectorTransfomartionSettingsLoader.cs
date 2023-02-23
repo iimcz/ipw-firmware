@@ -23,27 +23,27 @@ public static class ProjectorTransfomartionSettingsLoader
 
     public static bool SettingsExists => File.Exists(SettingsPath);
     
-    public static IPWSetting LoadSettings()
-    {
-        try
-        {
-            var json = File.ReadAllText(SettingsPath);
-            return JsonConvert.DeserializeObject<IPWSetting>(json);
-        }
-        catch (Exception e)
-        {
-            Logger.ErrorUnity("Failed to load settings", e);
-            return new IPWSetting
-            {
-                Displays = new List<DisplaySetting>
-                {
-                    new DisplaySetting(),
-                    new DisplaySetting
-                    {
-                        DisplayId = 1
-                    }
-                }
-            }; // Loading failed, assume defaults
-        }
-    }
+    // public static IPWSetting LoadSettings()
+    // {
+    //     try
+    //     {
+    //         var json = File.ReadAllText(SettingsPath);
+    //         return JsonConvert.DeserializeObject<IPWSetting>(json);
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Logger.ErrorUnity("Failed to load settings", e);
+    //         return new IPWSetting
+    //         {
+    //             Displays = new List<DisplaySetting>
+    //             {
+    //                 new DisplaySetting(),
+    //                 new DisplaySetting
+    //                 {
+    //                     DisplayId = 1
+    //                 }
+    //             }
+    //         }; // Loading failed, assume defaults
+    //     }
+    // }
 }

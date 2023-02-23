@@ -45,49 +45,49 @@ public class ManagementMuterComponent : MonoBehaviour
     {
         var stream = client.GetStream();
 
-        try
-        {
-            var managementRequest = ManagementRequest.Parser.ParseDelimitedFrom(stream);
-            if (managementRequest.ManagementType == ManagementRequest.Types.ManagementType.StartMute)
-            {
-                _mainThreadExecutor.ExecuteOnMainThread(() => _videoPlayer.SetDirectAudioMute(0, true));
-                var response = new ManagementResponse
-                {
-                    DeviceStatus = ManagementResponse.Types.DeviceStatus.Ok
-                };
+        // try
+        // {
+        //     var managementRequest = ManagementRequest.Parser.ParseDelimitedFrom(stream);
+        //     if (managementRequest.ManagementType == ManagementRequest.Types.ManagementType.StartMute)
+        //     {
+        //         _mainThreadExecutor.ExecuteOnMainThread(() => _videoPlayer.SetDirectAudioMute(0, true));
+        //         var response = new ManagementResponse
+        //         {
+        //             DeviceStatus = ManagementResponse.Types.DeviceStatus.Ok
+        //         };
 
-                Logger.InfoUnity("Management request - Muted audio");
-                response.WriteDelimitedTo(stream);
-            }
-            else if (managementRequest.ManagementType == ManagementRequest.Types.ManagementType.Start)
-            {
-                _mainThreadExecutor.ExecuteOnMainThread(() => _videoPlayer.SetDirectAudioMute(0, false));
-                var response = new ManagementResponse
-                {
-                    DeviceStatus = ManagementResponse.Types.DeviceStatus.Ok
-                };
+        //         Logger.InfoUnity("Management request - Muted audio");
+        //         response.WriteDelimitedTo(stream);
+        //     }
+        //     else if (managementRequest.ManagementType == ManagementRequest.Types.ManagementType.Start)
+        //     {
+        //         _mainThreadExecutor.ExecuteOnMainThread(() => _videoPlayer.SetDirectAudioMute(0, false));
+        //         var response = new ManagementResponse
+        //         {
+        //             DeviceStatus = ManagementResponse.Types.DeviceStatus.Ok
+        //         };
 
-                Logger.InfoUnity("Management request - Unmuted audio");
-                response.WriteDelimitedTo(stream);
-            }
-            else
-            {
-                var response = new ManagementResponse
-                {
-                    DeviceStatus = ManagementResponse.Types.DeviceStatus.Error
-                };
+        //         Logger.InfoUnity("Management request - Unmuted audio");
+        //         response.WriteDelimitedTo(stream);
+        //     }
+        //     else
+        //     {
+        //         var response = new ManagementResponse
+        //         {
+        //             DeviceStatus = ManagementResponse.Types.DeviceStatus.Error
+        //         };
 
-                Logger.InfoUnity("Unhandled request - responding with error.");
-                response.WriteDelimitedTo(stream);
-            }
-        }
-        catch (Exception e)
-        {
-            Logger.ErrorUnity("Invalid management message received, closing connection", e);
-        }
-        finally
-        {
-            if (client.Connected) client.Close();
-        }
+        //         Logger.InfoUnity("Unhandled request - responding with error.");
+        //         response.WriteDelimitedTo(stream);
+        //     }
+        // }
+        // catch (Exception e)
+        // {
+        //     Logger.ErrorUnity("Invalid management message received, closing connection", e);
+        // }
+        // finally
+        // {
+        //     if (client.Connected) client.Close();
+        // }
     }
 }

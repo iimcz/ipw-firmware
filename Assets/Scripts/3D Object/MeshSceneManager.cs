@@ -4,7 +4,7 @@ using System.Collections;
 using System.Linq;
 using Assets.ScriptsSdk.Extensions;
 using emt_sdk.Scene;
-using emt_sdk.Generated.ScenePackage;
+using emt_sdk.Packages;
 using Siccity.GLTFUtility;
 using Naki3D.Common.Protocol;
 using UnityEngine;
@@ -97,22 +97,22 @@ public class MeshSceneManager : MonoBehaviour
     {
         // Flag navigation
         if (_flagNavigator == null) return;
-        if (e.DataCase == SensorMessage.DataOneofCase.Gesture)
-        {
-            switch (e.Gesture.Type)
-            {
-                case HandGestureType.GestureSwipeLeft:
-                    _flagNavigator.SelectPrevious();
-                    break;
-                case HandGestureType.GestureSwipeRight:
-                    _flagNavigator.SelectNext();
-                    break;
-                case HandGestureType.GestureSwipeUp:
-                case HandGestureType.GestureSwipeDown:
-                    _flagNavigator.Activate();
-                    break;
-            }
-        }
+        // if (e.DataCase == SensorMessage.DataOneofCase.Gesture)
+        // {
+        //     switch (e.Gesture.Type)
+        //     {
+        //         case HandGestureType.GestureSwipeLeft:
+        //             _flagNavigator.SelectPrevious();
+        //             break;
+        //         case HandGestureType.GestureSwipeRight:
+        //             _flagNavigator.SelectNext();
+        //             break;
+        //         case HandGestureType.GestureSwipeUp:
+        //         case HandGestureType.GestureSwipeDown:
+        //             _flagNavigator.Activate();
+        //             break;
+        //     }
+        // }
     }
 
     private IEnumerator DelayApply()
@@ -138,8 +138,8 @@ public class MeshSceneManager : MonoBehaviour
                 Distance = 5,
                 Height = 2,
                 RevolutionTime = 5f,
-                LookAt = new GltfObject.GltfLocation { Offset = new Naki3D.Common.Protocol.Vector3() },
-                Origin = new GltfObject.GltfLocation { Offset = new Naki3D.Common.Protocol.Vector3() },
+                LookAt = new GltfObject.GltfLocation { Offset = new Vector3Data() },
+                Origin = new GltfObject.GltfLocation { Offset = new Vector3Data() },
             }
         }, string.Empty);
     }
@@ -157,7 +157,7 @@ public class MeshSceneManager : MonoBehaviour
                 Origin = new GltfObject.GltfLocation
                 {
                     ObjectName = settings.CameraAnimation.Origin.ObjectName,
-                    Offset = new Naki3D.Common.Protocol.Vector3
+                    Offset = new Vector3Data
                     {
                         X = (float)settings.CameraAnimation.Origin.Offset.X,
                         Y = (float)settings.CameraAnimation.Origin.Offset.Y,
@@ -167,7 +167,7 @@ public class MeshSceneManager : MonoBehaviour
                 LookAt = new GltfObject.GltfLocation
                 {
                     ObjectName = settings.CameraAnimation.LookAt.ObjectName,
-                    Offset = new Naki3D.Common.Protocol.Vector3
+                    Offset = new Vector3Data
                     {
                         X = (float)settings.CameraAnimation.LookAt.Offset.X,
                         Y = (float)settings.CameraAnimation.LookAt.Offset.Y,
@@ -191,7 +191,7 @@ public class MeshSceneManager : MonoBehaviour
                     Location = new GltfObject.GltfLocation
                     {
                         ObjectName = "",
-                        Offset = new Naki3D.Common.Protocol.Vector3
+                        Offset = new Vector3Data
                         {
                             X = (float)f.Location.X,
                             Y = (float)f.Location.Y,

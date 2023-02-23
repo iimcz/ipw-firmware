@@ -15,9 +15,9 @@ public interface ICameraRig
     Vector2 CanvasDimensions { get; }
     Viewport Viewport { get; }
 
-    Naki3D.Common.Protocol.DeviceType DeviceType { get; }
-    emt_sdk.Settings.IPWSetting.IPWOrientation Orientation { get; }
+    emt_sdk.Settings.EMT.DeviceTypeEnum DeviceType { get; }
+    emt_sdk.Settings.IPW.IPWSetting.IPWOrientation Orientation { get; }
 
-    emt_sdk.Generated.ScenePackage.CanvasDimensions DefaultCanvasDimensions { get; }
+    emt_sdk.Packages.CanvasDimensions DefaultCanvasDimensions { get; }
     Viewport DefaultViewport => new((int)DefaultCanvasDimensions.Width.Value, (int)DefaultCanvasDimensions.Height.Value, 0, 0);
 }

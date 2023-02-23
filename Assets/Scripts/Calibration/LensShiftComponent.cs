@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using emt_sdk.Settings;
+using emt_sdk.Settings.IPW;
 using TMPro;
 
 public class LensShiftComponent : MonoBehaviour

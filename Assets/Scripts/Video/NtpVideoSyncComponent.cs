@@ -26,12 +26,12 @@ public class NtpVideoSyncComponent : MonoBehaviour
 
     void Start()
     {
-        var config = emt_sdk.Settings.EmtSetting.FromConfig();
+        // var config = emt_sdk.Settings.EmtSetting.FromConfig();
 
-        if (config.Communication.NtpHostname == null) Scheduler = new NtpScheduler();
-        else Scheduler = new NtpScheduler(config.Communication.NtpHostname);
+        // if (config.Communication.NtpHostname == null) Scheduler = new NtpScheduler();
+        // else Scheduler = new NtpScheduler(config.Communication.NtpHostname);
 
-        StartCoroutine(ResyncTime());
+        // StartCoroutine(ResyncTime());
     }
 
     IEnumerator ResyncTime()
@@ -102,14 +102,14 @@ public class NtpVideoSyncComponent : MonoBehaviour
         var resync = GenerateResyncMessage();
         var message = new Naki3D.Common.Protocol.SensorMessage
         {
-            Event = new Naki3D.Common.Protocol.EventData
-            {
-                Name = "VideoPlayer_ScheduleResync",
-                Parameters = JsonConvert.SerializeObject(resync)
-            }
+            // Event = new Naki3D.Common.Protocol.EventData
+            // {
+            //     Name = "VideoPlayer_ScheduleResync",
+            //     Parameters = JsonConvert.SerializeObject(resync)
+            // }
         };
 
-        if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
+        // if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
     }
 
     public void OnCustomEvent(SensorMessage message)
@@ -117,15 +117,15 @@ public class NtpVideoSyncComponent : MonoBehaviour
         if (!enabled) return;
 
         // TODO: Add hostname parameter
-        switch (message.Event.Name)
-        {
-            case "VideoPlayer_ScheduleStart":
-                ScheduleStart(DateTime.Parse(message.Event.Parameters));
-                break;
-            case "VideoPlayer_ScheduleResync":
-                var parameters = JsonConvert.DeserializeObject<VideoResyncParameters>(message.Event.Parameters);
-                ScheduleResync(parameters.ScheduledTime, parameters.SeekTime);
-                break;
-        }
+        // switch (message.Event.Name)
+        // {
+        //     case "VideoPlayer_ScheduleStart":
+        //         ScheduleStart(DateTime.Parse(message.Event.Parameters));
+        //         break;
+        //     case "VideoPlayer_ScheduleResync":
+        //         var parameters = JsonConvert.DeserializeObject<VideoResyncParameters>(message.Event.Parameters);
+        //         ScheduleResync(parameters.ScheduledTime, parameters.SeekTime);
+        //         break;
+        // }
     }
 }

@@ -5,16 +5,17 @@ using System.Linq;
 using Assets.Extensions;
 using System.Net;
 using System.Collections;
+using emt_sdk.Settings.IPW;
 
 public class PeppersGhostCameraComponent : MonoBehaviour, ICameraRig
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    Naki3D.Common.Protocol.DeviceType ICameraRig.DeviceType => Naki3D.Common.Protocol.DeviceType.Pge;
+    emt_sdk.Settings.EMT.DeviceTypeEnum ICameraRig.DeviceType => emt_sdk.Settings.EMT.DeviceTypeEnum.DEVICE_TYPE_PGE;
 
     public IPWSetting.IPWOrientation Orientation => IPWSetting.IPWOrientation.Single;
 
-    public emt_sdk.Generated.ScenePackage.CanvasDimensions DefaultCanvasDimensions => new emt_sdk.Generated.ScenePackage.CanvasDimensions { Width = 2048, Height = 2048 };
+    public emt_sdk.Packages.CanvasDimensions DefaultCanvasDimensions => new emt_sdk.Packages.CanvasDimensions { Width = 2048, Height = 2048 };
 
     public Vector2 CanvasDimensions { get; private set; }
     public Viewport Viewport { get; private set; }

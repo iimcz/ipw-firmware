@@ -1,4 +1,6 @@
 using emt_sdk.Settings;
+using emt_sdk.Settings.EMT;
+using Microsoft.Extensions.DependencyInjection;
 using TMPro;
 using UnityEngine;
 
@@ -18,21 +20,21 @@ public class NetworkComponent : MonoBehaviour
 
     [SerializeField]
     private ExhibitConnectionComponent _connection;
-    
-    private CommunicationSettings _communication;
+
+    private EMTConfigurationProvider _configProvider;
 
     private void Start()
     {
-        _communication = _connection.Settings.Communication;
+        _configProvider = GlobalServices.Instance.ServiceProvider.GetRequiredService<EMTConfigurationProvider>();
     }
     
     private void Update()
     {
         _warning.SetActive(ShowWarning);
         _verification.SetActive(ShowVerification);
-        
-        _communication.ContentHostname = _hostname.text;
-        
+
+        _configProvider.Configuration.Communication.ContentHostname = _hostname.text;
+
         _hostname.Select();
         _hostname.ActivateInputField();
     }

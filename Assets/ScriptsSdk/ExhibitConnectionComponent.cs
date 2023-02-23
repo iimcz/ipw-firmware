@@ -11,40 +11,41 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using emt_sdk.Events.Relay;
-using emt_sdk.Generated.ScenePackage;
 using emt_sdk.Settings;
 using Assets.Extensions;
 using Newtonsoft.Json;
 using System.Linq;
+using emt_sdk.Packages;
+using emt_sdk.Settings.EMT;
 
 public class ExhibitConnectionComponent : MonoBehaviour
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     // These persist between scenes
-    public static ExhibitConnection Connection;
+    // public static ExhibitConnection Connection;
     public static PackageDescriptor ActivePackage;
     private static bool _changeScene;
 
-    public EmtSetting Settings;
+    public EMTSetting Settings;
     public string Hostname;
     public bool AutoConnect;
 
     public bool LogEvents;
 
-    private PackageLoader _loader;
+    // private PackageLoader _loader;
 
     // Start is called before the first frame update
     void Start()
     {      
         StartCoroutine(ApplyDelay());
 
-        Settings = EmtSetting.FromConfig();
-        if (Settings == null)
-        {
-            Logger.ErrorUnity("Attempted to create ExhibitConnectionComponent without a valid EMT config, assuming defaults");
-            Settings = new EmtSetting();
-        }
+        // Settings = EmtSetting.FromConfig();
+        // if (Settings == null)
+        // {
+        //     Logger.ErrorUnity("Attempted to create ExhibitConnectionComponent without a valid EMT config, assuming defaults");
+        //     Settings = new EmtSetting();
+        // }
     }
     
     void Update()
@@ -52,45 +53,45 @@ public class ExhibitConnectionComponent : MonoBehaviour
         if (!_changeScene) return;
         _changeScene = false;
         
-        switch (ActivePackage.Parameters.DisplayType)
-        {
-            case "video":
-                SceneManager.LoadSceneAsync("VideoScene");
-                break;
-            case "gallery":
-                SceneManager.LoadSceneAsync("GalleryScene");
-                break;
-            case "model":
-                SceneManager.LoadSceneAsync("3DObject");
-                break;
-            case "scene":
-                {
-                    var relayServer = new EventRelayServer();
-                    Task.Run(() => relayServer.Listen());
+        // switch (ActivePackage.Parameters.DisplayType)
+        // {
+        //     case "video":
+        //         SceneManager.LoadSceneAsync("VideoScene");
+        //         break;
+        //     case "gallery":
+        //         SceneManager.LoadSceneAsync("GalleryScene");
+        //         break;
+        //     case "model":
+        //         SceneManager.LoadSceneAsync("3DObject");
+        //         break;
+        //     case "scene":
+        //         {
+        //             var relayServer = new EventRelayServer();
+        //             Task.Run(() => relayServer.Listen());
 
-                    // TODO: We want to wait for the TCP listener to initialize, but this is horrible
-                    System.Threading.Thread.Sleep(500);
+        //             // TODO: We want to wait for the TCP listener to initialize, but this is horrible
+        //             System.Threading.Thread.Sleep(500);
 
-                    var process = ActivePackage.Run();
-                    process.WaitForExit();
-                    relayServer.TokenSource.Cancel();
+        //             var process = ActivePackage.Run();
+        //             process.WaitForExit();
+        //             relayServer.TokenSource.Cancel();
 
-                    Logger.ErrorUnity($"Scene package exitted with code '{process.ExitCode}', this probably shouldn't happen");
-                    break;
-                }
-            case "panorama":
-                SceneManager.LoadSceneAsync("PanoScene");
-                break;
-            default:
-                Logger.ErrorUnity($"Package display type '{ActivePackage.Parameters.DisplayType}' is not implemented");
-                throw new NotImplementedException($"Package display type '{ActivePackage.Parameters.DisplayType}' is not implemented");
-        }
+        //             Logger.ErrorUnity($"Scene package exitted with code '{process.ExitCode}', this probably shouldn't happen");
+        //             break;
+        //         }
+        //     case "panorama":
+        //         SceneManager.LoadSceneAsync("PanoScene");
+        //         break;
+        //     default:
+        //         Logger.ErrorUnity($"Package display type '{ActivePackage.Parameters.DisplayType}' is not implemented");
+        //         throw new NotImplementedException($"Package display type '{ActivePackage.Parameters.DisplayType}' is not implemented");
+        // }
     }
 
     void OnApplicationQuit()
     {
         Logger.InfoUnity("Application quitting, stopping sensor manager");
-        EventManager.Instance.SensorManager.Stop();
+        // EventManager.Instance.SensorManager.Stop();
 
         // TODO: Stop remote emt connections as well
     }
@@ -102,22 +103,22 @@ public class ExhibitConnectionComponent : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         // TODO: Validate with schema
-        _loader = new PackageLoader(null);
+        // _loader = new PackageLoader(null);
 
-        if (string.IsNullOrWhiteSpace(Hostname)) Hostname = Dns.GetHostName();
+        // if (string.IsNullOrWhiteSpace(Hostname)) Hostname = Dns.GetHostName();
 
-        if (EventManager.Instance.SensorManager == null || !EventManager.Instance.SensorManager.IsListening)
-        {
-            Logger.InfoUnity("Application starting, starting sensor manager");
-            EventManager.Instance.ConnectSensor(Settings.Communication);
-        }
-        if (LogEvents) EventManager.Instance.OnEventReceived += Instance_OnEventReceived;
+        // if (EventManager.Instance.SensorManager == null || !EventManager.Instance.SensorManager.IsListening)
+        // {
+        //     Logger.InfoUnity("Application starting, starting sensor manager");
+        //     EventManager.Instance.ConnectSensor(Settings.Communication);
+        // }
+        // if (LogEvents) EventManager.Instance.OnEventReceived += Instance_OnEventReceived;
 
-        if (AutoConnect)
-        {
-            if (EmtSetting.FromConfig() == null) Logger.ErrorUnity($"Attempted to connect to toolbox without a valid config, ignoring");
-            else Connect();
-        }
+        // if (AutoConnect)
+        // {
+        //     if (EmtSetting.FromConfig() == null) Logger.ErrorUnity($"Attempted to connect to toolbox without a valid config, ignoring");
+        //     else Connect();
+        // }
     }
 
     private void Instance_OnEventReceived(SensorMessage e)
@@ -127,90 +128,90 @@ public class ExhibitConnectionComponent : MonoBehaviour
 
     public void Connect()
     {
-        var descriptor = new DeviceDescriptor
-        {
-            PerformanceCap = Settings.PerformanceCap,
-            Type = Settings.Type
-        };
-        descriptor.LocalSensors.Add(SensorType.Gesture);
+        // var descriptor = new DeviceDescriptor
+        // {
+        //     PerformanceCap = Settings.PerformanceCap,
+        //     Type = Settings.Type
+        // };
+        // descriptor.LocalSensors.Add(SensorType.Gesture);
 
-        try
-        {
-            Connection = new ExhibitConnection(Settings.Communication, descriptor)
-            {
-                LoadPackageHandler = LoadPackage,
-                ClearPackageHandler = ClearStartupPackge
-            };
-        }
-        catch (SocketException e)
-        {
-            // DNS resolve fail, abort
-            Logger.ErrorUnity("Failed to estabilish exhibit connection, aborting", e);
-            return;
-        }
+        // try
+        // {
+        //     Connection = new ExhibitConnection(Settings.Communication, descriptor)
+        //     {
+        //         LoadPackageHandler = LoadPackage,
+        //         ClearPackageHandler = ClearStartupPackge
+        //     };
+        // }
+        // catch (SocketException e)
+        // {
+        //     // DNS resolve fail, abort
+        //     Logger.ErrorUnity("Failed to estabilish exhibit connection, aborting", e);
+        //     return;
+        // }
         
 
-        Connection.Connect();
+        // Connection.Connect();
     }
 
-    void LoadPackage(LoadPackage pckg)
-    {
-        var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
+    // void LoadPackage(LoadPackage pckg)
+    // {
+    //     var package = _loader.LoadPackage(new StringReader(pckg.DescriptorJson), false);
 
-        // Download package
-        Logger.InfoUnity($"Starting file download for package '{package.Metadata.PackageName}'");
-        package.DownloadFile();
-        Logger.InfoUnity($"Download + extraction complete to '{package.PackageDirectory}'");
+    //     // Download package
+    //     Logger.InfoUnity($"Starting file download for package '{package.Metadata.PackageName}'");
+    //     package.DownloadFile();
+    //     Logger.InfoUnity($"Download + extraction complete to '{package.PackageDirectory}'");
 
-        // Replace original scene .json with received one
-        var currentFile = Path.Combine(package.PackageDirectory, "package.json");
-        var backupFile = Path.Combine(package.PackageDirectory, "package_original.json");
-        File.Move(currentFile, backupFile);
-        File.WriteAllText(currentFile, pckg.DescriptorJson);
+    //     // Replace original scene .json with received one
+    //     var currentFile = Path.Combine(package.PackageDirectory, "package.json");
+    //     var backupFile = Path.Combine(package.PackageDirectory, "package_original.json");
+    //     File.Move(currentFile, backupFile);
+    //     File.WriteAllText(currentFile, pckg.DescriptorJson);
 
-        Settings.StartupPackage = package.Package.Checksum;
-        Settings.Save();
+    //     Settings.StartupPackage = package.Package.Checksum;
+    //     Settings.Save();
 
-        Logger.InfoUnity($"Switching scene to package '{package.Metadata.PackageName}'");
-        SwitchScene(package);
-    }
+    //     Logger.InfoUnity($"Switching scene to package '{package.Metadata.PackageName}'");
+    //     SwitchScene(package);
+    // }
 
-    void ClearStartupPackge(ClearPackage package)
-    {
-        // TODO: Validate with schema
-        var loader = new PackageLoader(null);
-        var startupPackage = loader
-            .EnumeratePackages(false)
-            .FirstOrDefault(p => Path.GetFileNameWithoutExtension(p.ArchivePath) == Settings.StartupPackage);
+    // void ClearStartupPackge(ClearPackage package)
+    // {
+    //     // TODO: Validate with schema
+    //     var loader = new PackageLoader(null);
+    //     var startupPackage = loader
+    //         .EnumeratePackages(false)
+    //         .FirstOrDefault(p => Path.GetFileNameWithoutExtension(p.ArchivePath) == Settings.StartupPackage);
 
-        if (startupPackage == null)
-        {
-            Logger.Error($"Failed to locate package '{Settings.StartupPackage}', aborting clear");
-            return;
-        }
+    //     if (startupPackage == null)
+    //     {
+    //         Logger.Error($"Failed to locate package '{Settings.StartupPackage}', aborting clear");
+    //         return;
+    //     }
 
-        if (package.PurgeData)
-        {
-            Logger.Error($"Purging package '{Settings.StartupPackage}");
-            startupPackage.RemoveFile();
-        }
+    //     if (package.PurgeData)
+    //     {
+    //         Logger.Error($"Purging package '{Settings.StartupPackage}");
+    //         startupPackage.RemoveFile();
+    //     }
 
-        Settings.StartupPackage = "";
-        Settings.Save();
-    }
+    //     Settings.StartupPackage = "";
+    //     Settings.Save();
+    // }
 
     public void SwitchScene(PackageDescriptor package)
     {
-        ActivePackage = package;
+    //     ActivePackage = package;
         
-        EventManager.Instance.Actions.Clear();
-        EventManager.Instance.Actions.AddRange(package.Inputs);
+    //     EventManager.Instance.Actions.Clear();
+    //     EventManager.Instance.Actions.AddRange(package.Inputs);
 
-        if (!EventManager.Instance.ConnectedRemote)
-        {
-            EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
-        }
+    //     if (!EventManager.Instance.ConnectedRemote)
+    //     {
+    //         EventManager.Instance.ConnectRemote(package.Sync, Settings.Communication);
+    //     }
 
-        _changeScene = true;
+    //     _changeScene = true;
     }
 }

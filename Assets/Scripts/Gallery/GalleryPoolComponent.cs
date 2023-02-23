@@ -59,7 +59,7 @@ public class GalleryPoolComponent : MonoBehaviour
         {
             case Gallery.ListLayout list:
                 var listLayout = (GalleryListLayout) Layout;
-                listLayout.Padding = scene.Padding.ToUnityVector();
+                listLayout.Padding = new Vector2(); //scene.Padding.ToUnityVector();
                 listLayout.Spacing = list.Spacing;
                 listLayout.VisibleListLength = list.VisibleImages;
                 listLayout.ScrollDelay = scene.ScrollDelay;
@@ -72,7 +72,7 @@ public class GalleryPoolComponent : MonoBehaviour
                 break;
             case Gallery.GridLayout grid:
                 var gridLayout = (GalleryGridLayout)Layout;
-                gridLayout.Padding = scene.Padding.ToUnityVector();
+                gridLayout.Padding = new Vector2(); //scene.Padding.ToUnityVector();
                 gridLayout.Spacing = new UnityEngine.Vector2(grid.HorizontalSpacing, grid.VerticalSpacing);
                 gridLayout.Columns = grid.Width;
                 gridLayout.Rows = grid.Height;
@@ -118,7 +118,7 @@ public class GalleryPoolComponent : MonoBehaviour
                     }
                 }
             },
-            Padding = new Naki3D.Common.Protocol.Vector2
+            Padding = new Naki3D.Common.Protocol.Vector2Data
             {
                 X = 0.1f,
                 Y = 0.1f
@@ -181,7 +181,7 @@ public class GalleryPoolComponent : MonoBehaviour
         {
             BackgroundColor = settings.BackgroundColor,
             LayoutType = layoutType,
-            Padding = new Naki3D.Common.Protocol.Vector2 { X = (float)settings.Padding.X.Value, Y = (float)settings.Padding.Y.Value }, // TODO: I think we're generating the same type twice? Once from JSON schema, once from protobuf
+            Padding = new Naki3D.Common.Protocol.Vector2Data { X = (float)settings.Padding.X.Value, Y = (float)settings.Padding.Y.Value }, // TODO: I think we're generating the same type twice? Once from JSON schema, once from protobuf
             ScrollDelay = (float)settings.ScrollDelay.Value,
             SlideAnimationLength = (float)settings.SlideAnimationLength.Value,
             Layout = MapLayoutType()
@@ -226,26 +226,26 @@ public class GalleryPoolComponent : MonoBehaviour
             _ => throw new NotSupportedException(),
         };
 
-        if (Layout is GalleryListLayout ll)
-            ll.Orientation = 
-                RigSpawner.CameraRig.Orientation == IPWSetting.IPWOrientation.Horizontal
-                ? GalleryListLayout.GalleryListOrientation.Horizontal
-                : GalleryListLayout.GalleryListOrientation.Vertical;
+        // if (Layout is GalleryListLayout ll)
+        //     ll.Orientation = 
+        //         RigSpawner.CameraRig.Orientation == IPWSetting.IPWOrientation.Horizontal
+        //         ? GalleryListLayout.GalleryListOrientation.Horizontal
+        //         : GalleryListLayout.GalleryListOrientation.Vertical;
     }
 
     public void OnEvent(SensorMessage e)
     {
         if (!EnableInteraction) return;
         
-        if (e.DataCase == SensorMessage.DataOneofCase.HandTracking) Layout.Gesture(e.HandTracking.Gesture);
-        if (e.DataCase == SensorMessage.DataOneofCase.Gesture) Layout.Gesture(e.Gesture.Type);
+        // if (e.DataCase == SensorMessage.DataOneofCase.HandTracking) Layout.Gesture(e.HandTracking.Gesture);
+        // if (e.DataCase == SensorMessage.DataOneofCase.Gesture) Layout.Gesture(e.Gesture.Type);
 
-        else if (e.DataCase == SensorMessage.DataOneofCase.KeyboardUpdate)
-        {
-            if (e.KeyboardUpdate.Type == KeyActionType.KeyUp) return;
+        // else if (e.DataCase == SensorMessage.DataOneofCase.KeyboardUpdate)
+        // {
+        //     if (e.KeyboardUpdate.Type == KeyActionType.KeyUp) return;
 
-            if (e.KeyboardUpdate.Keycode == (int)KeyCode.LeftArrow) Layout.Previous();
-            else if (e.KeyboardUpdate.Keycode == (int)KeyCode.RightArrow) Layout.Next();
-        }
+        //     if (e.KeyboardUpdate.Keycode == (int)KeyCode.LeftArrow) Layout.Previous();
+        //     else if (e.KeyboardUpdate.Keycode == (int)KeyCode.RightArrow) Layout.Next();
+        // }
     }
 }

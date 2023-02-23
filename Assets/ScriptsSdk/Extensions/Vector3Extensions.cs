@@ -4,7 +4,7 @@ namespace Assets.ScriptsSdk.Extensions
 {
     public static class Vector3Extensions
     {
-        public static UnityEngine.Vector3 ToUnityVector(this Vector3 v)
+        public static UnityEngine.Vector3 ToUnityVector(this Vector3Data v)
         {
             return new UnityEngine.Vector3(v.X, v.Y, v.Z);
         }

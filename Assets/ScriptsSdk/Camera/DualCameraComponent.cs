@@ -8,6 +8,7 @@ using UnityEngine;
 using Assets.Extensions;
 using System.Linq;
 using System.Net;
+using emt_sdk.Settings.IPW;
 
 public class DualCameraComponent : MonoBehaviour, ICameraRig
 {
@@ -19,13 +20,13 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public IPWSetting Setting;
 
-    Naki3D.Common.Protocol.DeviceType ICameraRig.DeviceType => Naki3D.Common.Protocol.DeviceType.Ipw;
+    emt_sdk.Settings.EMT.DeviceTypeEnum ICameraRig.DeviceType => emt_sdk.Settings.EMT.DeviceTypeEnum.DEVICE_TYPE_IPW;
 
-    public emt_sdk.Generated.ScenePackage.CanvasDimensions DefaultCanvasDimensions => Orientation switch
+    public emt_sdk.Packages.CanvasDimensions DefaultCanvasDimensions => Orientation switch
     {
-        IPWSetting.IPWOrientation.Horizontal => new emt_sdk.Generated.ScenePackage.CanvasDimensions { Width = 4096, Height = 2048 },
-        IPWSetting.IPWOrientation.Vertical => new emt_sdk.Generated.ScenePackage.CanvasDimensions { Width = 2048, Height = 4096 },
-        IPWSetting.IPWOrientation.Single => new emt_sdk.Generated.ScenePackage.CanvasDimensions { Width = 2048, Height = 2048 },
+        IPWSetting.IPWOrientation.Horizontal => new emt_sdk.Packages.CanvasDimensions { Width = 4096, Height = 2048 },
+        IPWSetting.IPWOrientation.Vertical => new emt_sdk.Packages.CanvasDimensions { Width = 2048, Height = 4096 },
+        IPWSetting.IPWOrientation.Single => new emt_sdk.Packages.CanvasDimensions { Width = 2048, Height = 2048 },
         _ => throw new NotImplementedException()
     };
 
@@ -74,7 +75,7 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public void LoadSettings()
     {
-        Setting = ProjectorTransfomartionSettingsLoader.LoadSettings();
+        // Setting = ProjectorTransfomartionSettingsLoader.LoadSettings();
 
         TopCamera.Settings = Setting.Displays;
         BottomCamera.Settings = Setting.Displays;
