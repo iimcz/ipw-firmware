@@ -21,11 +21,11 @@ public class NetworkComponent : MonoBehaviour
     [SerializeField]
     private ExhibitConnectionComponent _connection;
 
-    private EMTConfigurationProvider _configProvider;
+    private IConfigurationProvider<EMTSetting> _configProvider;
 
     private void Start()
     {
-        _configProvider = GlobalServices.Instance.ServiceProvider.GetRequiredService<EMTConfigurationProvider>();
+        _configProvider = GlobalServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>();
     }
     
     private void Update()

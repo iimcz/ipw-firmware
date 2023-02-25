@@ -133,13 +133,13 @@ GameObject:
   m_Component:
   - component: {fileID: 6998767}
   - component: {fileID: 6998766}
-  - component: {fileID: 6998765}
   - component: {fileID: 6998768}
   - component: {fileID: 6998769}
   - component: {fileID: 6998770}
   - component: {fileID: 6998773}
   - component: {fileID: 6998772}
   - component: {fileID: 6998771}
+  - component: {fileID: 6998774}
   m_Layer: 0
   m_Name: 3D Object
   m_TagString: Untagged
@@ -147,35 +147,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &6998765
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6998764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f6872758941a6342b6277c010d533e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EventReceived:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6998770}
-        m_TargetAssemblyTypeName: Ntp3DObjectSyncComponent, Assembly-CSharp
-        m_MethodName: OnCustomEvent
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  LogEvents: 1
-  DataType: 25
 --- !u!114 &6998766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,7 +299,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68d443662b904871b6f74129b0e3e5ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 0}
+  StartHidden: 1
+--- !u!114 &6998774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6998764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6998770}
+        m_TargetAssemblyTypeName: Ntp3DObjectSyncComponent, Assembly-CSharp
+        m_MethodName: OnCustomEvent
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  LogEvents: 0
+  EventName: 3DObject_ScheduleReset
+  DataType: 20
 --- !u!114 &550624406 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1942462218087130133, guid: f6bbb8fc5e4b88dadbde34c104a89ee0, type: 3}
@@ -501,35 +502,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53db34fe618cd7b4c84226318de4317e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1863770803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1863770800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f6872758941a6342b6277c010d533e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EventReceived:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1863770804}
-        m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
-        m_MethodName: EventReceived
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  LogEvents: 0
-  DataType: 15
 --- !u!114 &1863770804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -554,3 +526,123 @@ MonoBehaviour:
   MinZoom: -5
   MaxZoom: 20
   _mouseInput: 0
+--- !u!114 &1863770805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863770800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1863770804}
+        m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
+        m_MethodName: PinchEventReceived
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  LogEvents: 0
+  EventName: /gestures/pinch
+  DataType: 16
+--- !u!114 &1863770806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863770800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1863770804}
+        m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
+        m_MethodName: OpenHandEventReceived
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  LogEvents: 0
+  EventName: /gestures/open_hand
+  DataType: 16
+--- !u!114 &1863770807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863770800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1863770804}
+        m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
+        m_MethodName: CloseHandEventReceived
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  LogEvents: 0
+  EventName: /gestures/close_hand
+  DataType: 16
+--- !u!114 &1863770808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863770800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1863770804}
+        m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
+        m_MethodName: MovementEventReceived
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  LogEvents: 0
+  EventName: /hand/center_position
+  DataType: 22

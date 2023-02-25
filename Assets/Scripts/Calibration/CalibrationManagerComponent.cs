@@ -50,6 +50,7 @@ public class CalibrationManagerComponent : MonoBehaviour
     // Unity can't serialize interfaces...
     private ICameraRig _camera;
     private DeviceTypeEnum _deviceType => _camera.DeviceType;
+    private IConfigurationProvider<EMTSetting> _configProvider;
 
     public List<GameObject> UiStates;
 
@@ -68,7 +69,7 @@ public class CalibrationManagerComponent : MonoBehaviour
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
 
-        var deviceType = emt_sdk.Settings.EMT.DeviceTypeEnum.DEVICE_TYPE_UNKNOWN;//EmtSetting.FromConfig()?.Type ?? Naki3D.Common.Protocol.DeviceType.Unknown;
+        var deviceType = _configProvider.Configuration.Type;
         var isCalibrated = deviceType switch
         {
             DeviceTypeEnum.DEVICE_TYPE_PGE => true,
@@ -89,7 +90,7 @@ public class CalibrationManagerComponent : MonoBehaviour
             ProjectorTransformationPass.SoftwareCalibration = false;
 
             // TODO: implement alternative to broadcast - unicast with target address/hostname input
-            var discovery = GlobalServices.Instance.ServiceProvider.GetService<IDiscoveryService>();
+            var discovery = GlobalServices.Instance.GetService<IDiscoveryService>();
             discovery?.StartBroadcast();
 
             // TODO: Validate with schema
@@ -112,6 +113,7 @@ public class CalibrationManagerComponent : MonoBehaviour
 
     private void Start()
     {
+        _configProvider = GlobalServices.Instance.GetService<IConfigurationProvider<EMTSetting>>();
         StartCoroutine(WaitForConfigurationReset());
     }
 

@@ -8,7 +8,7 @@ public class RelayClientComponent : MainThreadExecutorComponent
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public UnityEvent<SensorMessage> EventReceived;
+    public UnityEvent<SensorDataMessage> EventReceived;
     public bool LogEvents;
 
     private EventRelayClient _client;
@@ -16,7 +16,7 @@ public class RelayClientComponent : MainThreadExecutorComponent
     private void Start()
     {
         _client = new EventRelayClient();
-        // _client.OnEventReceived += OnEventReceived;
+        _client.OnEventReceived += OnEventReceived;
 
         Task.Run(() => _client.Connect());
     }
@@ -27,7 +27,7 @@ public class RelayClientComponent : MainThreadExecutorComponent
         else Logger.Warn("Cannot cancel relay client because it never connected");
     }
 
-    private void OnEventReceived(SensorMessage message)
+    private void OnEventReceived(SensorDataMessage message)
     {
         if (LogEvents) print(message);
         ExecuteOnMainThread(() => EventReceived.Invoke(message));

@@ -37,13 +37,6 @@ public class GalleryCursorComponent : MonoBehaviour
         _activatedImage = null;
         _pool.EnableInteraction = true;
     }
-
-    public void OnGesture(SensorMessage message)
-    {
-        // if (message.DataCase != SensorMessage.DataOneofCase.Gesture) return;
-
-        // if (message.Gesture.Type == HandGestureType.GestureSwipeUp) Deactivate();
-    }
     
     void Update()
     {

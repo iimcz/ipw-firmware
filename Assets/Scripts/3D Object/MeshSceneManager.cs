@@ -93,26 +93,19 @@ public class MeshSceneManager : MonoBehaviour
         _ntpSync.SendReset();
     }
 
-    public void GestureReceived(SensorMessage e)
+    public void SwipeLeftReceived(SensorDataMessage e)
     {
-        // Flag navigation
-        if (_flagNavigator == null) return;
-        // if (e.DataCase == SensorMessage.DataOneofCase.Gesture)
-        // {
-        //     switch (e.Gesture.Type)
-        //     {
-        //         case HandGestureType.GestureSwipeLeft:
-        //             _flagNavigator.SelectPrevious();
-        //             break;
-        //         case HandGestureType.GestureSwipeRight:
-        //             _flagNavigator.SelectNext();
-        //             break;
-        //         case HandGestureType.GestureSwipeUp:
-        //         case HandGestureType.GestureSwipeDown:
-        //             _flagNavigator.Activate();
-        //             break;
-        //     }
-        // }
+        _flagNavigator?.SelectPrevious();
+    }
+
+    public void SwipeRightReceived(SensorDataMessage e)
+    {
+        _flagNavigator?.SelectNext();
+    }
+
+    public void SwipeActReceived(SensorDataMessage e)
+    {
+        _flagNavigator?.Activate();
     }
 
     private IEnumerator DelayApply()

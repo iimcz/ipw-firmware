@@ -8,7 +8,7 @@ public class EventComponent : MainThreadExecutorComponent
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public UnityEvent<SensorMessage> EventReceived;
+    public UnityEvent<SensorDataMessage> EventReceived;
     public bool LogEvents;
 
     void Start()
@@ -21,7 +21,7 @@ public class EventComponent : MainThreadExecutorComponent
         // EventManager.Instance.OnEventReceived -= OnEventReceived;
     }
 
-    protected virtual void OnEventReceived(SensorMessage e)
+    protected virtual void OnEventReceived(SensorDataMessage e)
     {
         if (LogEvents) Logger.DebugUnity(e.ToString());
         

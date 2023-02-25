@@ -4,9 +4,9 @@ public class NameFilteredEventComponent : EventComponent
 {
     public string EventName;
 
-    protected override void OnEventReceived(SensorMessage e)
+    protected override void OnEventReceived(SensorDataMessage e)
     {
-        if (e.Data.Path != EventName) return;
+        if (e.Path != EventName) return;
         base.OnEventReceived(e);
     }
 }

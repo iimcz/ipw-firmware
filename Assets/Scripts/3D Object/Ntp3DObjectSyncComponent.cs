@@ -1,6 +1,9 @@
 using Assets.Extensions;
 using emt_sdk.Events;
 using emt_sdk.Events.NtpSync;
+using emt_sdk.Settings;
+using emt_sdk.Settings.EMT;
+using Microsoft.Extensions.DependencyInjection;
 using Naki3D.Common.Protocol;
 using Newtonsoft.Json;
 using System;
@@ -19,13 +22,16 @@ public class Ntp3DObjectSyncComponent : MonoBehaviour
 
     [SerializeField]
     private OrbitComponent _orbit;
+    private EventManager _eventManager;
 
     public NtpScheduler Scheduler { get; private set; }
 
     void Start()
     {
-        var config = new emt_sdk.Settings.EMT.EMTSetting();
-        //var config = emt_sdk.Settings.EMT.EMTSetting.EmtSetting.FromConfig();
+        _eventManager = LevelScopeServices.Instance.GetService<EventManager>();
+
+        var configProvider = GlobalServices.Instance.GetService<IConfigurationProvider<EMTSetting>>();
+        var config = configProvider.Configuration;
 
         if (config.Communication.NtpHostname == null) Scheduler = new NtpScheduler();
         else Scheduler = new NtpScheduler(config.Communication.NtpHostname);
@@ -51,18 +57,15 @@ public class Ntp3DObjectSyncComponent : MonoBehaviour
     public void SendReset()
     {
         var targetTime = Scheduler.SynchronizedTime + TimeSpan.FromSeconds(1);
-        var message = new Naki3D.Common.Protocol.SensorMessage
+        var message = new SensorDataMessage
         {
-            Data = new SensorDataMessage
-            {
-                Timestamp = (ulong)System.DateTime.UtcNow.Ticks,
-                Path = "3DObject_ScheduleReset",
-                String = targetTime.ToString()
-            }
+            Timestamp = (ulong)System.DateTime.UtcNow.Ticks,
+            Path = "3DObject_ScheduleReset",
+            String = targetTime.ToString()
         };
 
         ScheduleReset(targetTime);
-        //if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
+        if (_eventManager.ConnectedRemote) _eventManager.BroadcastEvent(message);
     }
 
     public void ScheduleReset(DateTime scheduledTime)
@@ -84,16 +87,9 @@ public class Ntp3DObjectSyncComponent : MonoBehaviour
         Scheduler.ScheduleAction(resetAction);
     }
 
-    public void OnCustomEvent(SensorMessage message)
+    public void OnCustomEvent(SensorDataMessage message)
     {
         if (!enabled) return;
-
-        // TODO: Add hostname parameter
-        // switch (message.Event.Name)
-        // {
-        //     case "3DObject_ScheduleReset":
-        //         ScheduleReset(DateTime.Parse(message.Event.Parameters));
-        //         break;
-        // }
+        ScheduleReset(DateTime.Parse(message.String));
     }
 }

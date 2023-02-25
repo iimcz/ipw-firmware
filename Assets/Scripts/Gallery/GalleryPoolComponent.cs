@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using Assets.ScriptsSdk.Extensions;
 using emt_sdk.Scene;
-using emt_sdk.Settings;
+using emt_sdk.Settings.IPW;
 using Naki3D.Common.Protocol;
 using UnityEngine;
 
@@ -226,26 +226,34 @@ public class GalleryPoolComponent : MonoBehaviour
             _ => throw new NotSupportedException(),
         };
 
-        // if (Layout is GalleryListLayout ll)
-        //     ll.Orientation = 
-        //         RigSpawner.CameraRig.Orientation == IPWSetting.IPWOrientation.Horizontal
-        //         ? GalleryListLayout.GalleryListOrientation.Horizontal
-        //         : GalleryListLayout.GalleryListOrientation.Vertical;
+        if (Layout is GalleryListLayout ll)
+            ll.Orientation = 
+                RigSpawner.CameraRig.Orientation == IPWSetting.IPWOrientation.Horizontal
+                ? GalleryListLayout.GalleryListOrientation.Horizontal
+                : GalleryListLayout.GalleryListOrientation.Vertical;
     }
 
-    public void OnEvent(SensorMessage e)
+    public void SwipeLeftEvent(SensorDataMessage e)
+    {
+        GestureEvent(HandGestureType.SwipeLeft);
+    }
+
+    public void SwipeRightEvent(SensorDataMessage e)
+    {
+        GestureEvent(HandGestureType.SwipeRight);
+    }
+
+    private void GestureEvent(HandGestureType gesture)
     {
         if (!EnableInteraction) return;
-        
-        // if (e.DataCase == SensorMessage.DataOneofCase.HandTracking) Layout.Gesture(e.HandTracking.Gesture);
-        // if (e.DataCase == SensorMessage.DataOneofCase.Gesture) Layout.Gesture(e.Gesture.Type);
+        Layout.Gesture(gesture);
+    }
 
-        // else if (e.DataCase == SensorMessage.DataOneofCase.KeyboardUpdate)
-        // {
-        //     if (e.KeyboardUpdate.Type == KeyActionType.KeyUp) return;
+    public void KeyUpEvent(SensorDataMessage e)
+    {
+        if (!EnableInteraction) return;
 
-        //     if (e.KeyboardUpdate.Keycode == (int)KeyCode.LeftArrow) Layout.Previous();
-        //     else if (e.KeyboardUpdate.Keycode == (int)KeyCode.RightArrow) Layout.Next();
-        // }
+        if (e.Integer == (int)KeyCode.LeftArrow) Layout.Previous();
+        else if (e.Integer == (int)KeyCode.RightArrow) Layout.Next();
     }
 }
