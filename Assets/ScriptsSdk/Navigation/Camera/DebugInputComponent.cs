@@ -1,52 +1,53 @@
 using emt_sdk.Events;
 using emt_sdk.Settings;
+using emt_sdk.Settings.EMT;
 using Naki3D.Common.Protocol;
 using UnityEngine;
 
 [RequireComponent(typeof(NodeRotatorComponent))]
 public class DebugInputComponent : MonoBehaviour
 {
-    private NodeRotatorComponent _rotaror;
+    private NodeRotatorComponent _rotator;
+    private EventManager _eventManager;
 
     void Start()
     {
-        _rotaror = GetComponent<NodeRotatorComponent>();
+        _eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
+        _rotator = GetComponent<NodeRotatorComponent>();
 
-        // EventManager.Instance.ConnectSensor(EmtSetting.FromConfig().Communication);
+        _eventManager.ConnectSensor();
     }
 
-    public void GestureUpdate(SensorMessage message)
+    public void SwipeLeftGesture(SensorDataMessage message)
     {
-        // switch (message.Gesture.Type)
-        // {
-        //     case HandGestureType.GestureSwipeLeft:
-        //         _rotaror.TurnLeft();
-        //         break;
-        //     case HandGestureType.GestureSwipeRight:
-        //         _rotaror.TurnRight();
-        //         break;
-        //     case HandGestureType.GestureSwipeUp:
-        //         _rotaror.Activate();
-        //         break;
-        // }
+        _rotator.TurnLeft();
     }
 
-    public void KbUpdate(SensorMessage message)
+    public void SwipeRightGesture(SensorDataMessage message)
     {
-        // if (message.KeyboardUpdate.Type == KeyActionType.KeyUp) return;
-        // var keyCode = (KeyCode) message.KeyboardUpdate.Keycode;
+        _rotator.TurnRight();
+    }
 
-        // switch (keyCode)
-        // {
-        //     case KeyCode.LeftArrow:
-        //         _rotaror.TurnLeft();
-        //         break;
-        //     case KeyCode.RightArrow:
-        //         _rotaror.TurnRight();
-        //         break;
-        //     case KeyCode.Space:
-        //         _rotaror.Activate();
-        //         break;
-        // }
+    public void SwipeUpGesture(SensorDataMessage message)
+    {
+        _rotator.Activate();
+    }
+
+    public void KbUpdate(SensorDataMessage message)
+    {
+        var keyCode = (KeyCode) message.Integer;
+
+        switch (keyCode)
+        {
+            case KeyCode.LeftArrow:
+                _rotator.TurnLeft();
+                break;
+            case KeyCode.RightArrow:
+                _rotator.TurnRight();
+                break;
+            case KeyCode.Space:
+                _rotator.Activate();
+                break;
+        }
     }
 }

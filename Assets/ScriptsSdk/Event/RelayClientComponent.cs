@@ -15,7 +15,7 @@ public class RelayClientComponent : MainThreadExecutorComponent
 
     private void Start()
     {
-        _client = new EventRelayClient();
+        _client = LevelScopeServices.Instance.GetRequiredService<EventRelayClient>();
         _client.OnEventReceived += OnEventReceived;
 
         Task.Run(() => _client.Connect());

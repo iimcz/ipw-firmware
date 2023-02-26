@@ -11,6 +11,7 @@ using emt_sdk.Packages;
 using emt_sdk.ScenePackage;
 using emt_sdk.Settings;
 using emt_sdk.Settings.EMT;
+using emt_sdk.Settings.IPW;
 using Microsoft.Extensions.DependencyInjection;
 using UnityEngine;
 
@@ -70,10 +71,11 @@ public class CalibrationManagerComponent : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         var deviceType = _configProvider.Configuration.Type;
+        var ipwConfigProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<IPWSetting>>();
         var isCalibrated = deviceType switch
         {
             DeviceTypeEnum.DEVICE_TYPE_PGE => true,
-            DeviceTypeEnum.DEVICE_TYPE_IPW => ProjectorTransfomartionSettingsLoader.SettingsExists,
+            DeviceTypeEnum.DEVICE_TYPE_IPW => ipwConfigProvider.ConfigurationExists,
             _ => true
         };
 

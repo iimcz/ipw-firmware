@@ -10,11 +10,13 @@ public class LocalInputComponent : MonoBehaviour
 
     private UnityEngine.Vector2 _prevMousePos;
     private float _prevScroll;
+    private EventManager _eventManager;
 
     private void Awake()
     {
         _prevMousePos = new UnityEngine.Vector2(Input.mousePosition.x, Input.mousePosition.y);
         _prevScroll = Input.mouseScrollDelta.y;
+        _eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
     }
 
     private string Hostname => ExhibitConnection == null ? string.Empty : ExhibitConnection.Hostname;
@@ -22,61 +24,59 @@ public class LocalInputComponent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // var mousePos = new UnityEngine.Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        // if (_prevMousePos != mousePos)
-        // {
-        //     var mouseEvent = new SensorMessage
-        //     {
-        //         MouseMove = new MouseMoveData
-        //         {
-        //             Absolute = mousePos.ToNakiVector(),
-        //             Relative = (mousePos - _prevMousePos).ToNakiVector()
-        //         },
-        //          SensorId = $"{Hostname}_mouse",
-        //          Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
-        //     };
+        var mousePos = new UnityEngine.Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        if (_prevMousePos != mousePos)
+        {
+            var absoluteMouseEvent = new SensorDataMessage
+            {
+                Path = $"{Hostname}_mouse/absolute",
+                Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds(),
+                Vector2 = mousePos.ToNakiVector()
+            };
 
-        //     EventManager.Instance.BroadcastEvent(mouseEvent);
-        //     _prevMousePos = mousePos;
-        // }
+            var relativeMouseEvent = new SensorDataMessage
+            {
+                Path = $"{Hostname}_mouse/relative",
+                Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds(),
+                Vector2 = (mousePos - _prevMousePos).ToNakiVector()
+            };
 
-        // var scroll = Input.mouseScrollDelta.y;
-        // if (_prevScroll != scroll && scroll != 0)
-        // {
-        //     var scrollEvent = new SensorMessage
-        //     {
-        //         MouseScroll = new MouseScrollData
-        //         {
-        //             Type = (scroll > 0) ? MouseScrollType.ScrollUp : MouseScrollType.ScrollDown
-        //         },
-        //         SensorId = $"{ExhibitConnection.Hostname}_mouse",
-        //         Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
-        //     };
+            _eventManager.BroadcastEvent(absoluteMouseEvent);
+            _eventManager.BroadcastEvent(relativeMouseEvent);
+            _prevMousePos = mousePos;
+        }
 
-        //     EventManager.Instance.BroadcastEvent(scrollEvent);
-        //     _prevScroll = scroll;
-        // }
+        var scroll = Input.mouseScrollDelta.y;
+        if (_prevScroll != scroll && scroll != 0)
+        {
+            var scrollEvent = new SensorDataMessage
+            {
+                Float = scroll,
+                Path = $"{ExhibitConnection.Hostname}_mouse/scroll",
+                Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
+            };
 
-        // foreach (var keyCode in Enum.GetValues(typeof(KeyCode)).Cast<KeyCode>())
-        // {
-        //     bool? state = null;
+            _eventManager.BroadcastEvent(scrollEvent);
+            _prevScroll = scroll;
+        }
 
-        //     if (Input.GetKeyDown(keyCode)) state = true;
-        //     else if (Input.GetKeyUp(keyCode)) state = false;
+        foreach (var keyCode in Enum.GetValues(typeof(KeyCode)).Cast<KeyCode>())
+        {
+            bool? state = null;
 
-        //     if (state == null) continue;
-        //     var keyboardEvent = new SensorMessage
-        //     {
-        //         KeyboardUpdate = new KeyboardUpdateData
-        //         {
-        //             Keycode = (int)keyCode,
-        //             Type = state.Value ? KeyActionType.KeyDown : KeyActionType.KeyUp
-        //         },
-        //         SensorId = $"{Hostname}_keyboard",
-        //         Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
-        //     };
+            if (Input.GetKeyDown(keyCode)) state = true;
+            else if (Input.GetKeyUp(keyCode)) state = false;
 
-        //     EventManager.Instance.BroadcastEvent(keyboardEvent);
-        // }
+            if (state == null) continue;
+            var eventSuffix = state.Value ? "/key_down" : "/key_up";
+            var keyboardEvent = new SensorDataMessage
+            {
+                Integer = (int)keyCode,
+                Path = $"{Hostname}_keyboard{eventSuffix}",
+                Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
+            };
+
+            _eventManager.BroadcastEvent(keyboardEvent);
+        }
     }
 }

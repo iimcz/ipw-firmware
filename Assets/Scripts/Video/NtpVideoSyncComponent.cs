@@ -1,4 +1,6 @@
 using Assets.Extensions;
+using emt_sdk.Settings;
+using emt_sdk.Settings.EMT;
 using emt_sdk.Events;
 using emt_sdk.Events.NtpSync;
 using Naki3D.Common.Protocol;
@@ -21,17 +23,19 @@ public class NtpVideoSyncComponent : MonoBehaviour
 
     [SerializeField]
     private VideoPlayer _player;
+    private EventManager _eventManager;
 
     public NtpScheduler Scheduler { get; private set; }
 
     void Start()
     {
-        // var config = emt_sdk.Settings.EmtSetting.FromConfig();
+        _eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
+        var config = GlobalServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>();
 
-        // if (config.Communication.NtpHostname == null) Scheduler = new NtpScheduler();
-        // else Scheduler = new NtpScheduler(config.Communication.NtpHostname);
+        if (config.Configuration.Communication.NtpHostname == null) Scheduler = new NtpScheduler();
+        else Scheduler = new NtpScheduler(config.Configuration.Communication.NtpHostname);
 
-        // StartCoroutine(ResyncTime());
+        StartCoroutine(ResyncTime());
     }
 
     IEnumerator ResyncTime()
@@ -100,32 +104,23 @@ public class NtpVideoSyncComponent : MonoBehaviour
     public void SendResync()
     {
         var resync = GenerateResyncMessage();
-        var message = new Naki3D.Common.Protocol.SensorMessage
+        var message = new Naki3D.Common.Protocol.SensorDataMessage
         {
-            // Event = new Naki3D.Common.Protocol.EventData
-            // {
-            //     Name = "VideoPlayer_ScheduleResync",
-            //     Parameters = JsonConvert.SerializeObject(resync)
-            // }
+            Path = "VideoPlayer_ScheduleResync",
+            String = JsonConvert.SerializeObject(resync)
         };
 
-        // if (EventManager.Instance.ConnectedRemote) EventManager.Instance.BroadcastEvent(message);
+        if (_eventManager.ConnectedRemote) _eventManager.BroadcastEvent(message);
     }
 
-    public void OnCustomEvent(SensorMessage message)
+    public void ScheduleStartEvent(SensorDataMessage message)
     {
-        if (!enabled) return;
+        ScheduleStart(DateTime.Parse(message.String));
+    }
 
-        // TODO: Add hostname parameter
-        // switch (message.Event.Name)
-        // {
-        //     case "VideoPlayer_ScheduleStart":
-        //         ScheduleStart(DateTime.Parse(message.Event.Parameters));
-        //         break;
-        //     case "VideoPlayer_ScheduleResync":
-        //         var parameters = JsonConvert.DeserializeObject<VideoResyncParameters>(message.Event.Parameters);
-        //         ScheduleResync(parameters.ScheduledTime, parameters.SeekTime);
-        //         break;
-        // }
+    public void ScheduleResyncEvent(SensorDataMessage message)
+    {
+        var parameters = JsonConvert.DeserializeObject<VideoResyncParameters>(message.String);
+        ScheduleResync(parameters.ScheduledTime, parameters.SeekTime);
     }
 }

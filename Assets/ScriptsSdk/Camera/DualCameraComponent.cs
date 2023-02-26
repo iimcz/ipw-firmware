@@ -35,6 +35,8 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     // Extra lens shift defined by Sync offset
     private Vector2 _syncLensShift;
+    private IConfigurationProvider<IPWSetting> _settingsProvider;
+
     public Vector2 SyncLensShift
     {
         get => _syncLensShift;
@@ -56,6 +58,8 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     void Awake()
     {
+        _settingsProvider = GlobalServices.Instance.GetRequiredService<IConfigurationProvider<IPWSetting>>();
+
         for (int i = 1; i < Display.displays.Length; i++)
         {
             if (Display.displays[i].active) continue;
@@ -75,7 +79,7 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public void LoadSettings()
     {
-        // Setting = ProjectorTransfomartionSettingsLoader.LoadSettings();
+        Setting = _settingsProvider.Configuration;
 
         TopCamera.Settings = Setting.Displays;
         BottomCamera.Settings = Setting.Displays;

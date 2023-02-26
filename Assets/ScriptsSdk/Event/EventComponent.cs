@@ -10,15 +10,17 @@ public class EventComponent : MainThreadExecutorComponent
 
     public UnityEvent<SensorDataMessage> EventReceived;
     public bool LogEvents;
+    private EventManager _eventManager;
 
     void Start()
     {
-        // EventManager.Instance.OnEventReceived += OnEventReceived;
+        _eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
+        _eventManager.OnEventReceived += OnEventReceived;
     }
     
     void OnDestroy()
     {
-        // EventManager.Instance.OnEventReceived -= OnEventReceived;
+        _eventManager.OnEventReceived -= OnEventReceived;
     }
 
     protected virtual void OnEventReceived(SensorDataMessage e)
