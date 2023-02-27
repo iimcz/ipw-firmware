@@ -8,6 +8,7 @@ using emt_sdk.Packages;
 using Siccity.GLTFUtility;
 using Naki3D.Common.Protocol;
 using UnityEngine;
+using emt_sdk.Settings;
 
 /// <summary>
 /// Handles loading 3D object data, scene setup and event handling
@@ -31,9 +32,12 @@ public class MeshSceneManager : MonoBehaviour
 
     [SerializeField]
     private ModelVisibilityComponent _modelVisibility;
-    
+
+    private IConfigurationProvider<PackageDescriptor> _packageProvider;
+
     private void Start()
     {
+        _packageProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<PackageDescriptor>>();
         StartCoroutine(DelayApply());
     }
 
@@ -115,7 +119,7 @@ public class MeshSceneManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         // Debug mode detection
-        if (ExhibitConnectionComponent.ActivePackage == null) SpawnDebugScene();
+        if (!_packageProvider.ConfigurationExists) SpawnDebugScene();
         else SpawnLoadedScene();
     }
 
@@ -139,7 +143,7 @@ public class MeshSceneManager : MonoBehaviour
 
     private void SpawnLoadedScene()
     {
-        var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
+        var settings = _packageProvider.Configuration.Parameters.Settings;
         Apply(new GltfObject
         {
             FileName = settings.FileName,
@@ -200,6 +204,6 @@ public class MeshSceneManager : MonoBehaviour
                     CanSelect = (bool)f.CanSelect
                 };
             }).ToList()
-        }, ExhibitConnectionComponent.ActivePackage.DataRoot);
+        }, _packageProvider.Configuration.DataRoot);
     }
 }

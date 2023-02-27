@@ -36,6 +36,7 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
     // Extra lens shift defined by Sync offset
     private Vector2 _syncLensShift;
     private IConfigurationProvider<IPWSetting> _settingsProvider;
+    private IConfigurationProvider<emt_sdk.Packages.PackageDescriptor> _packageProvider;
 
     public Vector2 SyncLensShift
     {
@@ -58,7 +59,8 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     void Awake()
     {
-        _settingsProvider = GlobalServices.Instance.GetRequiredService<IConfigurationProvider<IPWSetting>>();
+        _settingsProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<IPWSetting>>();
+        _packageProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<emt_sdk.Packages.PackageDescriptor>>();
 
         for (int i = 1; i < Display.displays.Length; i++)
         {
@@ -117,19 +119,19 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public void ApplySettings()
     {
-        var canvasDimensions = ExhibitConnectionComponent.ActivePackage?.Sync?.CanvasDimensions ?? DefaultCanvasDimensions;
+        var canvasDimensions = _packageProvider.Configuration?.Sync?.CanvasDimensions ?? DefaultCanvasDimensions;
         var canvasDimensionVector = new Vector2((int)DefaultCanvasDimensions.Width.Value, (int)DefaultCanvasDimensions.Height.Value);
 
-        if (ExhibitConnectionComponent.ActivePackage != null)
+        if (_packageProvider.Configuration != null)
         {
-            if (ExhibitConnectionComponent.ActivePackage.Sync.CanvasDimensions == null)
+            if (_packageProvider.Configuration.Sync.CanvasDimensions == null)
             {
                 Logger.Info("Loaded a package without sync info, using default canvas size with no shift");
                 SetViewport(canvasDimensionVector, ((ICameraRig)this).DefaultViewport);
             }
             else
             {
-                var selfElement = ExhibitConnectionComponent.ActivePackage.Sync.Elements.First(e => e.Hostname == Dns.GetHostName());
+                var selfElement = _packageProvider.Configuration.Sync.Elements.First(e => e.Hostname == Dns.GetHostName());
                 SetViewport(new Vector2(canvasDimensions.Width.Value, canvasDimensions.Height.Value), selfElement.Viewport);
             }
         }

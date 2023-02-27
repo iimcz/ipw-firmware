@@ -3,7 +3,9 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using emt_sdk.Events;
+using emt_sdk.Packages;
 using emt_sdk.Scene;
+using emt_sdk.Settings;
 using Naki3D.Common.Protocol;
 using UnityEngine;
 using UnityEngine.Video;
@@ -16,18 +18,21 @@ public class VideoLoader : MonoBehaviour
     [SerializeField] 
     private VideoDisplayComponent _display;
 
+    private IConfigurationProvider<PackageDescriptor> _packageProvider;
+
     IEnumerator Start()
     {
+        _packageProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<PackageDescriptor>>();
         // Wait two frames for the camera transformation to apply
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
 
         // Debug mode
-        if (ExhibitConnectionComponent.ActivePackage == null) SpawnDebugScene();
+        if (_packageProvider.Configuration == null) SpawnDebugScene();
         else yield return SpawnLoadedScene();
 
         // Enable NTP for multiple display devices
-        if (/* TODO: DEBUG ONLY */ ExhibitConnectionComponent.ActivePackage == null || ExhibitConnectionComponent.ActivePackage.Sync.Elements.Count > 1)
+        if (/* TODO: DEBUG ONLY */ _packageProvider.Configuration == null || _packageProvider.Configuration.Sync.Elements.Count > 1)
         {
             GetComponent<NtpVideoSyncComponent>().enabled = true;
         }
@@ -90,7 +95,7 @@ public class VideoLoader : MonoBehaviour
 
     private IEnumerator SpawnLoadedScene()
     {
-        var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
+        var settings = _packageProvider.Configuration.Parameters.Settings;
         yield return Apply(new VideoScene
         {
             Loop = settings.Loop.Value,
@@ -103,6 +108,6 @@ public class VideoLoader : MonoBehaviour
                 Timestamp = (float)ve.Timestamp.Value,
                 EventName = ve.EventName
             }).ToArray()
-        }, ExhibitConnectionComponent.ActivePackage.DataRoot);
+        }, _packageProvider.Configuration.DataRoot);
     }
 }

@@ -35,8 +35,11 @@ public class PeppersGhostCameraComponent : MonoBehaviour, ICameraRig
         }
     }
 
+    private IConfigurationProvider<emt_sdk.Packages.PackageDescriptor> _packageProvider;
+
     void Awake()
     {
+        _packageProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<emt_sdk.Packages.PackageDescriptor>>();
         Display.displays[0].SetRenderingResolution(2048, 2048);
         Camera.aspect = 1;
 
@@ -61,19 +64,19 @@ public class PeppersGhostCameraComponent : MonoBehaviour, ICameraRig
     public void ApplySettings()
     {
         // Sync transform for feature parity with IPW
-        var canvasDimensions = ExhibitConnectionComponent.ActivePackage?.Sync?.CanvasDimensions ?? DefaultCanvasDimensions;
+        var canvasDimensions = _packageProvider.Configuration?.Sync?.CanvasDimensions ?? DefaultCanvasDimensions;
         var canvasDimensionVector = new Vector2((int)DefaultCanvasDimensions.Width.Value, (int)DefaultCanvasDimensions.Height.Value);
 
-        if (ExhibitConnectionComponent.ActivePackage != null)
+        if (_packageProvider.Configuration != null)
         {
-            if (ExhibitConnectionComponent.ActivePackage.Sync.CanvasDimensions == null)
+            if (_packageProvider.Configuration.Sync.CanvasDimensions == null)
             {
                 Logger.Info("Loaded a package without sync info, using default canvas size with no shift");
                 SetViewport(canvasDimensionVector, ((ICameraRig)this).DefaultViewport);
             }
             else
             {
-                var selfElement = ExhibitConnectionComponent.ActivePackage.Sync.Elements.First(e => e.Hostname == Dns.GetHostName());
+                var selfElement = _packageProvider.Configuration.Sync.Elements.First(e => e.Hostname == Dns.GetHostName());
                 SetViewport(new Vector2(canvasDimensions.Width.Value, canvasDimensions.Height.Value), selfElement.Viewport);
             }
         }

@@ -58,6 +58,10 @@ public class GlobalServices : MonoBehaviour
             Destroy(this.gameObject);
             return;
         }
+        if (_serviceProvider == null)
+        {
+            InitializeServices();
+        }
 
         _instance = this;
         DontDestroyOnLoad(this);
@@ -69,6 +73,16 @@ public class GlobalServices : MonoBehaviour
 
         services.AddJsonFileSettings();
         services.AddGrpcExhibitConnection();
+        services.AddUDPDiscovery();
+
+        services.AddLocalPackages();
+        services.AddEvents();
+        
+        services.AddNTPSynchronization();
+        services.AddSensorProjectorControl();
+
+        services.AddPackageRunnerProxy();
+        services.AddSyncConfiguration();
 
         _serviceProvider = services.BuildServiceProvider();
     }

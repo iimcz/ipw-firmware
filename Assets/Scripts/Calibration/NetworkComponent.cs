@@ -18,14 +18,14 @@ public class NetworkComponent : MonoBehaviour
     [SerializeField]
     private GameObject _verification;
 
-    [SerializeField]
-    private ExhibitConnectionComponent _connection;
+    // [SerializeField]
+    // private ExhibitConnectionComponent _connection;
 
     private IConfigurationProvider<EMTSetting> _configProvider;
 
     private void Start()
     {
-        _configProvider = GlobalServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>();
+        _configProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>();
     }
     
     private void Update()

@@ -44,7 +44,7 @@ public class CalibrationManagerComponent : MonoBehaviour
     private CalibrationStateEnum _calibrationState = CalibrationStateEnum.Uninitialized;
     private NetworkStateEnum _networkState = NetworkStateEnum.Waiting;
     
-    [SerializeField] private ExhibitConnectionComponent _connection;
+    // [SerializeField] private ExhibitConnectionComponent _connection;
     [SerializeField] private NetworkComponent _network;
     [SerializeField] private AudioTestComponent _audioTest;
 
@@ -52,6 +52,8 @@ public class CalibrationManagerComponent : MonoBehaviour
     private ICameraRig _camera;
     private DeviceTypeEnum _deviceType => _camera.DeviceType;
     private IConfigurationProvider<EMTSetting> _configProvider;
+    private PackageLoader _packageLoader;
+    private IPackageRunner _packageRunner;
 
     public List<GameObject> UiStates;
 
@@ -92,18 +94,17 @@ public class CalibrationManagerComponent : MonoBehaviour
             ProjectorTransformationPass.SoftwareCalibration = false;
 
             // TODO: implement alternative to broadcast - unicast with target address/hostname input
-            var discovery = GlobalServices.Instance.GetService<IDiscoveryService>();
+            var discovery = LevelScopeServices.Instance.GetService<IDiscoveryService>();
             discovery?.StartBroadcast();
 
             // TODO: Validate with schema
-            var loader = new PackageLoader(null);
-            var startupPackage = loader
+            var startupPackage = _packageLoader
                 .EnumeratePackages(false)
-                .FirstOrDefault(p => Path.GetFileName(p.PackageDirectory) == _connection.Settings.StartupPackage);
+                .FirstOrDefault(p => Path.GetFileName(p.PackageDirectory) == _configProvider.Configuration.StartupPackage);
             
             if (startupPackage != null)
             {
-                _connection.SwitchScene(startupPackage);
+                _packageRunner.RunPackage(startupPackage);
             }
         }
         else
@@ -115,7 +116,9 @@ public class CalibrationManagerComponent : MonoBehaviour
 
     private void Start()
     {
-        _configProvider = GlobalServices.Instance.GetService<IConfigurationProvider<EMTSetting>>();
+        _configProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>();
+        _packageLoader = LevelScopeServices.Instance.GetRequiredService<PackageLoader>();
+        _packageRunner = LevelScopeServices.Instance.GetRequiredService<IPackageRunner>();
         StartCoroutine(WaitForConfigurationReset());
     }
 

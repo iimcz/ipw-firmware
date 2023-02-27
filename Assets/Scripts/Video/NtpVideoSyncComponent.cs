@@ -30,7 +30,7 @@ public class NtpVideoSyncComponent : MonoBehaviour
     void Start()
     {
         _eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
-        var config = GlobalServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>();
+        var config = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>();
 
         if (config.Configuration.Communication.NtpHostname == null) Scheduler = new NtpScheduler();
         else Scheduler = new NtpScheduler(config.Configuration.Communication.NtpHostname);

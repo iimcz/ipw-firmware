@@ -20,7 +20,7 @@ public class ManagementMuterComponent : MonoBehaviour
 
     public void Start()
     {
-        _deviceService = GlobalServices.Instance.GetRequiredService<DeviceService.DeviceServiceBase>();
+        _deviceService = LevelScopeServices.Instance.GetRequiredService<DeviceService.DeviceServiceBase>();
         _deviceService.VolumeChanged += HandleVolumeChanged;
     }
 

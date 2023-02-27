@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Assets.ScriptsSdk.Extensions;
+using emt_sdk.Packages;
 using emt_sdk.Scene;
+using emt_sdk.Settings;
 using emt_sdk.Settings.IPW;
 using Naki3D.Common.Protocol;
 using UnityEngine;
@@ -31,6 +33,8 @@ public class GalleryPoolComponent : MonoBehaviour
 
     public bool EnableInteraction = true;
 
+    private IConfigurationProvider<PackageDescriptor> _packageProvider;
+
     IEnumerator Start()
     {
         // Wait two frames for the camera transformation to apply
@@ -41,7 +45,7 @@ public class GalleryPoolComponent : MonoBehaviour
 
 
         // Debug mode
-        if (ExhibitConnectionComponent.ActivePackage == null) SpawnDebugScene();
+        if (!_packageProvider.ConfigurationExists) SpawnDebugScene();
         else SpawnLoadedScene();
     }
 
@@ -59,7 +63,7 @@ public class GalleryPoolComponent : MonoBehaviour
         {
             case Gallery.ListLayout list:
                 var listLayout = (GalleryListLayout) Layout;
-                listLayout.Padding = new Vector2(); //scene.Padding.ToUnityVector();
+                listLayout.Padding = scene.Padding.ToUnityVector();
                 listLayout.Spacing = list.Spacing;
                 listLayout.VisibleListLength = list.VisibleImages;
                 listLayout.ScrollDelay = scene.ScrollDelay;
@@ -72,7 +76,7 @@ public class GalleryPoolComponent : MonoBehaviour
                 break;
             case Gallery.GridLayout grid:
                 var gridLayout = (GalleryGridLayout)Layout;
-                gridLayout.Padding = new Vector2(); //scene.Padding.ToUnityVector();
+                gridLayout.Padding = scene.Padding.ToUnityVector();
                 gridLayout.Spacing = new UnityEngine.Vector2(grid.HorizontalSpacing, grid.VerticalSpacing);
                 gridLayout.Columns = grid.Width;
                 gridLayout.Rows = grid.Height;
@@ -130,7 +134,7 @@ public class GalleryPoolComponent : MonoBehaviour
 
     private void SpawnLoadedScene()
     {
-        var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
+        var settings = _packageProvider.Configuration.Parameters.Settings;
         var layoutType = (Gallery.GalleryLayoutEnum)Enum.Parse(typeof(Gallery.GalleryLayoutEnum), settings.LayoutType.Value.ToString());
 
         Gallery.GalleryLayout MapLayoutType()
@@ -185,7 +189,7 @@ public class GalleryPoolComponent : MonoBehaviour
             ScrollDelay = (float)settings.ScrollDelay.Value,
             SlideAnimationLength = (float)settings.SlideAnimationLength.Value,
             Layout = MapLayoutType()
-        }, ExhibitConnectionComponent.ActivePackage.DataRoot);
+        }, _packageProvider.Configuration.DataRoot);
     }
 
     void Update()

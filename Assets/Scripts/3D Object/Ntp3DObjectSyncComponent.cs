@@ -30,7 +30,7 @@ public class Ntp3DObjectSyncComponent : MonoBehaviour
     {
         _eventManager = LevelScopeServices.Instance.GetService<EventManager>();
 
-        var configProvider = GlobalServices.Instance.GetService<IConfigurationProvider<EMTSetting>>();
+        var configProvider = LevelScopeServices.Instance.GetService<IConfigurationProvider<EMTSetting>>();
         var config = configProvider.Configuration;
 
         if (config.Communication.NtpHostname == null) Scheduler = new NtpScheduler();

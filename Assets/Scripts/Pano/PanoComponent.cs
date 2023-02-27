@@ -4,7 +4,10 @@ using emt_sdk.Scene;
 using System.IO;
 using System.Collections;
 using System;
-
+using emt_sdk.Settings;
+using emt_sdk.Packages;
+using Vector3 = UnityEngine.Vector3;
+using Vector2 = UnityEngine.Vector2;
 
 public class PanoComponent : MonoBehaviour {
 	Renderer m_Renderer;
@@ -24,8 +27,10 @@ public class PanoComponent : MonoBehaviour {
 
 	[SerializeField] 
 	float cameraVerticalAngle = 0.0f;
-	
-	public void SetPanorama(Texture2D tex){
+
+    private IConfigurationProvider<PackageDescriptor> _packageProvider;
+
+    public void SetPanorama(Texture2D tex){
 		m_Renderer.material.mainTexture = tex;
 	}
 	
@@ -47,8 +52,8 @@ public class PanoComponent : MonoBehaviour {
 
 		int vertexCount = (lines + 1) * (lines + 1);
 
-		Vector3[] vertices = new Vector3[vertexCount];
-		Vector2[] uvs = new Vector2[vertexCount];
+        Vector3[] vertices = new Vector3[vertexCount];
+        Vector2[] uvs = new Vector2[vertexCount];
 
 		double lat_step = Math.PI / lines;
 		double long_step = 2 * Math.PI / lines;
@@ -116,9 +121,9 @@ public class PanoComponent : MonoBehaviour {
 
 		SetupMesh();
 
-		var settings = ExhibitConnectionComponent.ActivePackage.Parameters.Settings;
+		var settings = _packageProvider.Configuration.Parameters.Settings;
 		var fileName = settings.FileName;
-		var basePath = ExhibitConnectionComponent.ActivePackage.DataRoot;
+		var basePath = _packageProvider.Configuration.DataRoot;
 
 		var filePath = Path.Combine(basePath, fileName);
 

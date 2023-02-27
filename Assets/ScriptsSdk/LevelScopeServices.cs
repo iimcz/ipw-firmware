@@ -45,6 +45,10 @@ public class LevelScopeServices : MonoBehaviour
         {
             Destroy(this);
         }
+        if (_scope == null)
+        {
+            CreateScope();
+        }
     }
 
     private void CreateScope()

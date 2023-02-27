@@ -17,7 +17,7 @@ public class CalibrationLoaderComponent : MonoBehaviour
         var nlogConfig = Path.Combine(Application.streamingAssetsPath, "NLog.config");
         NLog.LogManager.Configuration = new XmlLoggingConfiguration(nlogConfig);
 
-        var provider = GlobalServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>();
+        var provider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>();
         var settings = provider.Configuration;
 
         switch (settings.Type)

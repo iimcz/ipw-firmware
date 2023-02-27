@@ -7,18 +7,18 @@ using UnityEngine;
 
 public class ConnectionUiComponent : MonoBehaviour
 {
-    public ExhibitConnectionComponent ExhibitConnection;
+    // public ExhibitConnectionComponent ExhibitConnection;
     public TextMeshProUGUI IPWInfo;
     
     public string LocalIps = string.Join("\n", GetAllLocalIPv4());
     
     void Update()
     {
-        IPWInfo.text = $"Hostname: \t {ExhibitConnection.Hostname}\n" +
-                       $"Server: \t {ExhibitConnection.Settings.Communication.ContentHostname}:{ExhibitConnection.Settings.Communication.ContentPort}\n" +
+        // IPWInfo.text = $"Hostname: \t {ExhibitConnection.Hostname}\n" +
+                    //    $"Server: \t {ExhibitConnection.Settings.Communication.ContentHostname}:{ExhibitConnection.Settings.Communication.ContentPort}\n" +
                     //    $"Verze serveru: \t {ExhibitConnectionComponent.Connection?.ServerVersion}\n" +
                     //    $"Stav: {TranslateConnectionState(ExhibitConnectionComponent.Connection?.ConnectionState)}\n" +
-                       $"IP:\n{LocalIps}";
+                    //    $"IP:\n{LocalIps}";
     }
 
     // private string TranslateConnectionState(ConnectionStateEnum? state)

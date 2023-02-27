@@ -2,12 +2,11 @@ using emt_sdk.Events;
 using Naki3D.Common.Protocol;
 using System;
 using System.Linq;
+using System.Net;
 using UnityEngine;
 
 public class LocalInputComponent : MonoBehaviour
 {
-    public ExhibitConnectionComponent ExhibitConnection;
-
     private UnityEngine.Vector2 _prevMousePos;
     private float _prevScroll;
     private EventManager _eventManager;
@@ -19,7 +18,8 @@ public class LocalInputComponent : MonoBehaviour
         _eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
     }
 
-    private string Hostname => ExhibitConnection == null ? string.Empty : ExhibitConnection.Hostname;
+    // TODO: consider specifying this elsewhere (used to be ExhibitConnectionComponent)
+    private string Hostname => Dns.GetHostName();
 
     // Update is called once per frame
     void Update()
@@ -52,7 +52,7 @@ public class LocalInputComponent : MonoBehaviour
             var scrollEvent = new SensorDataMessage
             {
                 Float = scroll,
-                Path = $"{ExhibitConnection.Hostname}_mouse/scroll",
+                Path = $"{Hostname}_mouse/scroll",
                 Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
             };
 
