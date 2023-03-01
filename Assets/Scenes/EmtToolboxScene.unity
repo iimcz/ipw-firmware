@@ -994,7 +994,6 @@ GameObject:
   - component: {fileID: 199075603}
   - component: {fileID: 199075602}
   - component: {fileID: 199075601}
-  - component: {fileID: 199075600}
   - component: {fileID: 199075606}
   - component: {fileID: 199075607}
   m_Layer: 5
@@ -1004,21 +1003,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &199075600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 199075599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 109ac112fc7c51846a60589efbc4467e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Hostname: 
-  AutoConnect: 0
-  LogEvents: 0
 --- !u!114 &199075601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1917,7 +1901,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 707b39be4c750014bb2bc1391ca1c7fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ExhibitConnection: {fileID: 199075600}
   IPWInfo: {fileID: 20137809}
   LocalIps: "192.168.23.55\n\t901B0E48353C\nfe80::921b:eff:fe48:353c%2\n\t901B0E48353C"
 --- !u!114 &676684364
@@ -2483,7 +2466,6 @@ MonoBehaviour:
   _hostname: {fileID: 1818675372}
   _warning: {fileID: 1470141382}
   _verification: {fileID: 1526250567}
-  _connection: {fileID: 199075600}
 --- !u!20 &858575043 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 4899629861798286046, guid: 94b55f3cbad165d4f9f791c7b457a942, type: 3}
@@ -4247,7 +4229,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AlwaysCalibrate: 0
-  _connection: {fileID: 199075600}
   _network: {fileID: 847099904}
   _audioTest: {fileID: 726877568}
   UiStates:
@@ -4363,6 +4344,50 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1722981415
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1722981417}
+  - component: {fileID: 1722981416}
+  m_Layer: 0
+  m_Name: Exhibit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1722981416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722981415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b12af00d1ae064d46a85a5e31bc13ee2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1722981417
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722981415}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1723482268
 GameObject:
   m_ObjectHideFlags: 0

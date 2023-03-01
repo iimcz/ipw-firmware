@@ -132,7 +132,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6998767}
-  - component: {fileID: 6998766}
   - component: {fileID: 6998768}
   - component: {fileID: 6998769}
   - component: {fileID: 6998770}
@@ -147,21 +146,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &6998766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6998764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 109ac112fc7c51846a60589efbc4467e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Hostname: 
-  AutoConnect: 0
-  LogEvents: 0
 --- !u!4 &6998767
 Transform:
   m_ObjectHideFlags: 0
@@ -236,8 +220,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Effect: show
-  HasValue: 0
-  ValueEffectCalled:
+  EffectType: 0
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
     m_PersistentCalls:
       m_Calls: []
   VoidEffectCalled:
@@ -255,6 +248,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6998772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,8 +267,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Effect: hide
-  HasValue: 0
-  ValueEffectCalled:
+  EffectType: 0
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
     m_PersistentCalls:
       m_Calls: []
   VoidEffectCalled:
@@ -287,6 +295,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6998773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,7 +313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68d443662b904871b6f74129b0e3e5ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartHidden: 1
+  StartHidden: 0
 --- !u!114 &6998774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,6 +355,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91490e62529dd21d78e93bea799398a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &567834920
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 567834922}
+  - component: {fileID: 567834921}
+  m_Layer: 0
+  m_Name: Exhibit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &567834921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567834920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b12af00d1ae064d46a85a5e31bc13ee2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &567834922
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567834920}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &774978418
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -526,7 +584,7 @@ MonoBehaviour:
   MinZoom: -5
   MaxZoom: 20
   _mouseInput: 0
---- !u!114 &1863770805
+--- !u!114 &1863770810
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -535,15 +593,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 1863770800}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EventReceived:
+  Effect: hand_position
+  EffectType: 6
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1863770804}
         m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
-        m_MethodName: PinchEventReceived
+        m_MethodName: HandPosition
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -553,10 +631,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  LogEvents: 0
-  EventName: /gestures/pinch
-  DataType: 16
---- !u!114 &1863770806
+--- !u!114 &1863770811
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -565,16 +640,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1863770800}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EventReceived:
+  Effect: mode/auto
+  EffectType: 0
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1863770804}
         m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
-        m_MethodName: OpenHandEventReceived
-        m_Mode: 0
+        m_MethodName: ActivateAuto
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -583,10 +672,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  LogEvents: 0
-  EventName: /gestures/open_hand
-  DataType: 16
---- !u!114 &1863770807
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1863770812
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -595,16 +687,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1863770800}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EventReceived:
+  Effect: mode/rotate
+  EffectType: 0
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1863770804}
         m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
-        m_MethodName: CloseHandEventReceived
-        m_Mode: 0
+        m_MethodName: ActivateRotation
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -613,10 +719,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  LogEvents: 0
-  EventName: /gestures/close_hand
-  DataType: 16
---- !u!114 &1863770808
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1863770813
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -625,16 +734,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1863770800}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EventReceived:
+  Effect: mode/zoom
+  EffectType: 0
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1863770804}
         m_TargetAssemblyTypeName: CameraHandMovement, Assembly-CSharp
-        m_MethodName: MovementEventReceived
-        m_Mode: 0
+        m_MethodName: ActivateZoom
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -643,6 +766,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  LogEvents: 0
-  EventName: /hand/center_position
-  DataType: 22
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []

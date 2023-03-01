@@ -1,4 +1,6 @@
 using Assets.Extensions;
+using emt_sdk.Settings;
+using emt_sdk.Settings.EMT;
 using UnityEngine;
 
 public class CameraRigSpawnerComponent : MonoBehaviour
@@ -17,8 +19,7 @@ public class CameraRigSpawnerComponent : MonoBehaviour
 
     void Start()
     {
-        //var config = emt_sdk.Settings.EmtSetting.FromConfig();
-        emt_sdk.Settings.EMT.EMTSetting config = null;
+        emt_sdk.Settings.EMT.EMTSetting config = GlobalServices.Instance.GetRequiredService<IConfigurationProvider<EMTSetting>>().Configuration;
         if (config == null) Logger.ErrorUnity("Could not determine device type, not spawning any camera prefab");
 
         switch (config.Type)

@@ -37,6 +37,8 @@ public class GalleryPoolComponent : MonoBehaviour
 
     IEnumerator Start()
     {
+        _packageProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<PackageDescriptor>>();
+        
         // Wait two frames for the camera transformation to apply
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
@@ -237,12 +239,12 @@ public class GalleryPoolComponent : MonoBehaviour
                 : GalleryListLayout.GalleryListOrientation.Vertical;
     }
 
-    public void SwipeLeftEvent(SensorDataMessage e)
+    public void SingleLeft()
     {
         GestureEvent(HandGestureType.SwipeLeft);
     }
 
-    public void SwipeRightEvent(SensorDataMessage e)
+    public void SingleRight()
     {
         GestureEvent(HandGestureType.SwipeRight);
     }

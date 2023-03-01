@@ -1,3 +1,4 @@
+using emt_sdk.Events.Effect;
 using Naki3D.Common.Protocol;
 using UnityEngine;
 using UnityEngine.Events;
@@ -113,13 +114,8 @@ public class CursorComponent : MonoBehaviour
         if (handPos.y > MaxY) MaxY = handPos.y;
     }
 
-    public void HandMovement(SensorDataMessage msg)
+    public void CursorPosition(Vector3 handPos)
     {
-        if (msg.DataCase != SensorDataMessage.DataOneofCase.Vector3) return;
-
-        var hand = msg.Vector3;
-
-        var handPos = new Vector2(1f - hand.X, 1f - hand.Y);
         if (_updateBoundaries) UpdateBoundaries(handPos);
 
         ScreenPos = handPos.Map(new Vector2(MinX, MinY), new Vector2(MaxX, MaxY), Vector2.zero, Vector2.one);

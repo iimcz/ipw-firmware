@@ -14,14 +14,7 @@ public class PackageRunnerComponent : MonoBehaviour
 
     public void Start()
     {
-        var runner = LevelScopeServices.Instance.GetRequiredService<IPackageRunner>();
-
-        if (!(runner is PackageRunnerProxy))
-        {
-            Logger.ErrorUnity("This component can only work with the PackageRunnerProxy provider for the IPackageRunner service!");
-        }
-
-        ((PackageRunnerProxy)runner).PackageRunAction += RunPackage;
+        InstallRunnerAction();
     }
 
     public void Update()
@@ -62,6 +55,30 @@ public class PackageRunnerComponent : MonoBehaviour
                 throw new NotImplementedException($"Package display type '{NewPackage.Parameters.DisplayType}' is not implemented");
         }
         NewPackage = null;
+    }
+
+    public void OnApplicationQuit()
+    {
+        InstallRunnerAction(true);
+    }
+
+    private void InstallRunnerAction(bool uninstall = false)
+    {
+        var runner = LevelScopeServices.Instance.GetRequiredService<IPackageRunner>();
+
+        if (!(runner is PackageRunnerProxy))
+        {
+            Logger.ErrorUnity("This component can only work with the PackageRunnerProxy provider for the IPackageRunner service!");
+        }
+
+        if (uninstall)
+        {
+            ((PackageRunnerProxy)runner).PackageRunAction = null;
+        }
+        else
+        {
+            ((PackageRunnerProxy)runner).PackageRunAction = RunPackage;
+        }
     }
 
     private void RunPackage(PackageDescriptor package)

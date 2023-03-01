@@ -67,9 +67,9 @@ public class PeppersGhostCameraComponent : MonoBehaviour, ICameraRig
         var canvasDimensions = _packageProvider.Configuration?.Sync?.CanvasDimensions ?? DefaultCanvasDimensions;
         var canvasDimensionVector = new Vector2((int)DefaultCanvasDimensions.Width.Value, (int)DefaultCanvasDimensions.Height.Value);
 
-        if (_packageProvider.Configuration != null)
+        if (_packageProvider.ConfigurationExists)
         {
-            if (_packageProvider.Configuration.Sync.CanvasDimensions == null)
+            if (emt_sdk.Packages.CanvasDimensions.IsNullOrEmpty(_packageProvider.Configuration.Sync.CanvasDimensions))
             {
                 Logger.Info("Loaded a package without sync info, using default canvas size with no shift");
                 SetViewport(canvasDimensionVector, ((ICameraRig)this).DefaultViewport);

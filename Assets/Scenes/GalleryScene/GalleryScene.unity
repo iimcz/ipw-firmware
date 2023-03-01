@@ -306,6 +306,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53db34fe618cd7b4c84226318de4317e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1341078668
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1341078670}
+  - component: {fileID: 1341078669}
+  m_Layer: 0
+  m_Name: Exhibit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1341078669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1341078668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b12af00d1ae064d46a85a5e31bc13ee2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1341078670
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1341078668}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1515476725
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,13 +362,12 @@ GameObject:
   - component: {fileID: 1515476726}
   - component: {fileID: 1515476728}
   - component: {fileID: 1515476730}
-  - component: {fileID: 1515476729}
   - component: {fileID: 1515476731}
   - component: {fileID: 1515476732}
-  - component: {fileID: 1515476734}
-  - component: {fileID: 1515476733}
-  - component: {fileID: 1515476736}
   - component: {fileID: 1515476735}
+  - component: {fileID: 1515476738}
+  - component: {fileID: 1515476737}
+  - component: {fileID: 1515476736}
   m_Layer: 0
   m_Name: Gallery
   m_TagString: Untagged
@@ -392,21 +435,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   LogEvents: 0
---- !u!114 &1515476729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1515476725}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 109ac112fc7c51846a60589efbc4467e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Hostname: 
-  AutoConnect: 0
-  LogEvents: 0
 --- !u!114 &1515476730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -419,7 +447,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d3c4710b8ec8f84c869f627e30f0b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ExhibitConnection: {fileID: 1515476729}
 --- !u!114 &1515476731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,66 +475,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pool: {fileID: 1515476726}
   _cursor: {fileID: 1515476731}
---- !u!114 &1515476733
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1515476725}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EventReceived:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1515476726}
-        m_TargetAssemblyTypeName: GalleryPoolComponent, Assembly-CSharp
-        m_MethodName: SwipeLeftEvent
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  LogEvents: 0
-  EventName: swipe_left
-  DataType: 16
---- !u!114 &1515476734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1515476725}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EventReceived:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1515476731}
-        m_TargetAssemblyTypeName: GalleryCursorComponent, Assembly-CSharp
-        m_MethodName: Deactivate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  LogEvents: 0
-  EventName: swipe_up
-  DataType: 16
 --- !u!114 &1515476735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -547,16 +514,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1515476725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb3b6a8ba6d93863c921e0fe13b52731, type: 3}
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EventReceived:
+  Effect: unzoom
+  EffectType: 0
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1515476726}
-        m_TargetAssemblyTypeName: GalleryPoolComponent, Assembly-CSharp
-        m_MethodName: SwipeRightEvent
-        m_Mode: 0
+      - m_Target: {fileID: 1515476731}
+        m_TargetAssemblyTypeName: GalleryCursorComponent, Assembly-CSharp
+        m_MethodName: Deactivate
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -565,9 +546,106 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  LogEvents: 0
-  EventName: swipe_right
-  DataType: 16
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1515476737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515476725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: right
+  EffectType: 0
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1515476726}
+        m_TargetAssemblyTypeName: GalleryPoolComponent, Assembly-CSharp
+        m_MethodName: SingleRight
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1515476738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515476725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: left
+  EffectType: 0
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1515476726}
+        m_TargetAssemblyTypeName: GalleryPoolComponent, Assembly-CSharp
+        m_MethodName: SingleLeft
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1803224841 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1942462218087130133, guid: f6bbb8fc5e4b88dadbde34c104a89ee0, type: 3}
