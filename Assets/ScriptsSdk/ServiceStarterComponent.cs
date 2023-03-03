@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using emt_sdk.Communication.Discovery;
 using emt_sdk.Communication.Exhibit;
@@ -56,6 +57,11 @@ public class ServiceStarterComponent : MonoBehaviour
 
             var grpc = GlobalServices.Instance.GetRequiredService<GrpcServer>();
             grpc.ShutdownAsync().Wait(TimeSpan.FromSeconds(5)); // TODO: handle this better?
+        }
+        else
+        {
+            var eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
+            eventManager.Dispose();
         }
     }
 }
