@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Assets.Extensions;
 using emt_sdk.Events.Relay;
@@ -9,17 +11,21 @@ using UnityEngine.SceneManagement;
 
 public class PackageRunnerComponent : MonoBehaviour
 {
+    private const float ExternalSceneKillTime = 5; 
+
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     private PackageDescriptor NewPackage = null;
+
+    private Process _sceneProcess;
 
     public void Start()
     {
         InstallRunnerAction();
     }
 
-    public void Update()
+    public IEnumerator Update()
     {
-        if (NewPackage == null) return;
+        if (NewPackage == null) yield break;
 
         switch (NewPackage.Parameters.DisplayType)
         {
@@ -40,15 +46,18 @@ public class PackageRunnerComponent : MonoBehaviour
                     // TODO: We want to wait for the TCP listener to initialize, but this is horrible
                     System.Threading.Thread.Sleep(500);
 
-                    var process = NewPackage.Run();
-                    process.WaitForExit();
+                    _sceneProcess = NewPackage.Run();
+                    yield return new WaitUntil(() => _sceneProcess.HasExited);
                     relayServer.TokenSource.Cancel();
 
-                    Logger.ErrorUnity($"Scene package exitted with code '{process.ExitCode}', this probably shouldn't happen");
+                    Logger.ErrorUnity($"Scene package exitted with code '{_sceneProcess.ExitCode}'");
                     break;
                 }
             case "panorama":
                 SceneManager.LoadSceneAsync("PanoScene");
+                break;
+            case "ndi":
+                SceneManager.LoadSceneAsync("NdiScene");
                 break;
             default:
                 Logger.ErrorUnity($"Package display type '{NewPackage.Parameters.DisplayType}' is not implemented");
@@ -81,8 +90,21 @@ public class PackageRunnerComponent : MonoBehaviour
         }
     }
 
+    private IEnumerator TerminateExternalScene()
+    {
+        _sceneProcess.Close();
+
+        yield return new WaitForSecondsRealtime(ExternalSceneKillTime);
+        if (!_sceneProcess.HasExited)
+        {
+            _sceneProcess.Kill();
+            yield return new WaitUntil(() => _sceneProcess.HasExited);
+        }
+    }
+
     private void RunPackage(PackageDescriptor package)
     {
+        if (_sceneProcess != null && !_sceneProcess.HasExited) StartCoroutine(TerminateExternalScene());
         NewPackage = package;
 
         var packageProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<PackageDescriptor>>();
