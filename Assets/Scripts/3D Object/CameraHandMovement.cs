@@ -142,19 +142,12 @@ public class CameraHandMovement : MonoBehaviour
         }
     }
 
-    public void ActivateZoom()
+    public void ActivateMode(string mode)
     {
-        _handState = HandStateEnum.Zoom;
-    }
-
-    public void ActivateRotation()
-    {
-        _handState = HandStateEnum.Rotate;
-    }
-
-    public void ActivateAuto()
-    {
-        _handState = HandStateEnum.None;
+        if (!Enum.TryParse<HandStateEnum>(mode, true, out _handState))
+        {
+            Debug.Log("Tried to activate an invalid camera mode");
+        }
     }
 
     public void HandPosition(Vector3 pos)
