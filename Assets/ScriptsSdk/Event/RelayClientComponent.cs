@@ -33,7 +33,7 @@ public class RelayClientComponent : MainThreadExecutorComponent
         ExecuteOnMainThread(() => EventReceived.Invoke(message));
     }
 
-    public void BroadcastEvent(SensorMessage message)
+    public void BroadcastEvent(SensorDataMessage message)
     {
         _client.BroadcastEvent(message);
     }

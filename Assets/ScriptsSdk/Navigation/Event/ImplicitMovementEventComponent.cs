@@ -37,12 +37,10 @@ public class ImplicitMovementEventComponent : MonoBehaviour
 
     private void SendMovementEvent(string movementEvent, MonoBehaviour node)
     {
-        var message = new SensorMessage
+        var message = new SensorDataMessage
         {
-            Data = new SensorDataMessage {
-                Path = $"Scene/{node.gameObject.name}/{movementEvent}",
-                Void = new Google.Protobuf.WellKnownTypes.Empty()
-            }
+            Path = $"Scene/{node.gameObject.name}/{movementEvent}",
+            Void = new Google.Protobuf.WellKnownTypes.Empty()
         };
 
         _relayClient.BroadcastEvent(message);

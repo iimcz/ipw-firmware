@@ -76,7 +76,7 @@ public class LocalInputComponent : MonoBehaviour
                 Timestamp = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds()
             };
 
-            _eventManager.BroadcastEvent(keyboardEvent);
+            _eventManager.HandleMessage(keyboardEvent);
         }
     }
 }
