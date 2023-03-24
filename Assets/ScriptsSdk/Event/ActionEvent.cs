@@ -41,7 +41,10 @@ public class ActionEvent : MainThreadExecutorComponent
         if (e.DataType != EffectType || !string.Equals(e.Name, Effect, StringComparison.CurrentCultureIgnoreCase)) return;
         //if (!string.Equals(e.Name, Effect, StringComparison.CurrentCultureIgnoreCase)) return;
 
-        Logger.InfoUnity($"[Action] {Effect}: {e.DataType.ToString()}");
+        if (ShouldLog(e))
+        {
+            Logger.InfoUnity($"[Action] {Effect}: {e.DataType.ToString()}");
+        }
 
         Action actionCall = e.DataType switch
         {
@@ -57,5 +60,23 @@ public class ActionEvent : MainThreadExecutorComponent
         };
 
         ExecuteOnMainThread(actionCall);
+    }
+
+    private bool ShouldLog(EffectCall e)
+    {
+        // Do not flood the log with types which usually come in streams of data instead of singular events.
+        switch (e.DataType)
+        {
+            case DataType.Void:
+            case DataType.Bool:
+            case DataType.Integer:
+            case DataType.Float:
+            case DataType.String:
+                return true;
+            case DataType.Vector2:
+            case DataType.Vector3:
+            default:
+                return false;
+        }
     }
 }
