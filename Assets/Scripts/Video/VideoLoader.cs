@@ -32,7 +32,8 @@ public class VideoLoader : MonoBehaviour
         else yield return SpawnLoadedScene();
 
         // Enable NTP for multiple display devices
-        if (/* TODO: DEBUG ONLY */ _packageProvider.Configuration == null || _packageProvider.Configuration.Sync.Elements.Count > 1)
+        if (/* TODO: DEBUG ONLY */ _packageProvider.Configuration == null ||
+            (_packageProvider.Configuration.Sync.Elements != null && _packageProvider.Configuration.Sync.Elements.Count > 1))
         {
             GetComponent<NtpVideoSyncComponent>().enabled = true;
         }
