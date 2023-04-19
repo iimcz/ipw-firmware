@@ -45,7 +45,11 @@ public class NodeNavigatorComponent : MonoBehaviour
 
         _time += Time.deltaTime;
         float progress = 0;
-        
+
+        var start = CurrentNode.LookPosition();
+        var end = NextNode.LookPosition();
+        var distance = (end - start).magnitude;
+
         switch (_transition.MovementType)
         {
             case TransitionInfo.MovementTypeEnum.ConstantTime:
@@ -54,10 +58,13 @@ public class NodeNavigatorComponent : MonoBehaviour
             case TransitionInfo.MovementTypeEnum.AnimationCurve:
                 progress = _transition.Curve.Evaluate(_time);
                 break;
+            case TransitionInfo.MovementTypeEnum.Teleport:
+                progress = 1.0f;
+                break;
+            case TransitionInfo.MovementTypeEnum.ConstantSpeed:
+                progress = _time * (_transition.Speed / distance);
+                break;
         }
-
-        var start = CurrentNode.LookPosition();
-        var end = NextNode.LookPosition();
 
         transform.position = Vector3.Lerp(start, end, progress);
 
