@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Threading.Tasks;
 using emt_sdk.Communication.Discovery;
 using emt_sdk.Communication.Exhibit;
@@ -12,6 +11,8 @@ using UnityEngine;
 public class ServiceStarterComponent : MonoBehaviour
 {
     public bool StartGlobalServices = false;
+
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public void Awake()
     {
@@ -45,6 +46,16 @@ public class ServiceStarterComponent : MonoBehaviour
         }
     }
 
+    public void OnDestroy()
+    {
+        if (!StartGlobalServices)
+        {
+            Logger.Info("Disposing level-scoped services.");
+            var eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
+            eventManager.Dispose();
+        }
+    }
+
     public void OnApplicationQuit()
     {
         if (StartGlobalServices)
@@ -57,11 +68,6 @@ public class ServiceStarterComponent : MonoBehaviour
 
             var grpc = GlobalServices.Instance.GetRequiredService<GrpcServer>();
             grpc.ShutdownAsync().Wait(TimeSpan.FromSeconds(5)); // TODO: handle this better?
-        }
-        else
-        {
-            var eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
-            eventManager.Dispose();
         }
     }
 }
