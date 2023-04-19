@@ -180,19 +180,7 @@ public class DualCameraComponent : MonoBehaviour, ICameraRig
 
     public void SaveSettings()
     {
-        var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        var configFile = Path.Combine(userFolder, "ipw.json");
-        var json = JsonConvert.SerializeObject(Setting, Formatting.Indented);
-
-        if (File.Exists(configFile))
-        {
-            var fileNameFriendlyDate = DateTime.Now.ToString("s").Replace(":", "");
-            var backupPath = Path.Combine(userFolder, $"ipw_{fileNameFriendlyDate}.json");
-            File.Move(configFile, backupPath);
-        }
-
-        File.WriteAllText(configFile, json);
-        Logger.InfoUnity("Configuration saved");
+        _settingsProvider.SaveConfiguration();
     }
 
     public void SwapSettings()
