@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using emt_sdk.Events;
+using emt_sdk.Events.Local;
 using emt_sdk.Settings;
 using emt_sdk.Settings.EMT;
 using Naki3D.Common.Protocol;
@@ -9,28 +11,21 @@ public class DebugInputComponent : MonoBehaviour
 {
     private NodeRotatorComponent _rotator;
     private EventManager _eventManager;
+    public bool Standalone = false;
+
 
     void Start()
     {
+        if (Standalone)
+        {
+            var sensorManager = GlobalServices.Instance.GetRequiredService<ISensorManager>();
+            Task.Run(() => sensorManager.Start());
+        }
+
         _eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
         _rotator = GetComponent<NodeRotatorComponent>();
 
         _eventManager.ConnectSensor();
-    }
-
-    public void SwipeLeftGesture(SensorDataMessage message)
-    {
-        _rotator.TurnLeft();
-    }
-
-    public void SwipeRightGesture(SensorDataMessage message)
-    {
-        _rotator.TurnRight();
-    }
-
-    public void SwipeUpGesture(SensorDataMessage message)
-    {
-        _rotator.Activate();
     }
 
     public void KbUpdate(SensorDataMessage message)
@@ -48,6 +43,23 @@ public class DebugInputComponent : MonoBehaviour
             case KeyCode.Space:
                 _rotator.Activate();
                 break;
+        }
+    }
+
+    public void GestureUpdate(SensorDataMessage message)
+    {
+        if (message.Path.StartsWith("/")) return; // Ignore remote messages
+        if (message.Path.EndsWith("swipe_up"))
+        {
+            _rotator.Activate();
+        }
+        else if (message.Path.EndsWith("swipe_left"))
+        {
+            _rotator.TurnLeft();
+        }
+        else if (message.Path.EndsWith("swipe_right"))
+        {
+            _rotator.TurnRight();
         }
     }
 }
