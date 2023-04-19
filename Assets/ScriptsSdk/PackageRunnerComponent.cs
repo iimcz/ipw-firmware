@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.Threading;
 using Assets.Extensions;
 using emt_sdk.Events.Relay;
 using emt_sdk.Packages;
@@ -11,21 +10,30 @@ using UnityEngine.SceneManagement;
 
 public class PackageRunnerComponent : MonoBehaviour
 {
-    private const float ExternalSceneKillTime = 5; 
+    private const int ExternalSceneKillTime = 5000; 
 
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     private PackageDescriptor NewPackage = null;
 
-    private Process _sceneProcess;
+    public Process SceneProcess;
+    public EventRelayServer RelayServer;
 
     public void Start()
     {
         InstallRunnerAction();
     }
 
-    public IEnumerator Update()
+    protected void Update()
     {
-        if (NewPackage == null) yield break;
+        if (NewPackage == null) return;
+
+        if (SceneProcess != null)
+        {
+            if (!SceneProcess.HasExited) return;
+
+            RelayServer.TokenSource.Cancel();
+            Logger.ErrorUnity($"Scene package exitted with code '{SceneProcess.ExitCode}'");
+        }
 
         switch (NewPackage.Parameters.DisplayType)
         {
@@ -39,20 +47,8 @@ public class PackageRunnerComponent : MonoBehaviour
                 SceneManager.LoadSceneAsync("3DObject");
                 break;
             case "scene":
-                {
-                    var relayServer = LevelScopeServices.Instance.GetRequiredService<EventRelayServer>();
-                    Task.Run(() => relayServer.Listen());
-
-                    // TODO: We want to wait for the TCP listener to initialize, but this is horrible
-                    System.Threading.Thread.Sleep(500);
-
-                    _sceneProcess = NewPackage.Run();
-                    yield return new WaitUntil(() => _sceneProcess.HasExited);
-                    relayServer.TokenSource.Cancel();
-
-                    Logger.ErrorUnity($"Scene package exitted with code '{_sceneProcess.ExitCode}'");
-                    break;
-                }
+                SceneManager.LoadSceneAsync("3DScene");
+                break;
             case "panorama":
                 SceneManager.LoadSceneAsync("PanoScene");
                 break;
@@ -90,21 +86,27 @@ public class PackageRunnerComponent : MonoBehaviour
         }
     }
 
-    private IEnumerator TerminateExternalScene()
+    private void TerminateExternalScene()
     {
-        _sceneProcess.Close();
+        Logger.Info("Closing scene package.");
+        SceneProcess.CloseMainWindow();
 
-        yield return new WaitForSecondsRealtime(ExternalSceneKillTime);
-        if (!_sceneProcess.HasExited)
+        // HACK: doing it this way isn't good, but a Unity coroutine won't run if the Unity window isn't focused, so we can't use that.
+        Thread.Sleep(ExternalSceneKillTime);
+        if (!SceneProcess.HasExited)
         {
-            _sceneProcess.Kill();
-            yield return new WaitUntil(() => _sceneProcess.HasExited);
+            Logger.Warn("Scene package did not close gracefully. Killing scene package!");
+            SceneProcess.Kill();
+            while (!SceneProcess.HasExited)
+            {
+                Thread.Sleep(1000);
+            }
         }
     }
 
     private void RunPackage(PackageDescriptor package)
     {
-        if (_sceneProcess != null && !_sceneProcess.HasExited) StartCoroutine(TerminateExternalScene());
+        if (SceneProcess != null && !SceneProcess.HasExited) TerminateExternalScene();
         NewPackage = package;
 
         var packageProvider = LevelScopeServices.Instance.GetRequiredService<IConfigurationProvider<PackageDescriptor>>();
@@ -112,5 +114,13 @@ public class PackageRunnerComponent : MonoBehaviour
         {
             ((PackageDescriptorProvider)packageProvider).Configuration = package;
         }
+    }
+
+    public void StartPackage(string packageId)
+    {
+        LevelScopeServices.Instance.GetRequiredService<Naki3D.Common.Protocol.PackageService.PackageServiceBase>().StartPackage(new Naki3D.Common.Protocol.StartPackageRequest
+        {
+            PackageId = packageId
+        }, null);
     }
 }
