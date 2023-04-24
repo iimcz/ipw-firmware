@@ -94,7 +94,9 @@ public class MeshSceneManager : MonoBehaviour
             _modelVisibility.SetTarget(result);
         });
 
-        _ntpSync.SendReset();
+        // Don't sync when standalone
+        var elements = _packageProvider.Configuration?.Sync.Elements;
+        if (elements != null && elements.Count > 1) _ntpSync.SendReset();
     }
 
     public void SwipeLeftReceived(SensorDataMessage e)
