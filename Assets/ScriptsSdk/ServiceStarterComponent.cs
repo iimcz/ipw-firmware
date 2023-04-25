@@ -46,16 +46,6 @@ public class ServiceStarterComponent : MonoBehaviour
         }
     }
 
-    public void OnDestroy()
-    {
-        if (!StartGlobalServices)
-        {
-            Logger.Info("Disposing level-scoped services.");
-            var eventManager = LevelScopeServices.Instance.GetRequiredService<EventManager>();
-            eventManager.Dispose();
-        }
-    }
-
     public void OnApplicationQuit()
     {
         if (StartGlobalServices)

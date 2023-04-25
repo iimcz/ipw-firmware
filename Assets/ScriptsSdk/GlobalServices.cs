@@ -21,8 +21,8 @@ public class GlobalServices : MonoBehaviour
             {
                 if (_instance == null)
                 {
-                    _instance = new GameObject(typeof(GlobalServices).Name).AddComponent<GlobalServices>();
-                    _instance.InitializeServices();
+                    // Awake gets called synchronously, _instance will be set after this line
+                    new GameObject(typeof(GlobalServices).Name).AddComponent<GlobalServices>();
                 }
                 return _instance;
             }
@@ -55,7 +55,7 @@ public class GlobalServices : MonoBehaviour
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             return;
         }
         if (_serviceProvider == null)
@@ -64,7 +64,7 @@ public class GlobalServices : MonoBehaviour
         }
 
         _instance = this;
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(gameObject);
     }
 
     private void InitializeServices()
