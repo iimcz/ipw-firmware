@@ -1,0 +1,213 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7344255374204870001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7344255374204870000}
+  - component: {fileID: 7344255374204869964}
+  - component: {fileID: 7344255374204869965}
+  - component: {fileID: 7344255374204870002}
+  - component: {fileID: 7344255374204870003}
+  - component: {fileID: 111655650}
+  - component: {fileID: 111655651}
+  m_Layer: 5
+  m_Name: UserCompass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7344255374204870000
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7344255374204870001}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -100}
+  m_SizeDelta: {x: -20, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &7344255374204869964
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7344255374204870001}
+  m_CullTransparentMesh: 1
+--- !u!114 &7344255374204869965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7344255374204870001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 0.2627451}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7344255374204870002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7344255374204870001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2047c423f027b074f88f83f5d3124205, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxUsers: 6
+  InactivityDelay: 5
+  UserPrefab: {fileID: 2183781320795876569, guid: 74585d31a3f03b24a91ad65d138577e8, type: 3}
+  UserColors:
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0, g: 1, b: 0, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 1, g: 0, b: 1, a: 1}
+  - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - {r: 0, g: 1, b: 1, a: 1}
+--- !u!114 &7344255374204870003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7344255374204870001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 544cc1b2bd1d212408aa6828e975fdc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7344255374204870002}
+        m_TargetAssemblyTypeName: UserCompassComponent, Assembly-CSharp
+        m_MethodName: UserConfidence
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  LogEvents: 0
+  Pattern: /joint_torso/position/normalized
+  DataType: 22
+  PatternMatchType: 1
+--- !u!114 &111655650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7344255374204870001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 544cc1b2bd1d212408aa6828e975fdc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7344255374204870002}
+        m_TargetAssemblyTypeName: UserCompassComponent, Assembly-CSharp
+        m_MethodName: UserConfidence
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  LogEvents: 0
+  Pattern: /joint_torso/confidence
+  DataType: 19
+  PatternMatchType: 1
+--- !u!114 &111655651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7344255374204870001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333debe3fef36d148bbbf7572b4920cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: notifyUser
+  EffectType: 2
+  FloatEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  IntEffectCalled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7344255374204870002}
+        m_TargetAssemblyTypeName: UserCompassComponent, Assembly-CSharp
+        m_MethodName: NotifyUser
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  BoolEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  StringEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  VoidEffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector2EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
+  Vector3EffectCalled:
+    m_PersistentCalls:
+      m_Calls: []
