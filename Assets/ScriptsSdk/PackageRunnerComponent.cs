@@ -55,6 +55,9 @@ public class PackageRunnerComponent : MonoBehaviour
             case "ndi":
                 SceneManager.LoadSceneAsync("NdiScene");
                 break;
+            case "feedback": // Only for testing
+                SceneManager.LoadSceneAsync("FeedbackTestingScene");
+                break;
             default:
                 Logger.ErrorUnity($"Package display type '{NewPackage.Parameters.DisplayType}' is not implemented");
                 throw new NotImplementedException($"Package display type '{NewPackage.Parameters.DisplayType}' is not implemented");
