@@ -119,7 +119,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7344255374204870002}
         m_TargetAssemblyTypeName: UserCompassComponent, Assembly-CSharp
-        m_MethodName: UserConfidence
+        m_MethodName: UserMove
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -130,7 +130,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   LogEvents: 0
-  Pattern: /joint_torso/position/normalized
+  Pattern: /torso/position/normalized
   DataType: 22
   PatternMatchType: 1
 --- !u!114 &111655650
@@ -161,7 +161,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   LogEvents: 0
-  Pattern: /joint_torso/confidence
+  Pattern: /torso/confidence
   DataType: 19
   PatternMatchType: 1
 --- !u!114 &111655651

@@ -22,7 +22,7 @@ public class UserCounterComponent : MonoBehaviour
     public List<Color> UserColors = new() { Color.red, Color.green, Color.blue, Color.magenta, Color.yellow, Color.cyan };
 
     private List<CountedUser> _users = new();
-    private Regex _userRegex = new(@"nuitrack\/skeleton\/user\/(\d+)\/joint_torso\/confidence", RegexOptions.Compiled);
+    private Regex _userRegex = new(@"nuitrack\/skeleton\/user\/(\d+)\/torso\/confidence", RegexOptions.Compiled);
 
     void Start()
     {
@@ -59,7 +59,7 @@ public class UserCounterComponent : MonoBehaviour
         var match = _userRegex.Match(message.Path);
         if (!match.Success) return;
 
-        var userIndex = int.Parse(match.Captures[0].Value);
+        var userIndex = int.Parse(match.Groups[1].Value);
         if (userIndex < 0 || userIndex >= MaxUsers)
         {
             Debug.LogWarning($"Received invalid user index {userIndex} for user count UI");

@@ -155,6 +155,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   LogEvents: 0
-  Pattern: /joint_torso/confidence
+  Pattern: /torso/confidence
   DataType: 19
   PatternMatchType: 1

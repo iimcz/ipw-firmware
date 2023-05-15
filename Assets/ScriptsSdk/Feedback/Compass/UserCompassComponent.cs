@@ -15,8 +15,8 @@ public class UserCompassComponent : MonoBehaviour
     public List<Color> UserColors = new() { Color.red, Color.green, Color.blue, Color.magenta, Color.yellow, Color.cyan };
 
     private List<UserDotComponent> _users = new();
-    private Regex _userMoveRegex = new(@"nuitrack\/skeleton\/user\/(\d+)\/joint_torso\/position\/normalized", RegexOptions.Compiled);
-    private Regex _userConfidenceRegex = new(@"nuitrack\/skeleton\/user\/(\d+)\/joint_torso\/confidence", RegexOptions.Compiled);
+    private Regex _userMoveRegex = new(@"nuitrack\/skeleton\/user\/(\d+)\/torso\/position\/normalized", RegexOptions.Compiled);
+    private Regex _userConfidenceRegex = new(@"nuitrack\/skeleton\/user\/(\d+)\/torso\/confidence", RegexOptions.Compiled);
 
     void Start()
     {
@@ -50,7 +50,7 @@ public class UserCompassComponent : MonoBehaviour
         var match = _userConfidenceRegex.Match(message.Path);
         if (!match.Success) return;
 
-        var userIndex = int.Parse(match.Captures[0].Value);
+        var userIndex = int.Parse(match.Groups[1].Value);
         if (userIndex < 0 || userIndex >= MaxUsers)
         {
             Debug.LogWarning($"Received invalid user index {userIndex} for compass confidence");
@@ -65,13 +65,13 @@ public class UserCompassComponent : MonoBehaviour
         var match = _userMoveRegex.Match(message.Path);
         if (!match.Success) return;
 
-        var userIndex = int.Parse(match.Captures[0].Value);
+        var userIndex = int.Parse(match.Groups[1].Value);
         if (userIndex < 0 || userIndex >= MaxUsers)
         {
             Debug.LogWarning($"Received invalid user index {userIndex} for compass position");
             return;
         }
 
-        _users[userIndex].UpdatePosition(message.Vector3.X);
+        _users[userIndex].UpdatePosition(1.0f - message.Vector3.X);
     }
 }

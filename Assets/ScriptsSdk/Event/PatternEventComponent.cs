@@ -1,5 +1,6 @@
 using Naki3D.Common.Protocol;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 public class PatternEventComponent : EventComponent
 {
@@ -18,11 +19,8 @@ public class PatternEventComponent : EventComponent
 
     private Regex _regex;
 
-    void Start()
-    {
-        if (PatternMatchType == PatternMatchTypeEnum.Regex) _regex = new Regex(Pattern, RegexOptions.Compiled);
-    }
-
+    // TODO: Initialize the regex object!
+    
     protected override void OnEventReceived(SensorDataMessage e)
     {
         var matchResult = PatternMatchType switch
