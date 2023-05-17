@@ -10,6 +10,8 @@ public class MotionVectorComponent : MonoBehaviour
     private Vector3[] _positions;
     private Vector3 _prevPosition;
 
+    public Vector3 TargetDirection;
+
     void Start()
     {
         _positions = new Vector3[FrameHistorySize];
@@ -39,5 +41,6 @@ public class MotionVectorComponent : MonoBehaviour
         total /= totalWeight;
 
         _lineRenderer.SetPosition(1, total * 10f);
+        TargetDirection = total;
     }
 }

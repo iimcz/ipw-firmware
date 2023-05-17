@@ -24,53 +24,105 @@ public class BodyTrackerComponent : MonoBehaviour
     private Transform LeftShoulder, RightShoulder;
 
     private Vector3 _chestPosition;
+    private Material[] _materials = new Material[7];
+
     private Regex _userMoveRegex = new(@"nuitrack\/skeleton\/user\/(\d+)\/(.+)\/position\/normalized", RegexOptions.Compiled);
+    private Regex _userConfidenceRegex = new(@"nuitrack\/skeleton\/user\/(\d+)\/(.+)\/confidence", RegexOptions.Compiled);
+
 
     void Start()
     {
         UpdateSkeletonLine();
+
+        _materials[0] = Chest.GetComponent<MeshRenderer>().material;
+        _materials[1] = LeftHand.GetComponent<MeshRenderer>().material;
+        _materials[2] = RightHand.GetComponent<MeshRenderer>().material;
+        _materials[3] = LeftElbow.GetComponent<MeshRenderer>().material;
+        _materials[4] = RightElbow.GetComponent<MeshRenderer>().material;
+        _materials[5] = LeftShoulder.GetComponent<MeshRenderer>().material;
+        _materials[6] = RightShoulder.GetComponent<MeshRenderer>().material;
     }
 
-    public void UpdateSkeletonJoint(SensorDataMessage message)
+    private void UpdateJointPosition(Match match, Vector3 jointPosition)
     {
-        var match = _userMoveRegex.Match(message.Path);
-        if (!match.Success) return;
-
         var userIndex = int.Parse(match.Groups[1].Value);
         if (UserIndex != userIndex) return;
 
-        var jointPosition = message.Vector3.ToUnityVector();
+        jointPosition.z = 0;
+        jointPosition.y = 1.0f - jointPosition.y;
+        jointPosition.x = 1.0f - jointPosition.x;
         var relativeToChest = (jointPosition - _chestPosition) * DistanceScale;
 
-        // TODO: Check if these actually match
         var bodyPart = match.Groups[2].Value;
         switch (bodyPart)
         {
-            case "chest":
+            case "torso":
                 _chestPosition = jointPosition; // Chest always stays at 0,0, only serves as reference point
                 // We also don't recalculate other joints, nuitrack should send those soon enough
                 break;
-            case "left_hand":
+            case "lefthand":
                 LeftHand.localPosition = relativeToChest;
                 break;
-            case "right_hand":
+            case "righthand":
                 RightHand.localPosition = relativeToChest;
                 break;
-            case "left_elbow":
+            case "leftelbow":
                 LeftElbow.localPosition = relativeToChest;
                 break;
-            case "right_elbow":
+            case "rightelbow":
                 RightElbow.localPosition = relativeToChest;
                 break;
-            case "left_shoulder":
+            case "leftshoulder":
                 LeftShoulder.localPosition = relativeToChest;
                 break;
-            case "right_shoulder":
+            case "rightshoulder":
                 RightShoulder.localPosition = relativeToChest;
                 break;
         }
 
         UpdateSkeletonLine();
+    }
+
+    private void UpdateJointConfidence(Match match, float confidence)
+    {
+        var userIndex = int.Parse(match.Groups[1].Value);
+        if (UserIndex != userIndex) return;
+
+        var bodyPart = match.Groups[2].Value;
+        var color = Color.Lerp(Color.red, Color.cyan, confidence);
+        switch (bodyPart)
+        {
+            case "torso":
+                _materials[0].SetColor("Tint", color);
+                break;
+            case "lefthand":
+                _materials[1].SetColor("Tint", color);
+                break;
+            case "righthand":
+                _materials[2].SetColor("Tint", color);
+                break;
+            case "leftelbow":
+                _materials[3].SetColor("Tint", color);
+                break;
+            case "rightelbow":
+                _materials[4].SetColor("Tint", color);
+                break;
+            case "leftshoulder":
+                _materials[5].SetColor("Tint", color);
+                break;
+            case "rightshoulder":
+                _materials[6].SetColor("Tint", color);
+                break;
+        }
+    }
+
+    public void UpdateSkeletonJoint(SensorDataMessage message)
+    {
+        var match = _userMoveRegex.Match(message.Path);
+        if (match.Success) UpdateJointPosition(match, message.Vector3.ToUnityVector());
+
+        match = _userConfidenceRegex.Match(message.Path);
+        if (match.Success) UpdateJointConfidence(match, message.Float);
     }
 
     private void UpdateSkeletonLine()
