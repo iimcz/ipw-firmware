@@ -33,6 +33,6 @@ EditorBuildSettings:
     path: Assets/Scenes/3DSceneScene/3DScene.unity
     guid: 57baf9610cab0fef1825e2a5ac7972ca
   - enabled: 1
-    path: Assets/Scenes/FeedbackTestingScene.unity
+    path: Assets/Scenes/Feedback/FeedbackTestingScene.unity
     guid: c3c34902bdadb70458fa1a8017833d05
   m_configObjects: {}
