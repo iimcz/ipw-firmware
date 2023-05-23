@@ -923,53 +923,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6602773136368057943, guid: 59d8f34777f7dbd4bbbfae46294b8ce8, type: 3}
   m_PrefabInstance: {fileID: 1475561514984109502}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1475561514984109504 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 444051628475295646, guid: 59d8f34777f7dbd4bbbfae46294b8ce8, type: 3}
-  m_PrefabInstance: {fileID: 1475561514984109502}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1475561514984109505 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1053718094633718718, guid: 59d8f34777f7dbd4bbbfae46294b8ce8, type: 3}
-  m_PrefabInstance: {fileID: 1475561514984109502}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1475561514984109504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75f19b27c0dc69940a278517ffff6a55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1475561514984109506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1475561514984109504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 544cc1b2bd1d212408aa6828e975fdc9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EventReceived:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1475561514984109505}
-        m_TargetAssemblyTypeName: HandStateIndicatorComponent, Assembly-CSharp
-        m_MethodName: UpdateHand
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  LogEvents: 0
-  Pattern: 
-  DataType: 20
-  PatternMatchType: 1
 --- !u!1001 &2911849751295119997
 PrefabInstance:
   m_ObjectHideFlags: 0

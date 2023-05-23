@@ -17,41 +17,45 @@ public class HandStateIndicatorComponent : MonoBehaviour
     [SerializeField]
     private GameObject _pinch;
 
+    [SerializeField]
+    private GameObject _background;
+
     private float _lastActivity = 0f;
     private HandStateEnum _handState;
 
     void Update()
     {
         _lastActivity += Time.deltaTime;
-        if (_lastActivity > InactivityDelay) gameObject.SetActive(false);
+        if (_lastActivity > InactivityDelay) _background.SetActive(false);
     }
 
-    public void UpdateHand(SensorDataMessage message)
+    public void UpdateOpenHand(SensorDataMessage message)
     {
-        if (!Enum.TryParse<HandStateEnum>(message.String, true, out _handState))
-        {
-            Debug.Log("Tried to activate an invalid camera mode");
-            return;
-        }
-
         _lastActivity = 0f;
-        if (!gameObject.activeSelf) gameObject.SetActive(true);
-
-        _open.SetActive(false);
+        
+        _background.SetActive(true);
         _closed.SetActive(false);
         _pinch.SetActive(false);
+        _open.SetActive(true);
+    }
 
-        switch (_handState)
-        {
-            case HandStateEnum.Rotate:
-                _open.SetActive(true);
-                break;
-            case HandStateEnum.Zoom:
-                _pinch.SetActive(true);
-                break;
-            case HandStateEnum.None:
-                _open.SetActive(true);
-                break;
-        }
+    public void UpdateCloseHand(SensorDataMessage message)
+    {
+        _lastActivity = 0f;
+        
+        _background.SetActive(true);
+        _open.SetActive(false);
+        _closed.SetActive(true);
+        _pinch.SetActive(false);
+    }
+
+    public void UpdatePinch(SensorDataMessage message)
+    {
+        _lastActivity = 0f;
+        
+        _background.SetActive(true);
+        _open.SetActive(false);
+        _closed.SetActive(false);
+        _pinch.SetActive(true);
     }
 }

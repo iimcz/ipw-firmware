@@ -89,29 +89,30 @@ public class BodyTrackerComponent : MonoBehaviour
         if (UserIndex != userIndex) return;
 
         var bodyPart = match.Groups[2].Value;
+        Debug.Log($"Updating confidence: [{bodyPart}] [{confidence}]");
         var color = Color.Lerp(Color.red, Color.cyan, confidence);
         switch (bodyPart)
         {
             case "torso":
-                _materials[0].SetColor("Tint", color);
+                _materials[0].color = color;
                 break;
             case "lefthand":
-                _materials[1].SetColor("Tint", color);
+                _materials[1].color = color;
                 break;
             case "righthand":
-                _materials[2].SetColor("Tint", color);
+                _materials[2].color = color;
                 break;
             case "leftelbow":
-                _materials[3].SetColor("Tint", color);
+                _materials[3].color = color;
                 break;
             case "rightelbow":
-                _materials[4].SetColor("Tint", color);
+                _materials[4].color = color;
                 break;
             case "leftshoulder":
-                _materials[5].SetColor("Tint", color);
+                _materials[5].color = color;
                 break;
             case "rightshoulder":
-                _materials[6].SetColor("Tint", color);
+                _materials[6].color = color;
                 break;
         }
     }

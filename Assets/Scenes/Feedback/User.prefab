@@ -1913,6 +1913,7 @@ GameObject:
   - component: {fileID: 7683015371861605736}
   - component: {fileID: 7683015371861605739}
   - component: {fileID: 7683015371861605652}
+  - component: {fileID: 2777285494167565511}
   m_Layer: 0
   m_Name: User
   m_TagString: Untagged
@@ -2135,6 +2136,37 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2777285494167565511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7683015371861605743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 544cc1b2bd1d212408aa6828e975fdc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7683015371861605736}
+        m_TargetAssemblyTypeName: BodyTrackerComponent, Assembly-CSharp
+        m_MethodName: UpdateSkeletonJoint
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  LogEvents: 0
+  Pattern: nuitrack
+  DataType: 19
+  PatternMatchType: 1
 --- !u!1 &7683015371874430941
 GameObject:
   m_ObjectHideFlags: 0
