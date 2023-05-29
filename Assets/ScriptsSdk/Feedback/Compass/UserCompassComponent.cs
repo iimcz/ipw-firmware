@@ -34,6 +34,21 @@ public class UserCompassComponent : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
+    void Update()
+    {
+        _users[0].UpdatePosition(Input.mousePosition.x / Screen.width);
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) _users[0].AnimateGesture("swipe_left");
+        else if (Input.GetKeyDown(KeyCode.UpArrow)) _users[0].AnimateGesture("swipe_up");
+        else if (Input.GetKeyDown(KeyCode.RightArrow)) _users[0].AnimateGesture("swipe_right");
+        else if (Input.GetKeyDown(KeyCode.DownArrow)) _users[0].AnimateGesture("swipe_down");
+
+        if (Input.GetMouseButtonDown(0)) StartCoroutine(_users[0].Notify());
+        if (Input.GetMouseButtonDown(1)) UserGesture(new SensorDataMessage { Path = "@nuitrack/skeleton/user/0/gestures/swipe_up" });
+    }
+#endif
+
     public void NotifyUser(int userIndex)
     {
         if (userIndex < 0 || userIndex >= MaxUsers)
@@ -43,6 +58,15 @@ public class UserCompassComponent : MonoBehaviour
         }
 
         StartCoroutine(_users[userIndex].Notify());
+    }
+
+    public void UserGesture(SensorDataMessage message)
+    {
+        var pathParts = message.Path.Split('/');
+        var gestureType = pathParts[^1];
+        var userId = int.Parse(pathParts[3]);
+
+        _users[userId].AnimateGesture(gestureType);
     }
 
     public void UserConfidence(SensorDataMessage message)

@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InactivityDelay: 5
+  GestureAnimationMagnitude: 50
   _image: {fileID: 2202027310207808602}
   _confidenceScaleCurve:
     serializedVersion: 2

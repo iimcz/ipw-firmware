@@ -1120,10 +1120,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UserCompass
       objectReference: {fileID: 0}
-    - target: {fileID: 7344255374204870002, guid: 04269c0cb94aafd49a73d810075d71a2, type: 3}
-      propertyPath: UserPrefab
-      value: 
-      objectReference: {fileID: 2183781320795876569, guid: 74585d31a3f03b24a91ad65d138577e8, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04269c0cb94aafd49a73d810075d71a2, type: 3}
 --- !u!1001 &7683015370905290324
