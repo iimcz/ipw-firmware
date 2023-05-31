@@ -62,7 +62,7 @@ public class UserCompassComponent : MonoBehaviour
 
     public void UserGesture(SensorDataMessage message)
     {
-        var pathParts = message.Path.Split('/');
+        var pathParts = message.Path.Split('/', System.StringSplitOptions.RemoveEmptyEntries);
         var gestureType = pathParts[^1];
         var userId = int.Parse(pathParts[3]);
 
