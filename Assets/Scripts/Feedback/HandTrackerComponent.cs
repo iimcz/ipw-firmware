@@ -59,7 +59,7 @@ public class HandTrackerComponent : MonoBehaviour
 
     public void HandMove(SensorDataMessage message)
     {
-        var parts = message.Path.Split('/');
+        var parts = message.Path.Split('/', System.StringSplitOptions.RemoveEmptyEntries);
         var hand = parts[3];
 
         RectTransform handRect = null;
