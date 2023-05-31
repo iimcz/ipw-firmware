@@ -60,21 +60,41 @@ public class HandTrackerComponent : MonoBehaviour
     public void HandMove(SensorDataMessage message)
     {
         var parts = message.Path.Split('/', System.StringSplitOptions.RemoveEmptyEntries);
-        var hand = parts[3];
+        var hand = parts[^2];
 
         RectTransform handRect = null;
         if (hand == "left") handRect = _lHand;
         else if (hand == "right") handRect = _rHand;
-        else Debug.LogWarning($"Unknown hand '{hand}'");
+        else 
+        {
+            Debug.LogWarning($"Unknown hand '{hand}'");
+            return;
+        }
 
         if (parts.Last() == "center_position")
         {
             var position = message.Vector3.ToUnityVector();
             position = Vector3.one - (position * 2);
-            position.Scale(new Vector3(350, 350, 0));
+            position.Scale(new Vector3(-750, 750, 0));
             handRect.anchoredPosition = position;
         }
-        else if (parts[^2] == "gestures")
+    }
+
+    public void HandGesture(SensorDataMessage message)
+    {
+        var parts = message.Path.Split('/', System.StringSplitOptions.RemoveEmptyEntries);
+        var hand = parts[^3];
+
+        RectTransform handRect = null;
+        if (hand == "left") handRect = _lHand;
+        else if (hand == "right") handRect = _rHand;
+        else 
+        {
+            Debug.LogWarning($"Unknown hand '{hand}'");
+            return;
+        }
+
+        if (parts[^2] == "gestures")
         {
             _lastGestureActivity = 0f;
             if (hand == "left") _lHandGesture.enabled = true;

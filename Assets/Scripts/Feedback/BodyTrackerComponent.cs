@@ -89,7 +89,6 @@ public class BodyTrackerComponent : MonoBehaviour
         if (UserIndex != userIndex) return;
 
         var bodyPart = match.Groups[2].Value;
-        Debug.Log($"Updating confidence: [{bodyPart}] [{confidence}]");
         var color = Color.Lerp(Color.red, Color.cyan, confidence);
         switch (bodyPart)
         {

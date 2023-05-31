@@ -112,7 +112,7 @@ public class UserDotComponent : MonoBehaviour
         }
 
         // Gesture anim
-        _rectTransform.anchoredPosition = Vector2.Lerp(_rectTransform.anchoredPosition, _targetGesturePosition, 0.5f);
+        _rectTransform.anchoredPosition = Vector2.Lerp(_rectTransform.anchoredPosition, _targetGesturePosition, 0.2f);
         var distance = (_rectTransform.anchoredPosition - _targetGesturePosition).magnitude;
         if (distance <= 0.05f) _targetGesturePosition = Vector2.zero;
     }
