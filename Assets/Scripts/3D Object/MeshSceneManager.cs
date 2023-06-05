@@ -89,9 +89,18 @@ public class MeshSceneManager : MonoBehaviour
         }
         
         string gltfPath = Path.Combine(basePath, scene.FileName);
-        Importer.ImportGLBAsync(gltfPath, new ImportSettings(), (result, clips) =>
+        Importer.ImportGLBAsync(gltfPath, new ImportSettings
+        {
+            useLegacyClips = true
+        }, (result, clips) =>
         {
             _modelVisibility.SetTarget(result);
+
+            result.AddComponent<AnimationActionBinderComponent>();
+
+            var anim = result.AddComponent<Animation>();
+            foreach (var clip in clips) anim.AddClip(clip, clip.name);
+
             result.AddComponent<LightSpawnerComponent>();
         });
 
