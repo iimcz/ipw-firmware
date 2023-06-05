@@ -270,7 +270,7 @@ namespace Siccity.GLTFUtility {
 			GLTFAnimation.ImportResult[] animationResult = gltfObject.animations.Import(accessorTask.Result, nodeTask.Result, importSettings);
 			AnimationClip[] animations = new AnimationClip[0];
 			if (animationResult != null) animations = animationResult.Select(x => x.clip).ToArray();
-			if (onFinished != null) onFinished(nodeTask.Result.GetRoot(), animations);
+			if (onFinished != null) onFinished(root, animations);
 
 			// Close file streams
 			foreach (var item in bufferTask.Result) {
