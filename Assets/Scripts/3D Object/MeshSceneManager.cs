@@ -92,6 +92,7 @@ public class MeshSceneManager : MonoBehaviour
         Importer.ImportGLBAsync(gltfPath, new ImportSettings(), (result, clips) =>
         {
             _modelVisibility.SetTarget(result);
+            result.AddComponent<LightSpawnerComponent>();
         });
 
         // Don't sync when standalone
@@ -129,7 +130,7 @@ public class MeshSceneManager : MonoBehaviour
     {
         Apply(new GltfObject
         {
-            FileName = "Assets/Scenes/3DObject/Sample/monkey.glb",
+            FileName = "Assets/Scenes/3DObject/Sample/monkey_unlit.glb",
             SkyboxTint = "#000000",
             Flags = new System.Collections.Generic.List<GltfObject.Flag>(),
             CameraAnimation = new GltfObject.OrbitAnimation
