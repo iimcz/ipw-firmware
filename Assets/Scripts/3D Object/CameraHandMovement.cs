@@ -86,7 +86,6 @@ public class CameraHandMovement : MonoBehaviour
     void Start()
     {
         _lastInputTime = _autoOrbitDelay;
-        _zoom = MinZoom;
     }
 
     void Update()
@@ -103,6 +102,12 @@ public class CameraHandMovement : MonoBehaviour
             _position.z = _position.y; // For zoom
 
             if (Input.GetKeyDown(KeyCode.Space)) _previousPositon = _position;
+        }
+
+        if (_mouseInput && Input.GetKeyDown(KeyCode.R))
+        {
+            _orbit.StartCoroutine(_orbit.ResetToDefaultPosition());
+            _zoom = 0f;
         }
 
         // Stop movement if we lose tracking
@@ -125,6 +130,8 @@ public class CameraHandMovement : MonoBehaviour
                 _orbit.AdvanceAngle(_delta.x * MovementSpeed, _delta.y * MovementSpeed);
                 break;
             case HandStateEnum.Zoom:
+                if (_orbit.Resetting) break;
+
                 _zoom += _delta.z * ZoomSpeed;
                 _zoom = Mathf.Clamp(_zoom, MinZoom, MaxZoom);
 
@@ -137,9 +144,16 @@ public class CameraHandMovement : MonoBehaviour
         _lastInputTime += Time.deltaTime;
         if (_lastInputTime >= _autoOrbitDelay)
         {
+            // Reset to known position
+            _orbit.StartCoroutine(_orbit.ResetToDefaultPosition());
             _orbit.AutoOrbit = true;
-            _orbit.Invalidate(); // Reset to known position
+            _zoom = 0f;
         }
+    }
+
+    public void UnZoom()
+    {
+        _zoom = 0f;
     }
 
     public void ActivateMode(string mode)

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 /// <summary>
 /// Orbits a gameobject around a point
@@ -43,6 +44,11 @@ public class OrbitComponent : MonoBehaviour
     /// </summary>
     public bool AutoOrbit = true;
 
+    /// <summary>
+    /// Whether the object is automatically returning to a known position. No interaction should be done while this is <see langword="true"/>.
+    /// </summary>
+    public bool Resetting { get; private set; }
+
     private GameObject _pivot;
 
     /// <summary>
@@ -52,6 +58,9 @@ public class OrbitComponent : MonoBehaviour
 
     private float _rotationProgress;
 
+    /// <summary>
+    /// Invalidates the orbit pivot and parenting, recreating all required objects and instantly resetting position
+    /// </summary>
     public void Invalidate()
     {
         if (_pivot != null)
@@ -60,6 +69,10 @@ public class OrbitComponent : MonoBehaviour
             transform.parent = null;
             Destroy(_pivot);
         }
+
+        // Cancel any default pos animation
+        Resetting = false;
+        StopAllCoroutines();
         
         // Create a new object on the origin point and parent ourself to it
         _pivot = new GameObject($"{gameObject.name} - Pivot");
@@ -72,16 +85,53 @@ public class OrbitComponent : MonoBehaviour
     }
 
     /// <summary>
+    /// Resets the camera to a known position by slowly lerping the camera
+    /// </summary>
+    public IEnumerator ResetToDefaultPosition()
+    {
+        if (Resetting) yield break;
+
+        Resetting = true;
+
+        var time = 0f;
+        var startPosition = transform.localPosition;
+
+        var startRotation = _rotationProgress;
+        var startLat = _latitude;
+        var startLon = _longitude;
+
+        while (time <= 1.0f)
+        {
+            time += Time.deltaTime;
+            transform.localPosition = Vector3.Lerp(startPosition, OrbitOffset, time);
+
+            _rotationProgress = Mathf.Lerp(startRotation, 0, time);
+            _latitude = Mathf.Lerp(startLat, 0, time);
+            _longitude = Mathf.Lerp(startLon, 0, time);
+
+            yield return null;
+        }
+
+        transform.position = OrbitOffset;
+        transform.LookAt(LookAt.transform);
+        Resetting = false;
+    }
+
+    /// <summary>
     /// Advances the rotation by a period of time in seconds (same speed as autorotate)
     /// </summary>
     /// <param name="time">Time period</param>
     public void AdvanceTime(float time)
     {
+        if (Resetting) return;
+
         _rotationProgress += time;
     }
 
     public void ResetTime()
     {
+        if (Resetting) return;
+
         _rotationProgress = 0f;
     }
 
@@ -91,6 +141,8 @@ public class OrbitComponent : MonoBehaviour
     /// <param name="angle">Rotation offset in degrees</param>
     public void AdvanceAngle(float latitude, float longitude)
     {
+        if (Resetting) return;
+
         _latitude += latitude;
         _longitude += longitude;
     }
@@ -100,8 +152,8 @@ public class OrbitComponent : MonoBehaviour
         // Don't orbit until we have been initialized
         if (_pivot == null) return;
         if (LookAt == null) return;
-        
-        if (AutoOrbit) _rotationProgress += Time.deltaTime;
+
+        if (AutoOrbit && !Resetting) _rotationProgress += Time.deltaTime;
 
         // Clamp over/underflow
         if (_rotationProgress >= RotationPeriod) _rotationProgress -= RotationPeriod;

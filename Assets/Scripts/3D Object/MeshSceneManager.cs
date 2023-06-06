@@ -96,7 +96,9 @@ public class MeshSceneManager : MonoBehaviour
         {
             _modelVisibility.SetTarget(result);
 
-            result.AddComponent<AnimationActionBinderComponent>();
+            var binder = result.AddComponent<AnimationActionBinderComponent>();
+            binder.Orbit = _cameraOrbit;
+            binder.CameraHandMovement = _handMovement;
 
             var anim = result.AddComponent<Animation>();
             foreach (var clip in clips) anim.AddClip(clip, clip.name);

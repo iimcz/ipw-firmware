@@ -1,5 +1,6 @@
 using emt_sdk.Events;
 using emt_sdk.Events.Effect;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -39,6 +40,9 @@ public class AnimationActionBinderComponent : MonoBehaviour
         }
     }
 
+    public OrbitComponent Orbit { get; set; }
+    public CameraHandMovement CameraHandMovement { get; set; }
+
     [SerializeField]
     private Animation _animation;
 
@@ -62,7 +66,10 @@ public class AnimationActionBinderComponent : MonoBehaviour
 
     private void OnEventReceived(EffectCall e)
     {
-        if (_animation != null && e.Name == "animate") _animation.Play(e.String);
+        if (_animation != null && e.Name == "animate")
+        {
+            StartCoroutine(StartAnimation(e.String));
+        }
         else if (e.Name.StartsWith("blendShape"))
         {
             var blendShapeName = e.Name.Split('/').Last();
@@ -75,5 +82,15 @@ public class AnimationActionBinderComponent : MonoBehaviour
     {
         var skinnedMeshes = GetComponentsInChildren<SkinnedMeshRenderer>();
         _blends = skinnedMeshes.SelectMany(sm => BlendShapeInfo.FromSkinnedMeshRenderer(sm)).ToDictionary(i => i.Name);
+    }
+
+    private IEnumerator StartAnimation(string animationName)
+    {
+        if (Orbit.Resetting) yield break;
+
+        yield return Orbit.ResetToDefaultPosition();
+        CameraHandMovement.UnZoom();
+
+        _animation.Play(animationName);
     }
 }
