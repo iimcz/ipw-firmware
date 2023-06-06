@@ -17,6 +17,7 @@ public class LightSpawnerComponent : MonoBehaviour
 
         lightObject.transform.parent = transform;
         lightObject.transform.position = new Vector3(0, 100, 0);
+        lightObject.transform.eulerAngles = new Vector3(90, 0, 0);
 
         SkyboxLoader.ApplyAmbientLight(Color.white, 0.5f);
     }
