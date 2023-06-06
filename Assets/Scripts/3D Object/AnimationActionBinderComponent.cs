@@ -91,6 +91,7 @@ public class AnimationActionBinderComponent : MonoBehaviour
         yield return Orbit.ResetToDefaultPosition();
         CameraHandMovement.UnZoom();
 
+        yield return new WaitForSecondsRealtime(0.5f);
         _animation.Play(animationName);
     }
 }

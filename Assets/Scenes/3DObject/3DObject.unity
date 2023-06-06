@@ -175,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _flagNavigator: {fileID: 0}
   _cameraOrbit: {fileID: 1863770801}
-  _handMovement: {fileID: 0}
+  _handMovement: {fileID: 1863770804}
   _rigSpawner: {fileID: 1863770802}
   _ntpSync: {fileID: 6998770}
   _modelVisibility: {fileID: 6998773}
